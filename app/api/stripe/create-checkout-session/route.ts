@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth/current-user";
 import { prisma } from "@/lib/db/prisma";
-import { getAppUrl, getPaidPlanOrThrow, getStripePriceId, requireStripeConfig, stripe } from "@/lib/payment/stripe-config";
+import { getAppUrl, getPaidPlanOrThrow, getStripeClient, getStripePriceId, requireStripeConfig } from "@/lib/payment/stripe-config";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,6 +16,7 @@ export async function POST(request: NextRequest) {
 
     requireStripeConfig(planId);
 
+    const stripe = getStripeClient();
     const appUrl = getAppUrl();
     let customerId = user.stripeCustomerId || undefined;
 

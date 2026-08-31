@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth/current-user";
-import { getAppUrl, requireStripeConfig, stripe } from "@/lib/payment/stripe-config";
+import { getAppUrl, getStripeClient, requireStripeConfig } from "@/lib/payment/stripe-config";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -9,6 +9,7 @@ export async function POST() {
   try {
     const user = await requireUser();
     requireStripeConfig();
+    const stripe = getStripeClient();
 
     if (!user.stripeCustomerId) {
       return NextResponse.json(

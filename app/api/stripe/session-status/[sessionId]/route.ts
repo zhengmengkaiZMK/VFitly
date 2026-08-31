@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth/current-user";
 import { prisma } from "@/lib/db/prisma";
-import { requireStripeConfig, stripe } from "@/lib/payment/stripe-config";
+import { getStripeClient, requireStripeConfig } from "@/lib/payment/stripe-config";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -40,6 +40,7 @@ export async function GET(
 
     if (process.env.STRIPE_SECRET_KEY) {
       requireStripeConfig();
+      const stripe = getStripeClient();
       const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId);
       stripeStatus = checkoutSession.status || null;
       paymentStatus = checkoutSession.payment_status || null;

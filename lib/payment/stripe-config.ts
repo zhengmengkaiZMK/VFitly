@@ -1,7 +1,19 @@
 import Stripe from "stripe";
 import { getPlanById } from "@/constants/pricing-plans";
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+let stripeClient: Stripe | null = null;
+
+export function getStripeClient() {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error("Stripe secret key is not configured.");
+  }
+
+  if (!stripeClient) {
+    stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY);
+  }
+
+  return stripeClient;
+}
 
 export function getAppUrl() {
   return (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(/\/$/, "");

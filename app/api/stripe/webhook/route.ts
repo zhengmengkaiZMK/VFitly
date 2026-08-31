@@ -4,7 +4,7 @@ import { MembershipType, PaymentStatus } from "@prisma/client";
 import { getPlanById } from "@/constants/pricing-plans";
 import { grantMonthlyCredits } from "@/lib/billing/credits";
 import { prisma } from "@/lib/db/prisma";
-import { stripe } from "@/lib/payment/stripe-config";
+import { getStripeClient } from "@/lib/payment/stripe-config";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
   }
 
   let event: Stripe.Event;
+  const stripe = getStripeClient();
 
   try {
     const body = await request.text();
@@ -71,7 +72,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
   if (!userId || !plan || plan.membershipType === "FREE") return;
 
-  const subscription = subscriptionId ? await stripe.subscriptions.retrieve(subscriptionId) : null;
+  const subscription = subscriptionId ? await getStripeClient().subscriptions.retrieve(subscriptionId) : null;
   const period = subscription ? getSubscriptionPeriod(subscription) : getOneTimePaymentPeriod(plan.durationDays);
   const existing = await prisma.payment.findUnique({ where: { providerOrderId: session.id } });
 
@@ -127,7 +128,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 async function handleInvoicePaid(invoice: Stripe.Invoice) {
   const subscriptionId = getInvoiceSubscriptionId(invoice);
   const customerId = getInvoiceCustomerId(invoice);
-  const subscription = subscriptionId ? await stripe.subscriptions.retrieve(subscriptionId) : null;
+  const subscription = subscriptionId ? await getStripeClient().subscriptions.retrieve(subscriptionId) : null;
   const metadata = subscription?.metadata || invoice.metadata || {};
   const userId = metadata.userId || (customerId ? await findUserIdByCustomer(customerId) : null);
   const plan = metadata.planId ? getPlanById(metadata.planId) : null;
