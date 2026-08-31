@@ -19,16 +19,25 @@ async function seedTestUsers() {
     // 测试用户数据
     const testUsers = [
       {
+        name: "管理员",
+        email: "admin@vfitly.com",
+        password: "VFitlyAdmin2026!",
+        membershipType: "ULTRA" as const,
+        role: "ADMIN" as const,
+      },
+      {
         name: "测试用户",
         email: "test@example.com",
         password: "password123",
         membershipType: "FREE" as const,
+        role: "USER" as const,
       },
       {
         name: "高级会员",
         email: "premium@example.com",
         password: "password123",
         membershipType: "PREMIUM" as const,
+        role: "USER" as const,
       },
     ];
 
@@ -39,7 +48,22 @@ async function seedTestUsers() {
       });
 
       if (existing) {
-        console.log(`⏭️  ${userData.email} 已存在，跳过`);
+        if (userData.email === "admin@vfitly.com") {
+          const passwordHash = await bcrypt.hash(userData.password, 10);
+          await prisma.user.update({
+            where: { email: userData.email },
+            data: {
+              name: userData.name,
+              passwordHash,
+              membershipType: userData.membershipType,
+              role: "ADMIN",
+              isActive: true,
+            },
+          });
+          console.log(`🔐 ${userData.email} 已存在，已更新为管理员`);
+        } else {
+          console.log(`⏭️  ${userData.email} 已存在，跳过`);
+        }
         continue;
       }
 
@@ -53,6 +77,7 @@ async function seedTestUsers() {
           email: userData.email,
           passwordHash,
           membershipType: userData.membershipType,
+          role: userData.role || "USER",
           isActive: true,
         },
       });

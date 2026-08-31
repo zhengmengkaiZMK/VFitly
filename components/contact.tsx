@@ -12,44 +12,20 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-
-import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import {
-  IconBrandGithub,
-  IconBrandLinkedin,
-  IconBrandX,
-} from "@tabler/icons-react";
-import Password from "./password";
 import { Button } from "./button";
-import { Logo } from "./Logo";
 
 const formSchema = z.object({
-  name: z
-    .string({
-      required_error: "Please enter your name",
-    })
-    .min(1, "Please enter email"),
   email: z
-    .string({
-      required_error: "Please enter email",
-    })
-    .email("Please enter valid email")
-    .min(1, "Please enter email"),
-  company: z
-    .string({
-      required_error: "Please enter your company's name",
-    })
-    .min(1, "Please enter your company's name"),
+    .string({ required_error: "Please enter your email address" })
+    .email("Please enter a valid email address"),
   message: z
-    .string({
-      required_error: "Please enter your message",
-    })
-    .min(1, "Please enter your message"),
+    .string({ required_error: "Please enter your feedback" })
+    .min(10, "Please enter at least 10 characters")
+    .max(3000, "Feedback must be 3000 characters or less"),
 });
 
-export type LoginUser = z.infer<typeof formSchema>;
+export type FeedbackFormValues = z.infer<typeof formSchema>;
 
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,17 +34,15 @@ export function ContactForm() {
     message: string;
   }>({ type: null, message: "" });
 
-  const form = useForm<LoginUser>({
+  const form = useForm<FeedbackFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
       email: "",
-      company: "",
       message: "",
     },
   });
 
-  async function onSubmit(values: LoginUser) {
+  async function onSubmit(values: FeedbackFormValues) {
     setIsSubmitting(true);
     setSubmitStatus({ type: null, message: "" });
 
@@ -86,17 +60,19 @@ export function ContactForm() {
       if (response.ok) {
         setSubmitStatus({
           type: "success",
-          message: data.message || "Thank you for contacting us!",
+          message:
+            data.message ||
+            "Thanks for your feedback. We'll review it and reply by email if needed.",
         });
-        form.reset(); // 清空表单
+        form.reset();
       } else {
         setSubmitStatus({
           type: "error",
-          message: data.error || "Failed to send message. Please try again.",
+          message: data.error || "Failed to submit feedback. Please try again.",
         });
       }
     } catch (error) {
-      console.error("Contact form error:", error);
+      console.error("Feedback form error:", error);
       setSubmitStatus({
         type: "error",
         message: "Network error. Please check your connection and try again.",
@@ -106,188 +82,96 @@ export function ContactForm() {
     }
   }
 
-  const socials = [
-    {
-      title: "twitter",
-      href: "https://twitter.com/mannupaaji",
-      icon: (
-        <IconBrandX className="h-5 w-5 text-muted dark:text-muted-dark hover:text-black" />
-      ),
-    },
-    {
-      title: "github",
-      href: "https://github.com/manuarora700",
-      icon: (
-        <IconBrandGithub className="h-5 w-5 text-muted dark:text-muted-dark hover:text-black" />
-      ),
-    },
-    {
-      title: "linkedin",
-      href: "https://linkedin.com/manuarora28",
-      icon: (
-        <IconBrandLinkedin className="h-5 w-5 text-muted dark:text-muted-dark hover:text-black" />
-      ),
-    },
-  ];
-
   return (
     <Form {...form}>
-      <div className="flex relative z-20 items-center w-full justify-center px-4 py-4 lg:py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+      <div className="relative z-20 flex w-full items-center justify-center px-4 py-4 sm:px-6 lg:flex-none lg:px-20 lg:py-12 xl:px-24">
         <div className="mx-auto w-full max-w-md">
           <div>
-            <h1 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-black dark:text-white">
-              Contact Us
+            <p className="text-sm font-medium uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400">
+              Feedback
+            </p>
+            <h1 className="mt-4 text-3xl font-bold leading-tight tracking-tight text-black dark:text-white">
+              Tell us what you think
             </h1>
-            <p className="mt-4 text-muted dark:text-muted-dark  text-sm max-w-sm">
-              Please reach out to us and we will get back to you at the speed of
-              light.
+            <p className="mt-4 max-w-sm text-sm leading-6 text-muted dark:text-muted-dark">
+              Share your questions, bugs, or product suggestions. Our team will review your message and contact you by email if needed.
             </p>
           </div>
 
           <div className="py-10">
-            <div>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
-              >
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <label
-                        htmlFor="name"
-                        className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
-                      >
-                        Full Name
-                      </label>
-                      <FormControl>
-                        <div className="mt-2">
-                          <input
-                            id="name"
-                            type="name"
-                            placeholder="Manu Arora"
-                            className="block w-full bg-white dark:bg-neutral-900 px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <label
-                        htmlFor="email"
-                        className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
-                      >
-                        Email address
-                      </label>
-                      <FormControl>
-                        <div className="mt-2">
-                          <input
-                            id="email"
-                            type="email"
-                            placeholder="hello@johndoe.com"
-                            className="block w-full bg-white dark:bg-neutral-900 px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="company"
-                  render={({ field }) => (
-                    <FormItem>
-                      <label
-                        htmlFor="company"
-                        className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
-                      >
-                        Company
-                      </label>
-                      <FormControl>
-                        <div className="mt-2">
-                          <input
-                            id="company"
-                            type="company"
-                            placeholder="Aceternity Labs, LLC"
-                            className="block w-full bg-white dark:bg-neutral-900 px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="message"
-                  render={({ field }) => (
-                    <FormItem>
-                      <label
-                        htmlFor="message"
-                        className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
-                      >
-                        message
-                      </label>
-                      <FormControl>
-                        <div className="mt-2">
-                          <textarea
-                            rows={5}
-                            id="message"
-                            placeholder="Enter your message here"
-                            className="block w-full bg-white dark:bg-neutral-900 px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div>
-                  <Button 
-                    className="w-full" 
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? "Sending..." : "Submit"}
-                  </Button>
-                </div>
-
-                {/* 成功/错误提示 */}
-                {submitStatus.type && (
-                  <div
-                    className={cn(
-                      "p-4 rounded-lg text-sm",
-                      submitStatus.type === "success"
-                        ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
-                        : "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800"
-                    )}
-                  >
-                    {submitStatus.message}
-                  </div>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
+                    >
+                      Email address
+                    </label>
+                    <FormControl>
+                      <div className="mt-2">
+                        <input
+                          id="email"
+                          type="email"
+                          placeholder="you@example.com"
+                          className="block w-full rounded-md border-0 bg-white px-4 py-2 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-900 dark:text-white sm:text-sm sm:leading-6"
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
-              </form>
-            </div>
+              />
+
+              <FormField
+                control={form.control}
+                name="message"
+                render={({ field }) => (
+                  <FormItem>
+                    <label
+                      htmlFor="message"
+                      className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
+                    >
+                      Feedback
+                    </label>
+                    <FormControl>
+                      <div className="mt-2">
+                        <textarea
+                          rows={7}
+                          id="message"
+                          placeholder="Describe your feedback here..."
+                          className="block w-full resize-none rounded-md border-0 bg-white px-4 py-2 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-900 dark:text-white sm:text-sm sm:leading-6"
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? "Submitting..." : "Submit feedback"}
+              </Button>
+
+              {submitStatus.type && (
+                <div
+                  className={cn(
+                    "rounded-lg border p-4 text-sm",
+                    submitStatus.type === "success"
+                      ? "border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400"
+                      : "border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400"
+                  )}
+                >
+                  {submitStatus.message}
+                </div>
+              )}
+            </form>
           </div>
-          {/* 社交媒体链接已隐藏 */}
-          {/* <div className="flex items-center justify-center space-x-4 py-4">
-            {socials.map((social) => (
-              <Link href={social.href} key={social.title}>
-                {social.icon}
-              </Link>
-            ))}
-          </div> */}
         </div>
       </div>
     </Form>

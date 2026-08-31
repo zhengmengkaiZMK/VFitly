@@ -1,160 +1,224 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { IconHanger, IconHistory, IconMessageReport, IconSparkles, IconSettings, IconWallet } from "@tabler/icons-react";
 import { UserInfoCard } from "./user-info-card";
-import { QuotaCard } from "./quota-card";
+import { ModelPhotoCard } from "./model-photo-card";
 import { MembershipCard } from "./membership-card";
-import { ActivityChart } from "./activity-chart";
 import { Skeleton } from "./skeleton";
-import { HistoryList } from "../pain-point-history/history-list";
+import type { BillingCycle, PlanTier } from "@/types/payment";
 
-interface QuotaData {
-  date: string;
-  searchesUsed: number;
-  searchesLimit: number;
+interface DashboardPlan {
+  id: string;
+  name: string;
+  nameZh: string;
+  tier: PlanTier;
+  billingCycle: BillingCycle;
+  amount: number;
+  currency: string;
+  monthlyCredits: number;
+  features: string[];
+  featuresZh: string[];
 }
 
-interface UserStats {
-  totalSearches: number;
-  memberSince: string;
+interface UsageSummary {
+  total: number;
+  used: number;
+  remaining: number;
 }
 
 export function DashboardContent() {
-  const { data: session } = useSession();
-  const pathname = usePathname();
-  const isZh = pathname.startsWith("/zh");
-  
-  const [quotaData, setQuotaData] = useState<QuotaData | null>(null);
-  const [userStats, setUserStats] = useState<UserStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string>("");
+  const { data: session, status } = useSession();
+  const [profile, setProfile] = useState<{
+    defaultPersonImageUrl: string | null;
+    memberSince: string;
+    plan: DashboardPlan | null;
+    credits: UsageSummary | null;
+    walkVideoQuota: UsageSummary | null;
+  } | null>(null);
 
   useEffect(() => {
-    async function fetchDashboardData() {
-      try {
-        setLoading(true);
-        setError("");
+    if (status !== "authenticated") {
+      return;
+    }
 
-        const response = await fetch("/api/user/dashboard");
-        const data = await response.json();
+    let isMounted = true;
 
-        if (!response.ok) {
-          throw new Error(data.error || "Failed to fetch dashboard data");
+    fetch("/api/me")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (!isMounted || !data?.user) {
+          return;
         }
 
-        setQuotaData(data.quota);
-        setUserStats(data.stats);
-      } catch (err) {
-        console.error("Dashboard fetch error:", err);
-        setError(err instanceof Error ? err.message : "Unknown error");
-      } finally {
-        setLoading(false);
-      }
-    }
+        const remainingCredits = Number(data.credits?.balance ?? 0);
+        const totalCredits = Number(data.credits?.monthlyAllowance ?? 0);
 
-    if (session) {
-      fetchDashboardData();
-    }
-  }, [session]);
+        setProfile({
+          defaultPersonImageUrl: data.user.defaultModelImageUrl ?? null,
+          memberSince: data.user.createdAt ?? new Date().toISOString(),
+          plan: data.plan ?? null,
+          credits: {
+            total: totalCredits,
+            used: Math.max(totalCredits - remainingCredits, 0),
+            remaining: remainingCredits,
+          },
+          walkVideoQuota: data.walkVideoQuota
+            ? {
+                total: Number(data.walkVideoQuota.total ?? 0),
+                used: Number(data.walkVideoQuota.used ?? 0),
+                remaining: Number(data.walkVideoQuota.remaining ?? 0),
+              }
+            : null,
+        });
+      })
+      .catch(() => {
+        if (isMounted) {
+          setProfile(null);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [status]);
+
+  if (status === "loading") {
+    return <DashboardSkeleton />;
+  }
 
   if (!session) {
     return null;
   }
 
-  if (loading) {
-    return <DashboardSkeleton />;
-  }
+  const baseActions = [
+    {
+      title: "AI Try-On Studio",
+      description: "Upload a person photo, select a garment and generate realistic fitting images.",
+      href: "/dashboard/try-on",
+      icon: IconSparkles,
+    },
+    {
+      title: "Wardrobe Library",
+      description: "Manage garment images, categories, colors and tags for reusable fashion assets.",
+      href: "/dashboard/wardrobe",
+      icon: IconHanger,
+    },
+    {
+      title: "Generation History",
+      description: "Review try-on jobs, generated images, credit costs and stored assets.",
+      href: "/dashboard/history",
+      icon: IconHistory,
+    },
+    {
+      title: "Billing & Credits",
+      description: "Use the SaaS payment foundation for future plans, credits and subscription logic.",
+      href: "/pricing",
+      icon: IconWallet,
+    },
+    {
+      title: "Account Settings",
+      description: "Manage profile, membership and account preferences from the existing settings area.",
+      href: "/settings",
+      icon: IconSettings,
+    },
+  ];
 
-  if (error) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-4">
-          <p className="text-red-600 dark:text-red-400">
-            {isZh ? "加载失败：" : "Error: "}{error}
-          </p>
-        </div>
-      </div>
-    );
-  }
+  const adminActions = session.user.role === "ADMIN"
+    ? [
+        {
+          title: "Feedback Management",
+          description: "Review user feedback messages and reply directly by email.",
+          href: "/admin/feedback",
+          icon: IconMessageReport,
+        },
+      ]
+    : [];
+
+  const actions = [...adminActions, ...baseActions];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
-      {/* 页面标题 */}
+    <div className="mx-auto max-w-7xl px-4 py-12">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-black dark:text-white mb-2">
-          {isZh ? "仪表板" : "Dashboard"}
-        </h1>
-        <p className="text-neutral-600 dark:text-neutral-400">
-          {isZh
-            ? `欢迎回来，${session.user.name || session.user.email}`
-            : `Welcome back, ${session.user.name || session.user.email}`}
+        <p className="text-sm font-medium uppercase tracking-[0.2em] text-blue-500">AI Fashion SaaS</p>
+        <h1 className="mt-3 text-3xl font-bold text-black dark:text-white">Dashboard</h1>
+        <p className="mt-2 text-neutral-600 dark:text-neutral-400">
+          Welcome back, {session.user.name || session.user.email}. Your workspace is ready for wardrobe management and AI try-on generation.
         </p>
       </div>
 
-      {/* 主要内容区域 - 优化为两列布局 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* 左侧：用户信息 */}
+      <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <UserInfoCard
           user={{
             name: session.user.name || "User",
             email: session.user.email,
-            membershipType: session.user.membershipType,
+            membershipType: profile?.plan?.tier ?? session.user.membershipType,
             avatar: null,
-            memberSince: userStats?.memberSince || new Date().toISOString(),
+            memberSince: profile?.memberSince ?? new Date().toISOString(),
           }}
+          credits={profile?.credits ?? null}
+          walkVideoQuota={profile?.walkVideoQuota ?? null}
         />
-        
-        {/* 右侧：会员状态 */}
         <MembershipCard
-          membershipType={session.user.membershipType}
+          membershipType={profile?.plan?.tier ?? session.user.membershipType}
           expiresAt={null}
+          plan={profile?.plan ?? null}
+        />
+        <ModelPhotoCard
+          imageUrl={profile?.defaultPersonImageUrl ?? null}
+          onImageChange={(imageUrl) =>
+            setProfile((current) => ({
+              defaultPersonImageUrl: imageUrl,
+              memberSince: current?.memberSince ?? new Date().toISOString(),
+              plan: current?.plan ?? null,
+              credits: current?.credits ?? null,
+              walkVideoQuota: current?.walkVideoQuota ?? null,
+            }))
+          }
         />
       </div>
 
-      {/* Reddit搜索配额 */}
-      {quotaData && (
-        <div className="mb-8">
-          <QuotaCard
-            used={quotaData.searchesUsed}
-            limit={quotaData.searchesLimit}
-            date={quotaData.date}
-          />
-        </div>
-      )}
-
-      {/* 历史检索记录 */}
-      <div className="mb-8">
-        <HistoryList />
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+        {actions.map((action) => {
+          const Icon = action.icon;
+          return (
+            <Link
+              key={action.title}
+              href={action.href}
+              className="group rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-neutral-800 dark:bg-neutral-900"
+            >
+              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 transition group-hover:bg-blue-600 group-hover:text-white dark:bg-blue-950/40 dark:text-blue-300">
+                <Icon className="h-6 w-6" />
+              </div>
+              <h2 className="text-xl font-semibold text-black dark:text-white">{action.title}</h2>
+              <p className="mt-2 text-sm leading-6 text-neutral-600 dark:text-neutral-400">{action.description}</p>
+            </Link>
+          );
+        })}
       </div>
-
-      {/* 使用统计 - 已隐藏 */}
-      {/* {userStats && (
-        <ActivityChart totalSearches={userStats.totalSearches} />
-      )} */}
     </div>
   );
 }
 
 function DashboardSkeleton() {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
+    <div className="mx-auto max-w-7xl px-4 py-12">
       <div className="mb-8">
-        <Skeleton className="h-9 w-48 mb-2" />
-        <Skeleton className="h-5 w-64" />
+        <Skeleton className="mb-2 h-9 w-48" />
+        <Skeleton className="h-5 w-96" />
       </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <Skeleton className="h-64 w-full rounded-xl" />
-        <Skeleton className="h-64 w-full rounded-xl" />
+      <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <Skeleton className="h-80 rounded-xl" />
+        <Skeleton className="h-80 rounded-xl" />
+        <Skeleton className="h-80 rounded-xl" />
       </div>
-
-      <div className="mb-8">
-        <Skeleton className="h-48 w-full rounded-xl" />
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <Skeleton key={index} className="h-44 rounded-3xl" />
+        ))}
       </div>
-
-      <Skeleton className="h-64 w-full rounded-xl" />
     </div>
   );
 }

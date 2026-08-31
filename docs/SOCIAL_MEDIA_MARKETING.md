@@ -7,9 +7,9 @@
 
 ## 📌 产品信息
 
-**产品名称**: Lingtrue  
-**网站**: https://www.lingtrue.com  
-**Slogan**: Discover Real Pain Points from Reddit & X  
+**产品名称**: VFitly
+**网站**: https://www.vfitly.com
+**Slogan**: Discover Real Pain Points from Reddit & X
 **核心功能**: AI驱动的用户痛点分析工具
 
 **目标用户**:
@@ -96,10 +96,10 @@ So I thought: "What if I could automate this?"
 
 ## What I Built
 
-Meet **Lingtrue** – an AI-powered tool that:
+Meet **VFitly** – an AI-powered tool that:
 
 1. 🔍 **Searches Reddit & X** for discussions about any topic/product
-2. 🤖 **Analyzes with AI** to identify patterns and frustrations  
+2. 🤖 **Analyzes with AI** to identify patterns and frustrations
 3. 📊 **Generates a structured report** with:
    - Executive summary of main pain points
    - Frustration score (0-100)
@@ -127,11 +127,11 @@ Building this was both exciting and challenging:
 
 ## Features I'm Proud Of
 
-✅ **Dual Platform Search** – Both Reddit & X in one search  
-✅ **AI-Powered Analysis** – Not just keyword matching, real understanding  
-✅ **History Tracking** – Save and revisit your analyses  
-✅ **Export Options** – PDF reports and copyable text  
-✅ **Bilingual** – Full English/Chinese support  
+✅ **Dual Platform Search** – Both Reddit & X in one search
+✅ **AI-Powered Analysis** – Not just keyword matching, real understanding
+✅ **History Tracking** – Save and revisit your analyses
+✅ **Export Options** – PDF reports and copyable text
+✅ **Bilingual** – Full English/Chinese support
 ✅ **Free Tier** – 3 searches for guests, 5/day for registered users
 
 ## Who Is This For?
@@ -155,7 +155,7 @@ I'd love your honest feedback on:
 
 ## Try It Out
 
-🔗 **Website**: https://www.lingtrue.com
+🔗 **Website**: https://www.vfitly.com
 
 You can try it for free (no credit card needed). I've set up 3 free searches for guests to test it out.
 
@@ -214,10 +214,10 @@ P.S. – If this violates any sub rules, mods please let me know and I'll remove
 
 ## 我做了什么
 
-这就是 **Lingtrue** – 一个 AI 驱动的工具，可以：
+这就是 **VFitly** – 一个 AI 驱动的工具，可以：
 
 1. 🔍 **搜索 Reddit 和 X** 上关于任何话题/产品的讨论
-2. 🤖 **用 AI 分析**，识别模式和用户挫折点  
+2. 🤖 **用 AI 分析**，识别模式和用户挫折点
 3. 📊 **生成结构化报告**，包含：
    - 主要痛点的执行摘要
    - 挫折指数（0-100）
@@ -245,11 +245,11 @@ P.S. – If this violates any sub rules, mods please let me know and I'll remove
 
 ## 我引以为豪的功能
 
-✅ **双平台搜索** – 一次搜索 Reddit 和 X  
-✅ **AI 智能分析** – 不只是关键词匹配，是真正的理解  
-✅ **历史记录** – 保存并重温你的分析  
-✅ **导出选项** – PDF 报告和可复制文本  
-✅ **双语支持** – 完整的中英文切换  
+✅ **双平台搜索** – 一次搜索 Reddit 和 X
+✅ **AI 智能分析** – 不只是关键词匹配，是真正的理解
+✅ **历史记录** – 保存并重温你的分析
+✅ **导出选项** – PDF 报告和可复制文本
+✅ **双语支持** – 完整的中英文切换
 ✅ **免费试用** – 游客 3 次，注册用户每天 5 次
 
 ## 这个工具适合谁？
@@ -273,7 +273,7 @@ P.S. – If this violates any sub rules, mods please let me know and I'll remove
 
 ## 试试看
 
-🔗 **网站**: https://www.lingtrue.com
+🔗 **网站**: https://www.vfitly.com
 
 你可以免费试用（无需信用卡）。我为游客设置了 3 次免费搜索来体验。
 
@@ -316,14 +316,14 @@ It worked! But analyzing one keyword took 4-5 hours.
 
 I thought: "Why not automate this with AI?"
 
-And Lingtrue was born 🚀
+And VFitly was born 🚀
 ```
 
 **Tweet 4 (Features)**:
 ```
 What it does:
 ✅ Searches Reddit & X for any topic
-✅ AI analyzes user complaints/frustrations  
+✅ AI analyzes user complaints/frustrations
 ✅ Generates structured reports with:
    • Pain point insights
    • Frustration scores
@@ -357,7 +357,7 @@ Perfect for:
 **Tweet 7 (CTA)**:
 ```
 Try it free (no credit card):
-🔗 https://www.lingtrue.com
+🔗 https://www.vfitly.com
 
 I'd love your feedback! What features would make this more useful for you?
 
@@ -392,14 +392,14 @@ Reply below 👇 or DM me – I respond to everyone!
 
 我想："为什么不用 AI 自动化这个过程？"
 
-于是 Lingtrue 诞生了 🚀
+于是 VFitly 诞生了 🚀
 ```
 
 **推文 4（功能）**:
 ```
 它能做什么：
 ✅ 搜索 Reddit 和 X 的任何话题
-✅ AI 分析用户抱怨/挫折点  
+✅ AI 分析用户抱怨/挫折点
 ✅ 生成结构化报告，包含：
    • 痛点洞察
    • 挫折分数
@@ -433,7 +433,7 @@ Reply below 👇 or DM me – I respond to everyone!
 **推文 7（行动号召）**:
 ```
 免费试用（无需信用卡）：
-🔗 https://www.lingtrue.com
+🔗 https://www.vfitly.com
 
 我很想听听你的反馈！什么功能能让它对你更有用？
 
@@ -563,8 +563,8 @@ Feel free to reach out anytime:
 
 ---
 
-**文档版本**: v1.0  
-**创建日期**: 2025-12-30  
+**文档版本**: v1.0
+**创建日期**: 2025-12-30
 **最后更新**: 2025-12-30
 
 ---

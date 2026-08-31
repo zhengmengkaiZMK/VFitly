@@ -3,16 +3,14 @@ import { Background } from "@/components/background";
 import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
 import { Pricing } from "@/components/pricing";
-import { PricingTable } from "../../pricing/pricing-table";
-import { Companies } from "@/components/companies";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "价格 - Lingtrue",
+  title: "价格 - VFitly",
   description:
-    "Lingtrue 是一个提供各种 AI 工具和服务的平台，帮助您掌握业务动态。生成图像、文本以及启动业务所需的一切。",
+    "VFitly 寓意 Virtual Fitly，是一个 AI 虚拟试衣平台，帮助用户预览穿搭效果、管理衣橱单品，并在购买或分享前生成真实自然的时尚视觉内容。",
   openGraph: {
-    images: ["https://ai-saas-template-aceternity.vercel.app/banner.png"],
+    images: ["https://www.vfitly.com/banner.png"],
   },
 };
 
@@ -24,12 +22,10 @@ export default function ZhPricingPage() {
         <div className="relative z-20 py-10 md:pt-40">
           <Heading as="h1">简单易用的定价方案</Heading>
           <Subheading className="text-center">
-            Lingtrue 提供多种服务选择。您可以选择最适合您需求的方案，立即开始使用。
+            VFitly 寓意 Virtual Fitly。选择适合您的方案，即可开始生成真实的 AI 试衣预览、穿搭对比和时尚展示视频。
           </Subheading>
         </div>
         <Pricing />
-        <PricingTable />
-        <Companies />
       </Container>
     </div>
   );

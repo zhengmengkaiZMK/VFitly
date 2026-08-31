@@ -6,11 +6,11 @@ import { HorizontalGradient } from "@/components/horizontal-gradient";
 import { ContactForm } from "@/components/contact";
 
 export const metadata: Metadata = {
-  title: "联系我们 - Lingtrue",
+  title: "联系我们 - VFitly",
   description:
-    "Lingtrue 是一个提供各种 AI 工具和服务的平台，帮助您掌握业务动态。生成图像、文本以及启动业务所需的一切。",
+    "VFitly 寓意 Virtual Fitly，是一个 AI 虚拟试衣平台，帮助用户预览穿搭效果、管理衣橱单品，并在购买或分享前生成真实自然的时尚视觉内容。",
   openGraph: {
-    images: ["https://ai-saas-template-aceternity.vercel.app/banner.png"],
+    images: ["https://www.vfitly.com/banner.png"],
   },
 };
 
@@ -28,14 +28,14 @@ export default function ZhContactPage() {
                 "font-semibold text-xl text-center dark:text-muted-dark text-muted"
               )}
             >
-              Lingtrue 已被数千用户使用
+              VFitly 已被数千用户使用
             </p>
             <p
               className={cn(
                 "font-normal text-base text-center text-neutral-500 dark:text-neutral-200 mt-8"
               )}
             >
-              在众多 AI 应用中，Lingtrue 凭借其最先进的功能脱颖而出。
+              VFitly 寓意 Virtual Fitly，可将人物照与服装图生成真实自然的 AI 试衣预览。
             </p>
           </div>
           <HorizontalGradient className="top-20" />

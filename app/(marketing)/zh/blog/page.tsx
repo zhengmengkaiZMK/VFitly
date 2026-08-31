@@ -7,11 +7,11 @@ import { Metadata } from "next";
 import { getAllZhBlogPosts } from "@/lib/blog-utils-zh";
 
 export const metadata: Metadata = {
-  title: "博客 - Lingtrue",
+  title: "博客 - VFitly",
   description:
-    "Lingtrue 是一个提供各种 AI 工具和服务的平台，帮助您掌握业务动态。生成图像、文本以及启动业务所需的一切。",
+    "VFitly 寓意 Virtual Fitly，是一个 AI 虚拟试衣平台，帮助用户预览穿搭效果、管理衣橱单品，并在购买或分享前生成真实自然的时尚视觉内容。",
   openGraph: {
-    images: ["https://ai-saas-template-aceternity.vercel.app/banner.png"],
+    images: ["https://www.vfitly.com/banner.png"],
   },
 };
 

@@ -26,7 +26,7 @@
 1. 登录后，点击右上角头像 → **SMTP & API**
 2. 点击 **API Keys** 标签
 3. 点击 **Generate a new API key**
-4. 给密钥命名（如：`Lingtrue Contact Form`）
+4. 给密钥命名（如：`VFitly Contact Form`）
 5. 复制生成的 API Key
 
 #### 3. 配置环境变量
@@ -78,7 +78,7 @@ RESEND_FROM_EMAIL="contact@yourdomain.com"
 
 ### 邮件标题格式
 ```
-[Lingtrue Contact] 来自 {用户姓名} 的咨询
+[VFitly Contact] 来自 {用户姓名} 的咨询
 ```
 
 ### 邮件内容包含
@@ -197,7 +197,7 @@ RESEND_FROM_EMAIL="contact@yourdomain.com"
 // 发送确认邮件给客户
 await sendEmail({
   to: email,
-  subject: "感谢您的咨询 - Lingtrue",
+  subject: "感谢您的咨询 - VFitly",
   html: "我们已收到您的消息...",
 });
 ```

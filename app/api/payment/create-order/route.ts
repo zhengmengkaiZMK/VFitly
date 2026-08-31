@@ -34,15 +34,15 @@ export async function POST(request: NextRequest) {
 
     // 获取价格方案
     const plan = getPlanById(planId);
-    if (!plan) {
+    if (!plan || plan.membershipType === "FREE") {
       return NextResponse.json(
-        { error: `Invalid plan ID: ${planId}` },
+        { error: `Invalid paid plan ID: ${planId}` },
         { status: 400 }
       );
     }
 
     // 创建PayPal订单
-    const order = await createPayPalOrder(plan.amount, plan.currency);
+    const order = await createPayPalOrder(plan.amount, plan.currency, plan.id);
 
     console.log("[PayPal] 订单创建成功:", {
       orderID: order.id,

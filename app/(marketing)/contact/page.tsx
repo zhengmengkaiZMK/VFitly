@@ -6,11 +6,11 @@ import { HorizontalGradient } from "@/components/horizontal-gradient";
 import { ContactForm } from "@/components/contact";
 
 export const metadata: Metadata = {
-  title: "Contact Us - Lingtrue",
+  title: "Contact Us - VFitly",
   description:
-    "Lingtrue is a platform that provides a wide range of AI tools and services to help you stay on top of your business. Generate images, text and everything else that you need to get your business off the ground.",
+    "VFitly, short for Virtual Fitly, is an AI virtual try-on platform that helps users preview outfits, manage wardrobe items, and create realistic fashion visuals before buying or sharing a look.",
   openGraph: {
-    images: ["https://ai-saas-template-aceternity.vercel.app/banner.png"],
+    images: ["https://www.vfitly.com/banner.png"],
   },
 };
 
@@ -28,15 +28,14 @@ export default function PricingPage() {
                 "font-semibold text-xl text-center dark:text-muted-dark text-muted"
               )}
             >
-              Lingtrue is used by thousands of users
+              VFitly helps users preview outfits with AI
             </p>
             <p
               className={cn(
                 "font-normal text-base text-center text-neutral-500 dark:text-neutral-200 mt-8"
               )}
             >
-              With lots of AI applications around, Lingtrue stands out with
-              its state of the art Shitposting capabilities.
+              VFitly, short for Virtual Fitly, turns outfit photos into realistic virtual try-on previews and fashion visuals.
             </p>
           </div>
           <HorizontalGradient className="top-20" />

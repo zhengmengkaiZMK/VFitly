@@ -17,14 +17,14 @@ export const Testimonials = () => {
   return (
     <div className="relative z-20 py-10 md:py-40">
       <Heading as="h2">
-        {isZh 
-          ? "全球创业者和产品经理的信赖之选" 
-          : "Trusted by Entrepreneurs and Product Managers Worldwide"}
+        {isZh
+          ? "为爱美女性打造的 AI 试衣体验"
+          : "Made for Anyone Who Wants to See the Fit Before They Buy"}
       </Heading>
       <Subheading className="text-center max-w-lg mx-auto">
         {isZh
-          ? "每天帮助数千名创业者和产品经理发现真实的用户痛点,验证产品想法,找到市场机会。"
-          : "Helping thousands of entrepreneurs and product managers daily discover real user pain points, validate product ideas, and identify market opportunities."}
+          ? "在下单前预览衣服穿在自己身上的真实效果，轻松比较搭配、版型和风格，买衣服更安心。"
+          : "Preview how outfits look on you before checkout, compare styles with confidence, and make every clothing purchase feel easier."}
       </Subheading>
       <TestimonialGrid />
     </div>
@@ -40,158 +40,88 @@ interface Testimonial {
 
 const testimonials = [
   {
-    name: "Sarah Chen",
+    name: "Emma Williams",
     quote:
-      "Found 3 major pain points in the productivity app market within minutes. Launched my SaaS 2 months later with paying customers. This tool is a goldmine!",
-    src: "https://i.pravatar.cc/150?img=1",
-    designation: "SaaS Founder",
+      "I used to hesitate before buying dresses online. Now I can preview how the outfit looks on me first, and it makes checkout feel so much more confident.",
+    src: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80",
+    designation: "Fashion Lover",
   },
   {
-    name: "Marcus Rodriguez",
+    name: "Sophia Miller",
     quote:
-      "The frustration score helped me prioritize which problem to solve first. Saved me from building a product nobody wanted. Best $10/month I've ever spent.",
-    src: "https://i.pravatar.cc/150?img=2",
-    designation: "Indie Hacker",
-  },
-  {
-    name: "Emily Watson",
-    quote:
-      "We used the Reddit insights to pivot our product roadmap. The real user quotes are incredibly valuable for investor pitches and validation.",
-    src: "https://i.pravatar.cc/150?img=3",
-    designation: "Product Manager at Tech Startup",
-  },
-  {
-    name: "David Kim",
-    quote:
-      "Discovered an underserved niche in the fitness tech space. The AI analysis revealed patterns I would have never found manually. Game-changer for market research!",
-    src: "https://i.pravatar.cc/150?img=4",
-    designation: "Entrepreneur & Fitness Tech Founder",
-  },
-  {
-    name: "Jennifer Lee",
-    quote:
-      "Before building anything, I now search pain points here first. It's like having a crystal ball that shows you what people actually need.",
-    src: "https://i.pravatar.cc/150?img=5",
-    designation: "Solo Founder",
-  },
-  {
-    name: "Alex Thompson",
-    quote:
-      "The multi-platform search is brilliant. Being able to cross-reference Reddit and X insights gave us a complete picture of user sentiment.",
-    src: "https://i.pravatar.cc/150?img=6",
-    designation: "Market Research Analyst",
-  },
-  {
-    name: "Rachel Green",
-    quote:
-      "Used this to validate 5 different ideas in one afternoon. Saved months of development on wrong products. The export feature is perfect for team alignment.",
-    src: "https://i.pravatar.cc/150?img=7",
-    designation: "Head of Product",
-  },
-  {
-    name: "Michael Brown",
-    quote:
-      "The structured insights format is exactly what our investment committee needed. Helped us secure $500K in seed funding with data-backed validation.",
-    src: "https://i.pravatar.cc/150?img=8",
-    designation: "Tech Startup CEO",
-  },
-  {
-    name: "Lisa Anderson",
-    quote:
-      "As a non-technical founder, this tool empowered me to do professional market research without hiring expensive consultants. Absolutely worth it!",
-    src: "https://i.pravatar.cc/150?img=9",
-    designation: "E-commerce Entrepreneur",
-  },
-  {
-    name: "James Wilson",
-    quote:
-      "The real-time AI analysis is surprisingly accurate. It caught pain points our user interviews missed. Now it's part of our weekly product discovery process.",
-    src: "https://i.pravatar.cc/150?img=10",
-    designation: "Product Lead",
-  },
-  {
-    name: "Sophia Martinez",
-    quote:
-      "Found our entire product positioning strategy from one search. The direct links to Reddit posts helped us understand context deeply. Incredible tool!",
-    src: "https://i.pravatar.cc/150?img=11",
-    designation: "Marketing Strategist",
-  },
-  {
-    name: "Daniel Park",
-    quote:
-      "Went from idea to MVP in 3 weeks because the pain point analysis was so clear. Users love our solution because we built exactly what they needed.",
-    src: "https://i.pravatar.cc/150?img=12",
-    designation: "Technical Founder",
+      "Seeing the clothes on my own photo helped me compare styles before ordering. It feels like having a fitting room on my phone.",
+    src: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=300&q=80",
+    designation: "Online Shopper",
   },
   {
     name: "Olivia Taylor",
     quote:
-      "The search history feature is underrated. Being able to track how pain points evolve over time gives us competitive advantage in product strategy.",
-    src: "https://i.pravatar.cc/150?img=13",
-    designation: "Chief Product Officer",
+      "The 360° outfit video is my favorite feature. I can see how a look moves from different angles instead of guessing from product photos.",
+    src: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
+    designation: "Style Creator",
   },
   {
-    name: "Ryan Cooper",
+    name: "Ava Johnson",
     quote:
-      "Better than hiring a market research agency and 100x cheaper. The AI summaries are concise and actionable. This should be every founder's first stop.",
-    src: "https://i.pravatar.cc/150?img=14",
-    designation: "Serial Entrepreneur",
+      "Before buying a blazer, I tested it with several outfits in my wardrobe. It helped me choose the one that actually matched my style.",
+    src: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+    designation: "Working Professional",
   },
   {
-    name: "Emma Davis",
+    name: "Mia Anderson",
     quote:
-      "Discovered a massive pain point in remote work tools that big companies are ignoring. Building the solution now. This tool literally changed my life.",
-    src: "https://i.pravatar.cc/150?img=15",
-    designation: "Aspiring Founder",
+      "This makes online shopping less stressful. I can check the overall vibe, color match, and silhouette before placing an order.",
+    src: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=300&q=80",
+    designation: "Everyday Fashion Buyer",
   },
   {
-    name: "Chris Johnson",
+    name: "Isabella Brown",
     quote:
-      "The professional plan pays for itself instantly. Unlimited searches mean we can explore dozens of niches quickly. Essential for our product studio.",
-    src: "https://i.pravatar.cc/150?img=16",
-    designation: "Product Studio Owner",
+      "I saved so much time comparing outfits for a trip. The AI try-on previews made it easy to decide what was worth buying.",
+    src: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=300&q=80",
+    designation: "Travel & Lifestyle Shopper",
   },
   {
-    name: "Amanda White",
+    name: "Charlotte Davis",
     quote:
-      "Used it to double-check our product-market fit. The frustration scores validated we were solving a real problem. Now we have confident direction.",
-    src: "https://i.pravatar.cc/150?img=17",
-    designation: "Co-Founder",
+      "Product photos never show how something might look on my body. This gives me a much clearer idea before I spend money.",
+    src: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80",
+    designation: "Boutique Customer",
   },
   {
-    name: "Kevin Zhang",
+    name: "Amelia Wilson",
     quote:
-      "The bilingual support is perfect for our global product. We can analyze pain points in both English and Chinese communities. Truly international tool!",
-    src: "https://i.pravatar.cc/150?img=18",
-    designation: "International Product Manager",
+      "I love being able to build looks from different pieces and see the result instantly. It turns outfit planning into something fun.",
+    src: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=300&q=80",
+    designation: "Outfit Planner",
   },
   {
-    name: "Jessica Miller",
+    name: "Harper Moore",
     quote:
-      "Every product manager should use this before writing PRDs. The real user quotes give context that surveys never capture. Absolutely indispensable.",
-    src: "https://i.pravatar.cc/150?img=19",
-    designation: "Senior PM at Fortune 500",
+      "The virtual try-on helped me avoid impulse buys. If the outfit does not look right on me, I know before it arrives at my door.",
+    src: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=300&q=80",
+    designation: "Smart Shopper",
   },
   {
-    name: "Tom Harrison",
+    name: "Ella Martin",
     quote:
-      "Helped us pivot from a failing product to a successful one in 6 weeks. The pain point insights showed us what users really wanted vs what we thought.",
-    src: "https://i.pravatar.cc/150?img=20",
-    designation: "Startup Founder",
+      "I can finally see whether a dress, coat, or top fits the look I want before ordering. It makes fashion decisions much easier.",
+    src: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?auto=format&fit=crop&w=300&q=80",
+    designation: "Occasionwear Shopper",
   },
   {
-    name: "Nicole Adams",
+    name: "Grace Lee",
     quote:
-      "The CSV export is perfect for stakeholder presentations. Being able to show data-backed pain points makes every product decision easier to justify.",
-    src: "https://i.pravatar.cc/150?img=21",
-    designation: "Product Strategy Director",
+      "For social content, the dynamic outfit video is perfect. It shows the styling effect in motion, not just as a flat image.",
+    src: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80",
+    designation: "Fashion Content Creator",
   },
   {
-    name: "Brian Foster",
+    name: "Lily Clark",
     quote:
-      "From zero to validated idea in under an hour. The AI does in minutes what used to take me weeks of manual Reddit scrolling. Pure efficiency!",
-    src: "https://i.pravatar.cc/150?img=22",
-    designation: "Micro-SaaS Builder",
+      "I use it before almost every online clothing purchase now. It helps me feel sure that the item works with my wardrobe and my personal style.",
+    src: "https://images.unsplash.com/photo-1534751516642-a1af1ef26a56?auto=format&fit=crop&w=300&q=80",
+    designation: "Wardrobe Builder",
   },
 ];
 

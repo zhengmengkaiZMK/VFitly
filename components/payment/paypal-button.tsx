@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { buildLoginRedirectUrl } from "@/lib/auth/login-redirect";
 
 interface PayPalButtonProps {
   planId: string;
@@ -183,7 +184,7 @@ export function PayPalButton({
     return (
       <button
         className="bg-neutral-900 relative z-10 hover:bg-black/90 border border-transparent text-white md:text-sm transition duration-200 items-center justify-center shadow-[0px_-1px_0px_0px_#FFFFFF40_inset,_0px_1px_0px_0px_#FFFFFF40_inset] mt-8 rounded-full py-2.5 px-3.5 text-center text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:mt-10 block w-full"
-        onClick={() => router.push("/login")}
+        onClick={() => router.push(buildLoginRedirectUrl(pathname))}
       >
         {isZh ? "登录后购买" : "Login to Purchase"}
       </button>

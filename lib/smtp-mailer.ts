@@ -42,13 +42,13 @@ export async function sendEmailViaBrevo(options: EmailOptions): Promise<boolean>
       },
       body: JSON.stringify({
         sender: {
-          name: "Lingtrue Contact Form",
+          name: "VFitly Contact Form",
           email: process.env.BREVO_FROM_EMAIL || "contact@example.com",
         },
         to: [
           {
             email: options.to,
-            name: "Lingtrue Team",
+            name: "VFitly Team",
           },
         ],
         subject: options.subject,
@@ -91,7 +91,7 @@ export async function sendEmailViaResend(options: EmailOptions): Promise<boolean
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        from: process.env.RESEND_FROM_EMAIL || "Lingtrue <noreply@lingtrue.com>",
+        from: process.env.RESEND_FROM_EMAIL || "VFitly <noreply@vfitly.com>",
         to: [options.to],
         subject: options.subject,
         html: options.html,

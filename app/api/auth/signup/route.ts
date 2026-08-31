@@ -4,15 +4,14 @@ import bcrypt from "bcrypt";
 import { z } from "zod";
 
 const signupSchema = z.object({
-  name: z.string().min(1, "请输入姓名"),
-  email: z.string().email("请输入有效的邮箱地址"),
+  name: z.string().min(1, "Please enter your name"),
+  email: z.string().email("Please enter a valid email"),
   password: z
     .string()
-    .min(8, "密码至少需要 8 个字符")
-    .regex(/[A-Z]/, "密码必须包含至少一个大写字母")
-    .regex(/[a-z]/, "密码必须包含至少一个小写字母")
-    .regex(/[0-9]/, "密码必须包含至少一个数字")
-    .regex(/[^A-Za-z0-9]/, "密码必须包含至少一个特殊字符"),
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
 });
 
 export async function POST(request: NextRequest) {
@@ -36,7 +35,7 @@ export async function POST(request: NextRequest) {
     if (existingUser) {
       console.log("⚠️ 邮箱已存在");
       return NextResponse.json(
-        { error: "该邮箱已被注册" },
+        { error: "This email is already registered" },
         { status: 400 }
       );
     }
@@ -75,7 +74,7 @@ export async function POST(request: NextRequest) {
     console.log("🎉 注册流程完成");
     return NextResponse.json(
       {
-        message: "注册成功",
+        message: "Registration successful",
         user: {
           id: user.id,
           name: user.name,
@@ -100,7 +99,7 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json(
       { 
-        error: "注册失败，请稍后重试",
+        error: "Registration failed, please try again later",
         details: process.env.NODE_ENV === "development" ? String(error) : undefined
       },
       { status: 500 }

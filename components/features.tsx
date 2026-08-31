@@ -44,8 +44,7 @@ export const Features = () => {
     <div className="relative z-20 py-10 lg:py-40 overflow-hidden">
       <Heading as="h2">Packed with thousands of features</Heading>
       <Subheading className="text-center ">
-        From Image generation to video generation, Lingtrue has APIs for
-        literally everything. It can even create this website copy for you.
+        VFitly, short for Virtual Fitly, brings AI virtual try-on, wardrobe management, outfit previews, and fashion showcase videos into one simple workflow.
       </Subheading>
 
       <div className="relative">

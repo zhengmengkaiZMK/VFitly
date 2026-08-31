@@ -15,34 +15,33 @@ import {
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useRouter, usePathname } from "next/navigation";
-import { Github } from "lucide-react";
 import Password from "./password";
 import { Button } from "./button";
 import { Logo } from "./Logo";
+import { GoogleSignInButton } from "./google-signin-button";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 
 const formSchema = z.object({
   name: z
     .string({
-      required_error: "请输入姓名",
+      required_error: "Please enter your name",
     })
-    .min(1, "请输入姓名"),
+    .min(1, "Please enter your name"),
   email: z
     .string({
-      required_error: "请输入邮箱",
+      required_error: "Please enter email",
     })
-    .email("请输入有效的邮箱")
-    .min(1, "请输入邮箱"),
+    .email("Please enter a valid email")
+    .min(1, "Please enter email"),
   password: z
     .string({
-      required_error: "请输入密码",
+      required_error: "Please enter password",
     })
-    .min(8, "密码至少需要 8 个字符")
-    .regex(/[A-Z]/, "密码必须包含至少一个大写字母")
-    .regex(/[a-z]/, "密码必须包含至少一个小写字母")
-    .regex(/[0-9]/, "密码必须包含至少一个数字")
-    .regex(/[^A-Za-z0-9]/, "密码必须包含至少一个特殊字符"),
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
 });
 
 export type SignupUser = z.infer<typeof formSchema>;
@@ -120,7 +119,7 @@ export function SignupForm() {
       });
 
       if (result?.ok) {
-        router.push("/");
+        router.push("/onboarding/profile-photo");
         router.refresh();
       }
     } catch (e) {
@@ -263,8 +262,8 @@ export function SignupForm() {
                             </div>
                             <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
                               {isZh
-                                ? "至少8位，包含大小写字母、数字和特殊字符"
-                                : "Min 8 chars, with upper/lower case, number & symbol"}
+                                ? "至少8位，包含小写字母、数字和特殊字符"
+                                : "Min 8 chars, with lowercase letter, number & symbol"}
                             </p>
                           </div>
                         )}
@@ -308,25 +307,20 @@ export function SignupForm() {
               </div>
 
               <div className="mt-6 w-full flex items-center justify-center">
-                <Button onClick={() => {}} className="w-full py-1.5">
-                  <Github className="h-5 w-5" />
-                  <span className="text-sm font-semibold leading-6">
-                    Github
-                  </span>
-                </Button>
+                <GoogleSignInButton callbackUrl="/onboarding/profile-photo" />
               </div>
 
               <p className="text-neutral-600 dark:text-neutral-400 text-sm text-center mt-8">
                 {isZh ? "点击注册即表示您同意我们的" : "By clicking on sign up, you agree to our"}{" "}
                 <Link
-                  href="#"
+                  href={isZh ? "/zh/terms" : "/terms"}
                   className="text-neutral-500 dark:text-neutral-300"
                 >
                   {isZh ? "服务条款" : "Terms of Service"}
                 </Link>{" "}
                 {isZh ? "和" : "and"}{" "}
                 <Link
-                  href="#"
+                  href={isZh ? "/zh/privacy" : "/privacy"}
                   className="text-neutral-500 dark:text-neutral-300"
                 >
                   {isZh ? "隐私政策" : "Privacy Policy"}

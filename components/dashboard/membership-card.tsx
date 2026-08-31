@@ -4,112 +4,90 @@ import { usePathname } from "next/navigation";
 import { Crown, Calendar, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../button";
+import { PRICING_PLANS } from "@/constants/pricing-plans";
+import type { BillingCycle, PlanTier } from "@/types/payment";
+
+interface DashboardPlan {
+  id: string;
+  name: string;
+  nameZh: string;
+  tier: PlanTier;
+  billingCycle: BillingCycle;
+  amount: number;
+  currency: string;
+  monthlyCredits: number;
+  features: string[];
+  featuresZh: string[];
+}
 
 interface MembershipCardProps {
   membershipType: string;
   expiresAt: string | null;
+  plan?: DashboardPlan | null;
 }
 
 export function MembershipCard({
   membershipType,
   expiresAt,
+  plan,
 }: MembershipCardProps) {
   const pathname = usePathname();
   const isZh = pathname.startsWith("/zh");
+  const fallbackPlan = getFallbackPlan(membershipType);
+  const currentPlan = plan ?? fallbackPlan;
+  const isFree = currentPlan.tier === "FREE";
+  const features = isZh ? currentPlan.featuresZh : currentPlan.features;
+  const pricingHref = isZh ? "/zh/pricing" : "/pricing";
 
-  const isFree = membershipType === "FREE";
-  const isPremium = membershipType === "PREMIUM";
+  const billingLabel = isZh
+    ? currentPlan.billingCycle === "YEARLY"
+      ? "年付"
+      : "月付"
+    : currentPlan.billingCycle === "YEARLY"
+    ? "Yearly"
+    : "Monthly";
 
-  const config = {
-    FREE: {
-      title: isZh ? "免费版" : "Free Plan",
-      description: isZh
-        ? "升级到专业版以解锁更多功能"
-        : "Upgrade to Professional for more features",
-      bgColor: "bg-gray-100 dark:bg-gray-800",
-      textColor: "text-gray-600 dark:text-gray-400",
-      iconColor: "text-gray-500",
-    },
-    PREMIUM: {
-      title: isZh ? "专业版" : "Professional",
-      description: isZh ? "享受无限访问和深度分析" : "Enjoy unlimited access and deep insights",
-      bgColor: "bg-yellow-100 dark:bg-yellow-900/30",
-      textColor: "text-yellow-800 dark:text-yellow-400",
-      iconColor: "text-yellow-600 dark:text-yellow-400",
-    },
-  };
-
-  const currentConfig = config[membershipType as keyof typeof config] || config.FREE;
+  const priceLabel = currentPlan.amount === 0
+    ? isZh
+      ? "免费"
+      : "Free"
+    : `$${currentPlan.amount}/${currentPlan.billingCycle === "YEARLY" ? "year" : "month"}`;
 
   return (
     <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-6 shadow-sm">
-      {/* 会员类型 */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className={`p-2 rounded-lg ${currentConfig.bgColor}`}>
-          <Crown className={`h-5 w-5 ${currentConfig.iconColor}`} />
+      <div className="flex items-start gap-3 mb-4">
+        <div className="rounded-lg bg-yellow-100 p-2 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400">
+          <Crown className="h-5 w-5" />
         </div>
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-black dark:text-white">
-            {currentConfig.title}
+        <div className="min-w-0 flex-1">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
+            {isZh ? "当前套餐" : "Current Plan"}
+          </p>
+          <h3 className="mt-1 text-lg font-semibold text-black dark:text-white">
+            {isZh ? currentPlan.nameZh : currentPlan.name}
           </h3>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            {currentConfig.description}
+          <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+            {priceLabel} · {billingLabel} · {currentPlan.monthlyCredits.toLocaleString()} {isZh ? "credits / 月" : "credits / month"}
           </p>
         </div>
       </div>
 
-      {/* 会员权益 */}
-      <div className="space-y-2 mb-4">
-        <BenefitItem
-          text={
-            isFree
-              ? isZh
-                ? "每日5次查询"
-                : "5 searches/day"
-              : isZh
-              ? "无限次查询"
-              : "Unlimited searches"
-          }
-        />
-        {/* 痛点显示数量 - 已隐藏 */}
-        {/* <BenefitItem
-          text={
-            isFree
-              ? isZh
-                ? "显示10条痛点"
-                : "10 pain points/search"
-              : isZh
-              ? "显示20条痛点"
-              : "20 pain points/search"
-          }
-        /> */}
-        <BenefitItem
-          text={
-            isFree
-              ? isZh
-                ? "Reddit & X 平台"
-                : "Reddit & X platforms"
-              : isZh
-              ? "全平台支持"
-              : "All platforms"
-          }
-        />
-        {!isFree && (
-          <>
-            <BenefitItem
-              text={isZh ? "AI深度分析" : "AI deep analysis"}
-            />
-            <BenefitItem
-              text={isZh ? "数据导出" : "Data export"}
-            />
-            <BenefitItem
-              text={isZh ? "查询历史" : "Search history"}
-            />
-          </>
-        )}
+      <div className="mb-4 rounded-lg bg-neutral-50 p-3 text-sm dark:bg-neutral-800/60">
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-neutral-600 dark:text-neutral-300">{isZh ? "套餐等级" : "Plan Tier"}</span>
+          <span className="font-semibold text-black dark:text-white">{currentPlan.tier}</span>
+        </div>
       </div>
 
-      {/* 到期时间或升级按钮 */}
+      <div className="mb-4 space-y-2">
+        <p className="text-sm font-medium text-black dark:text-white">
+          {isZh ? "会员权益与功能" : "Benefits & Features"}
+        </p>
+        {features.map((feature) => (
+          <BenefitItem key={feature} text={feature} />
+        ))}
+      </div>
+
       {expiresAt && !isFree ? (
         <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
           <Calendar className="h-4 w-4" />
@@ -119,7 +97,7 @@ export function MembershipCard({
           </span>
         </div>
       ) : isFree ? (
-        <Link href="/pricing" className="block">
+        <Link href={pricingHref} className="block">
           <Button className="w-full" size="sm">
             {isZh ? "升级会员" : "Upgrade Now"}
             <ArrowRight className="h-4 w-4 ml-1" />
@@ -130,10 +108,16 @@ export function MembershipCard({
   );
 }
 
+function getFallbackPlan(membershipType: string) {
+  if (membershipType === "PLUS") return PRICING_PLANS.PLUS_MONTHLY;
+  if (membershipType === "ULTRA") return PRICING_PLANS.ULTRA_MONTHLY;
+  return PRICING_PLANS.FREE;
+}
+
 function BenefitItem({ text }: { text: string }) {
   return (
-    <div className="flex items-center gap-2 text-sm text-neutral-700 dark:text-neutral-300">
-      <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
+    <div className="flex items-start gap-2 text-sm text-neutral-700 dark:text-neutral-300">
+      <div className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-green-500" />
       <span>{text}</span>
     </div>
   );

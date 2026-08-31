@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -17,8 +18,35 @@ import { clearGuestUsage } from "@/lib/usage-tracker";
 
 export function UserNav() {
   const { data: session, status } = useSession();
+  const [membershipType, setMembershipType] = useState<string | null>(null);
   const pathname = usePathname();
   const isZh = pathname.startsWith("/zh");
+
+  useEffect(() => {
+    if (status !== "authenticated") {
+      setMembershipType(null);
+      return;
+    }
+
+    let isMounted = true;
+
+    fetch("/api/me")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (isMounted) {
+          setMembershipType(data?.user?.membershipType ?? null);
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setMembershipType(null);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [status]);
 
   if (status === "loading") {
     return (
@@ -50,20 +78,36 @@ export function UserNav() {
       .slice(0, 2);
   };
 
-  const getMembershipBadge = (membershipType?: string) => {
-    if (membershipType === "PREMIUM") {
-      return (
-        <span className="px-2 py-0.5 text-xs rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400">
-          {isZh ? "专业版" : "Professional"}
-        </span>
-      );
+  const getMembershipBadge = (type?: string) => {
+    switch (type) {
+      case "PLUS":
+        return (
+          <span className="px-2 py-0.5 text-xs rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
+            Plus
+          </span>
+        );
+      case "ULTRA":
+        return (
+          <span className="px-2 py-0.5 text-xs rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300">
+            Ultra
+          </span>
+        );
+      case "PREMIUM":
+        return (
+          <span className="px-2 py-0.5 text-xs rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400">
+            {isZh ? "专业版" : "Professional"}
+          </span>
+        );
+      default:
+        return (
+          <span className="px-2 py-0.5 text-xs rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
+            {isZh ? "免费版" : "Free"}
+          </span>
+        );
     }
-    return (
-      <span className="px-2 py-0.5 text-xs rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
-        {isZh ? "免费版" : "Free"}
-      </span>
-    );
   };
+
+  const currentMembershipType = membershipType ?? session.user.membershipType;
 
   return (
     <DropdownMenu>
@@ -85,7 +129,7 @@ export function UserNav() {
             <p className="text-xs leading-none text-muted-foreground">
               {session.user.email}
             </p>
-            <div className="pt-1">{getMembershipBadge(session.user.membershipType)}</div>
+            <div className="pt-1">{getMembershipBadge(currentMembershipType)}</div>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

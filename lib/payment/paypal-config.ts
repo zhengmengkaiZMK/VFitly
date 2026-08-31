@@ -38,8 +38,23 @@ async function getAccessToken(): Promise<string> {
 }
 
 // 创建订单
-export async function createPayPalOrder(amount: number, currency = "USD") {
+export async function createPayPalOrder(
+  amount: number,
+  currency = "USD",
+  customId?: string
+) {
   const accessToken = await getAccessToken();
+
+  const purchaseUnit: Record<string, unknown> = {
+    amount: {
+      currency_code: currency,
+      value: amount.toFixed(2),
+    },
+  };
+
+  if (customId) {
+    purchaseUnit.custom_id = customId;
+  }
 
   const response = await fetch(`${PAYPAL_API_BASE}/v2/checkout/orders`, {
     method: "POST",
@@ -49,14 +64,7 @@ export async function createPayPalOrder(amount: number, currency = "USD") {
     },
     body: JSON.stringify({
       intent: "CAPTURE",
-      purchase_units: [
-        {
-          amount: {
-            currency_code: currency,
-            value: amount.toFixed(2),
-          },
-        },
-      ],
+      purchase_units: [purchaseUnit],
     }),
   });
 

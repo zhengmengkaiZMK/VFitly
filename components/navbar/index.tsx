@@ -14,6 +14,18 @@ export function NavBar({ navItems: customNavItems }: NavBarProps = {}) {
 
   const defaultNavItems = [
     {
+      title: isZh ? "AI 试衣" : "AI Try-On",
+      link: isZh ? "/zh/dashboard" : "/dashboard/try-on",
+    },
+    {
+      title: isZh ? "商品试衣" : "Product Try-On",
+      link: isZh ? "/zh/dashboard" : "/dashboard/product-try-on",
+    },
+    {
+      title: isZh ? "衣橱" : "Wardrobe",
+      link: isZh ? "/zh/dashboard" : "/dashboard/wardrobe",
+    },
+    {
       title: isZh ? "价格" : "Pricing",
       link: isZh ? "/zh/pricing" : "/pricing",
     },

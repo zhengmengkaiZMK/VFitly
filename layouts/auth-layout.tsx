@@ -18,15 +18,14 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
                 "font-semibold text-xl text-center text-muted dark:text-muted-dark"
               )}
             >
-              Lingtrue is used by thousands of users
+              VFitly helps users preview outfits with AI
             </p>
             <p
               className={cn(
                 "font-normal text-base text-center text-neutral-500 dark:text-neutral-400 mt-8"
               )}
             >
-              With lots of AI applications around, Lingtrue stands out with
-              its state of the art Shitposting capabilities.
+              VFitly, short for Virtual Fitly, turns outfit photos into realistic virtual try-on previews and fashion visuals.
             </p>
           </div>
           <HorizontalGradient className="top-20" />

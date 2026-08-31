@@ -69,7 +69,7 @@ export const Companies = () => {
     <div className="relative z-20 py-10 md:py-40">
       <Heading as="h2">Trusted by the best companies</Heading>
       <Subheading className="text-center ">
-        Lingtrue is the choice of all the fortune 500 companies.
+        VFitly helps fashion creators, shoppers, and online stores create realistic AI try-on experiences.
       </Subheading>
 
       <div className="flex gap-10 flex-wrap justify-center md:gap-40 relative h-full w-full mt-20">

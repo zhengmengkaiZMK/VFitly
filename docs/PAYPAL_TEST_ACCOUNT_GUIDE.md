@@ -162,7 +162,7 @@
 │  ─────────────────                  │
 │                                     │
 │  订单详情：                          │
-│  Lingtrue - Starter Monthly         │
+│  VFitly - Starter Monthly         │
 │  $0.01 USD                          │
 │                                     │
 │  PayPal余额: $100.00               │  ← 应该显示余额

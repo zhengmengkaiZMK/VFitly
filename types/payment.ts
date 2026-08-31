@@ -3,19 +3,22 @@
  */
 
 export type BillingCycle = "MONTHLY" | "YEARLY";
-export type PlanTier = "FREE" | "PROFESSIONAL";
+export type PlanTier = "FREE" | "PLUS" | "ULTRA";
+export type PaidMembershipType = "PLUS" | "ULTRA";
+export type MembershipType = "FREE" | "PREMIUM" | PaidMembershipType;
 
 // 价格方案配置
 export interface PricingPlan {
-  id: string; // 组合ID，如 PREMIUM_MONTHLY
+  id: string;
   tier: PlanTier;
   name: string;
   nameZh: string;
   billingCycle: BillingCycle;
-  amount: number; // 金额（美元）
+  amount: number;
   currency: string;
-  membershipType: "FREE" | "PREMIUM";
-  durationDays: number; // 会员有效期（天）
+  membershipType: MembershipType;
+  durationDays: number;
+  monthlyCredits: number;
   features: string[];
   featuresZh: string[];
 }
@@ -67,6 +70,7 @@ export interface PayPalOrderDetails {
       currency_code: string;
       value: string;
     };
+    custom_id?: string;
     payments?: {
       captures: Array<{
         id: string;

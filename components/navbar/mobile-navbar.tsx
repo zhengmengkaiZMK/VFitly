@@ -4,12 +4,10 @@ import { Link } from "next-view-transitions";
 import { useState } from "react";
 import { IoIosMenu } from "react-icons/io";
 import { IoIosClose } from "react-icons/io";
-import { Button } from "../ui/button";
 import { Logo } from "../Logo";
 import { useMotionValueEvent, useScroll } from "framer-motion";
 import { ModeSwitcher } from "../mode-switcher";
 import { LanguageSwitcher } from "../language-switcher";
-import { ActionButton } from "../action-button";
 import { UserNav } from "../user-nav";
 
 export const MobileNavbar = ({ navItems }: any) => {

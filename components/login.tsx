@@ -14,8 +14,7 @@ import {
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useRouter, usePathname } from "next/navigation";
-import { Github } from "lucide-react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Password from "./password";
 import { Button } from "./button";
 import { Logo } from "./Logo";
@@ -42,7 +41,9 @@ export type LoginUser = z.infer<typeof formSchema>;
 export function LoginForm() {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const isZh = pathname.startsWith("/zh");
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -71,7 +72,7 @@ export function LoginForm() {
       }
 
       if (result?.ok) {
-        router.push("/");
+        router.push(callbackUrl);
         router.refresh();
       }
     } catch (e) {
@@ -207,31 +208,20 @@ export function LoginForm() {
               </div>
 
               <div className="mt-6 w-full flex flex-col gap-3">
-                <Button onClick={() => {}} className="w-full py-1.5">
-                  <Github className="h-5 w-5" />
-                  <span className="text-sm font-semibold leading-6">
-                    Github
-                  </span>
-                </Button>
-                
-                <GoogleSignInButton 
-                  onClick={() => {
-                    console.log("Google Sign-In initiated");
-                  }}
-                />
+                <GoogleSignInButton callbackUrl={callbackUrl} />
               </div>
 
               <p className="text-neutral-600 dark:text-neutral-400 text-sm text-center mt-8">
                 {isZh ? "点击登录即表示您同意我们的" : "By clicking on sign in, you agree to our"}{" "}
                 <Link
-                  href="#"
+                  href={isZh ? "/zh/terms" : "/terms"}
                   className="text-neutral-500 dark:text-neutral-300"
                 >
                   {isZh ? "服务条款" : "Terms of Service"}
                 </Link>{" "}
                 {isZh ? "和" : "and"}{" "}
                 <Link
-                  href="#"
+                  href={isZh ? "/zh/privacy" : "/privacy"}
                   className="text-neutral-500 dark:text-neutral-300"
                 >
                   {isZh ? "隐私政策" : "Privacy Policy"}

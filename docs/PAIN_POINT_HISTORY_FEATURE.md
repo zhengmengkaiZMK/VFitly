@@ -2,7 +2,7 @@
 
 ## 📋 功能概述
 
-本功能为 Lingtrue 平台添加了完整的痛点分析历史记录功能，用户可以：
+本功能为 VFitly 平台添加了完整的痛点分析历史记录功能，用户可以：
 1. 自动保存所有分析记录（仅登录用户）
 2. 在 Dashboard 查看历史记录列表
 3. 点击查看每条记录的详细内容
@@ -436,4 +436,4 @@ const records = await prisma.painPointAnalysis.findMany({
 **文档版本**: 1.0  
 **最后更新**: 2025-12-29  
 **作者**: AI Assistant  
-**项目**: Lingtrue - AI Pain Point Analyzer
+**项目**: VFitly - AI Pain Point Analyzer

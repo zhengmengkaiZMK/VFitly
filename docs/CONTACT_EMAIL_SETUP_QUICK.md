@@ -11,7 +11,7 @@
 1. 登录后，点击右上角账户名 → **SMTP & API**
 2. 点击 **API Keys** 标签
 3. 点击 **Generate a new API key**
-4. 输入名称（如：`Lingtrue-Contact-Form`）
+4. 输入名称（如：`VFitly-Contact-Form`）
 5. 点击 **Generate** 
 6. **立即复制** API Key（只显示一次！）
 

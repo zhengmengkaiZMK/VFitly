@@ -45,3 +45,7 @@ node_modules/.prisma/
 # database
 *.db
 *.db-journal
+
+# user uploaded assets
+/public/uploads/
+/uploads/

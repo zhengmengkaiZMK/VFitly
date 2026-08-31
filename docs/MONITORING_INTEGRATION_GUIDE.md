@@ -27,8 +27,8 @@ PostHog + Microsoft Clarity + Sentry = $0/月
 2. 用 Microsoft/Google 账号登录
 3. 点击 "Add new project"
 4. 输入网站信息：
-   - Name: `Lingtrue`
-   - Website URL: `https://www.lingtrue.com`
+   - Name: `VFitly`
+   - Website URL: `https://www.vfitly.com`
 5. 获取 Clarity ID（格式：`abc123def`）
 
 ### 步骤 2：集成到 Next.js
