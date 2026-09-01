@@ -115,12 +115,36 @@ export function pathFromAssetUrl(url: string) {
 
 export async function localPathFromAssetUrl(url: string) {
   const key = keyFromAssetUrl(url);
-  if (!key || getStorageProvider() !== "r2") return pathFromAssetUrl(url);
+  if (key && getStorageProvider() === "r2") {
+    const buffer = await readAsset(key);
+    const filePath = path.join(os.tmpdir(), "vfitly-assets", key);
+    await writeTempAsset(filePath, buffer);
+    return filePath;
+  }
 
-  const buffer = await readAsset(key);
-  const filePath = path.join(os.tmpdir(), "vfitly-assets", key);
+  if (isHttpUrl(url)) {
+    return downloadHttpAssetToTempFile(url);
+  }
+
+  return pathFromAssetUrl(url);
+}
+
+async function downloadHttpAssetToTempFile(url: string) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to download remote asset (${response.status}).`);
+  }
+
+  const buffer = Buffer.from(await response.arrayBuffer());
+  const parsedUrl = new URL(url);
+  const extension = path.extname(parsedUrl.pathname) || ".png";
+  const filePath = path.join(os.tmpdir(), "vfitly-assets", "remote", `${randomUUID()}${extension}`);
   await writeTempAsset(filePath, buffer);
   return filePath;
+}
+
+function isHttpUrl(value: string) {
+  return /^https?:\/\//i.test(value);
 }
 
 async function writeTempAsset(filePath: string, buffer: Buffer) {
