@@ -113,6 +113,26 @@ export function pathFromAssetUrl(url: string) {
   return path.join(process.cwd(), "public", cleanUrl.startsWith("/") ? cleanUrl.slice(1) : cleanUrl);
 }
 
+export function shouldCleanupLocalAssetPath(filePath: string | null | undefined) {
+  if (!filePath) return false;
+
+  const resolvedPath = path.resolve(filePath);
+  const tempAssetRoot = path.join(os.tmpdir(), "vfitly-assets");
+  if (resolvedPath.startsWith(`${path.resolve(tempAssetRoot)}${path.sep}`)) return true;
+
+  return getStorageProvider() === "r2" && resolvedPath.startsWith(`${path.resolve(getUploadRoot())}${path.sep}`);
+}
+
+export async function deleteLocalAssetFile(filePath: string | null | undefined) {
+  if (!filePath || !shouldCleanupLocalAssetPath(filePath)) return;
+
+  try {
+    await unlink(filePath);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+  }
+}
+
 export async function localPathFromAssetUrl(url: string) {
   const key = keyFromAssetUrl(url);
   if (key && getStorageProvider() === "r2") {

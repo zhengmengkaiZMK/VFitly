@@ -5,7 +5,7 @@ import { requireUser } from "@/lib/auth/current-user";
 import { generateTryOnImage } from "@/lib/wardrobe/openai-image";
 import { saveGeneratedImage, saveUpload } from "@/lib/wardrobe/storage";
 import { defaultTryOnPrompt } from "@/lib/wardrobe/constants";
-import { localPathFromAssetUrl } from "@/lib/storage/assets";
+import { localPathFromAssetUrl, deleteLocalAssetFile } from "@/lib/storage/assets";
 import {
   FREE_DAILY_TRY_ON_LIMIT,
   TRY_ON_MULTI_COST,
@@ -47,6 +47,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   let jobId: string | null = null;
+  const localAssetPaths = new Set<string>();
 
   try {
     const user = await requireUser();
@@ -70,12 +71,14 @@ export async function POST(request: NextRequest) {
 
     let personUrl = user.defaultModelImageUrl || "";
     let personPath = personUrl ? await localPathFromAssetUrl(personUrl) : "";
+    if (personPath) localAssetPaths.add(personPath);
     let personAssetKey = user.defaultModelAssetKey;
 
     if (personImage instanceof File) {
       const person = await saveUpload(personImage, `try-on/${user.id}/persons`);
       personUrl = person.url;
       personPath = person.path;
+      localAssetPaths.add(personPath);
       personAssetKey = person.key;
 
       await prisma.user.update({
@@ -105,9 +108,15 @@ export async function POST(request: NextRequest) {
       if (items.length !== selectedIds.length) {
         return NextResponse.json({ error: "One or more selected wardrobe items do not exist." }, { status: 404 });
       }
-      garments.push(...await Promise.all(items.map(async (item) => ({ id: item.id, url: item.imageUrl, path: await localPathFromAssetUrl(item.imageUrl), assetKey: item.imageAssetKey || item.storageKey }))));
+      const garmentItems = await Promise.all(items.map(async (item) => {
+        const assetPath = await localPathFromAssetUrl(item.imageUrl);
+        localAssetPaths.add(assetPath);
+        return { id: item.id, url: item.imageUrl, path: assetPath, assetKey: item.imageAssetKey || item.storageKey };
+      }));
+      garments.push(...garmentItems);
     } else if (garmentUpload instanceof File) {
       const garment = await saveUpload(garmentUpload, `try-on/${user.id}/garments`);
+      localAssetPaths.add(garment.path);
       garments.push({ id: null, url: garment.url, path: garment.path, assetKey: garment.key });
     } else {
       return NextResponse.json({ error: "Please select or upload at least one clothing image." }, { status: 400 });
@@ -152,6 +161,7 @@ export async function POST(request: NextRequest) {
       size,
     });
     const result = await saveGeneratedImage(generatedImage.buffer, `try-on/${user.id}/results`, generatedImage.extension);
+    localAssetPaths.add(result.path);
 
     const updatedJob = await prisma.tryOnJob.update({
       where: { id: dbJob.id },
@@ -195,6 +205,8 @@ export async function POST(request: NextRequest) {
         : 400;
 
     return NextResponse.json({ error: message, id: randomUUID() }, { status });
+  } finally {
+    await Promise.allSettled(Array.from(localAssetPaths).map((filePath) => deleteLocalAssetFile(filePath)));
   }
 }
 
