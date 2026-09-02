@@ -30,6 +30,17 @@ export default function RootLayout({
     <ViewTransitions>
       <html lang="en" suppressHydrationWarning>
         <head>
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-SXB8ZF6TPC" />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-SXB8ZF6TPC');
+              `,
+            }}
+          />
           <meta name="theme-color" content="#ffffff" />
         </head>
         <body
