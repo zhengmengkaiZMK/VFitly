@@ -9,6 +9,7 @@ import {
 } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { LanguageSwitcher } from "../language-switcher";
 import { ModeSwitcher } from "../mode-switcher";
 import { UserNav } from "../user-nav";
 
@@ -64,6 +65,8 @@ export const DesktopNavbar = ({ navItems }: Props) => {
         </div>
       </div>
       <div className="flex space-x-2 items-center">
+        <LanguageSwitcher />
+        <div className="h-5 w-px bg-neutral-200 dark:bg-neutral-700 mx-2" />
         <ModeSwitcher />
         <div className="h-5 w-px bg-neutral-200 dark:bg-neutral-700 mx-2" />
         <UserNav />
