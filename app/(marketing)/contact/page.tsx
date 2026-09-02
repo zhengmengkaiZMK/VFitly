@@ -4,13 +4,21 @@ import { FeaturedTestimonials } from "@/components/featured-testimonials";
 import { cn } from "@/lib/utils";
 import { HorizontalGradient } from "@/components/horizontal-gradient";
 import { ContactForm } from "@/components/contact";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Contact Us - VFitly",
+  title: "Contact VFitly for AI Try-On and Clothes Changer Support",
   description:
-    "VFitly, short for Virtual Fitly, is an AI virtual try-on platform that helps users preview outfits, manage wardrobe items, and create realistic fashion visuals before buying or sharing a look.",
+    "Contact VFitly for help with AI try-on, clothes changer workflows, wardrobe assets, product try-on, billing, and account support.",
+  keywords: ["contact VFitly", "AI try-on support", "clothes changer support", "wardrobe support", "product try-on help"],
+  alternates: {
+    canonical: "/contact",
+  },
   openGraph: {
-    images: ["https://www.vfitly.com/banner.png"],
+    title: "Contact VFitly for AI Try-On and Clothes Changer Support",
+    description:
+      "Get support for VFitly AI try-on, clothes changer, wardrobe, product try-on, and account questions.",
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 

@@ -1,13 +1,18 @@
 import { LoginForm } from "@/components/login";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Login - VFitly",
+  title: "Login to VFitly AI Try-On and Wardrobe Tools",
   description:
-    "VFitly, short for Virtual Fitly, is an AI virtual try-on platform that helps users preview outfits, manage wardrobe items, and create realistic fashion visuals before buying or sharing a look.",
+    "Log in to VFitly to access AI try-on, clothes changer previews, product try-on, virtual wardrobe assets, and account settings.",
+  keywords: ["VFitly login", "AI try-on login", "clothes changer account", "virtual wardrobe login"],
+  alternates: {
+    canonical: "/login",
+  },
   openGraph: {
-    images: ["https://www.vfitly.com/banner.png"],
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 

@@ -7,6 +7,8 @@ import { Container } from "@/components/container"
 import { mdxComponents } from '@/mdx-components'
 import rehypePrettyCode from 'rehype-pretty-code'
 import rehypeSlug from 'rehype-slug'
+import { JsonLd } from '@/components/seo/json-ld'
+import { absoluteUrl } from '@/lib/seo'
 
 interface DocPageProps {
   params: Promise<{
@@ -62,9 +64,28 @@ export async function generateMetadata(props: DocPageProps) {
     },
   })
 
+  const title = (frontmatter as any).title || 'Documentation'
+  const description = (frontmatter as any).description || 'VFitly documentation for AI try-on, clothes changer workflows, product try-on, wardrobe storage, and virtual fitting room features.'
+  const canonicalUrl = absoluteUrl(`/docs/${slug}`)
+
   return {
-    title: (frontmatter as any).title || 'Documentation',
-    description: (frontmatter as any).description || '',
+    title: `${title} | VFitly Docs`,
+    description,
+    keywords: ["VFitly documentation", "AI try-on docs", "clothes changer guide", "virtual wardrobe docs", title],
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      type: "article",
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+    },
   }
 }
 
@@ -146,8 +167,50 @@ export default async function DocPage(props: DocPageProps) {
 
   const meta = frontmatter as any
 
+  const docJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: meta.title,
+    description: meta.description || 'VFitly documentation for AI try-on and virtual fitting room workflows.',
+    url: absoluteUrl(`/docs/${slug}`),
+    publisher: {
+      "@type": "Organization",
+      name: "VFitly",
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl('/icon.png'),
+      },
+    },
+  }
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: absoluteUrl('/'),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Docs",
+        item: absoluteUrl('/docs'),
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: meta.title,
+        item: absoluteUrl(`/docs/${slug}`),
+      },
+    ],
+  }
+
   return (
     <div className="relative overflow-hidden py-20 md:py-0">
+      <JsonLd data={[docJsonLd, breadcrumbJsonLd]} />
       <Background />
       <Container className="pb-20">
         <article className="relative z-20 mx-auto max-w-4xl py-10 md:pt-40">

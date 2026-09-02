@@ -4,8 +4,12 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "Dashboard | AI SaaS",
-  description: "Manage your account and view usage statistics",
+  title: "VFitly Dashboard for AI Try-On Projects",
+  description: "Manage VFitly AI try-on projects, clothes changer activity, wardrobe assets, credits, and account usage from one dashboard.",
+  keywords: ["VFitly dashboard", "AI try-on dashboard", "clothes changer projects", "wardrobe assets dashboard"],
+  alternates: {
+    canonical: "/dashboard",
+  },
 };
 
 export default async function DashboardPage() {

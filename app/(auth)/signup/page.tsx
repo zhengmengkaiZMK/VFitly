@@ -1,12 +1,17 @@
 import { SignupForm } from "@/components/signup";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Signup - VFitly",
+  title: "Sign Up for VFitly AI Try-On and Clothes Changer",
   description:
-    "VFitly, short for Virtual Fitly, is an AI virtual try-on platform that helps users preview outfits, manage wardrobe items, and create realistic fashion visuals before buying or sharing a look.",
+    "Create a VFitly account to use AI try-on, clothes changer previews, product link try-on, virtual wardrobe storage, and fashion image tools.",
+  keywords: ["VFitly signup", "AI try-on signup", "clothes changer account", "virtual wardrobe account"],
+  alternates: {
+    canonical: "/signup",
+  },
   openGraph: {
-    images: ["https://www.vfitly.com/banner.png"],
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 

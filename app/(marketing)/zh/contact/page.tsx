@@ -6,10 +6,17 @@ import { HorizontalGradient } from "@/components/horizontal-gradient";
 import { ContactForm } from "@/components/contact";
 
 export const metadata: Metadata = {
-  title: "联系我们 - VFitly",
+  title: "联系 VFitly | AI 虚拟试衣支持",
   description:
-    "VFitly 寓意 Virtual Fitly，是一个 AI 虚拟试衣平台，帮助用户预览穿搭效果、管理衣橱单品，并在购买或分享前生成真实自然的时尚视觉内容。",
+    "联系 VFitly 团队，获取 AI 虚拟试衣、AI 换装、商品试穿和虚拟衣橱相关支持、合作或反馈帮助。",
+  keywords: ["联系 VFitly", "AI 虚拟试衣支持", "AI 换装客服", "VFitly 合作"],
+  alternates: {
+    canonical: "/zh/contact",
+  },
   openGraph: {
+    title: "联系 VFitly",
+    description: "获取 VFitly AI 虚拟试衣平台的支持与合作信息。",
+    url: "https://www.vfitly.com/zh/contact",
     images: ["https://www.vfitly.com/banner.png"],
   },
 };

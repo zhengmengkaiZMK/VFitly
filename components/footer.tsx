@@ -14,6 +14,14 @@ export const Footer = () => {
       href: isZh ? "/zh/pricing" : "/pricing",
     },
     {
+      name: isZh ? "博客" : "Blog",
+      href: isZh ? "/zh/blog" : "/blog",
+    },
+    {
+      name: isZh ? "文档" : "Docs",
+      href: isZh ? "/zh/docs" : "/docs",
+    },
+    {
       name: isZh ? "联系我们" : "Contact",
       href: isZh ? "/zh/contact" : "/contact",
     },

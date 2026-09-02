@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db/prisma";
 import { requireUser } from "@/lib/auth/current-user";
 import { localPathFromAssetUrl, saveBufferAsset } from "@/lib/storage/assets";
 import { downloadVideoAsset, generateWalkVideoFromImage } from "@/lib/video/walk-video";
-import { countUsageThisMonth, monthlyWalkVideoLimitForPlan } from "@/lib/billing/credits";
+import { countUsageThisMonth, countUsageTotal, isPaidPlan, monthlyWalkVideoLimitForPlan } from "@/lib/billing/credits";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -21,13 +21,15 @@ export async function POST(request: NextRequest) {
     }
 
     const videoLimit = monthlyWalkVideoLimitForPlan(user.membershipType);
-    if (videoLimit <= 0) {
-      return NextResponse.json({ error: "360° try-on video generation is available on Plus and Ultra plans." }, { status: 403 });
-    }
+    const usedVideos = isPaidPlan(user.membershipType)
+      ? await countUsageThisMonth(user.id, "walk-video")
+      : await countUsageTotal(user.id, "walk-video");
 
-    const usedThisMonth = await countUsageThisMonth(user.id, "walk-video");
-    if (usedThisMonth >= videoLimit) {
-      return NextResponse.json({ error: `Your plan includes ${videoLimit} 360° try-on videos per month. Please upgrade to continue.` }, { status: 403 });
+    if (usedVideos >= videoLimit) {
+      const error = isPaidPlan(user.membershipType)
+        ? `Your plan includes ${videoLimit} 360° try-on videos per month. Please upgrade to continue.`
+        : "Free accounts include 1 free 360° try-on video per account. Please upgrade to continue.";
+      return NextResponse.json({ error }, { status: 403 });
     }
 
     const job = await prisma.tryOnJob.findFirst({

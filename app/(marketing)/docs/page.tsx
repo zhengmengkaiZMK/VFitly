@@ -1,12 +1,17 @@
 import { Link } from "next-view-transitions"
+import type { Metadata } from "next"
 import { Background } from "@/components/background"
 import { Container } from "@/components/container"
 import { Heading } from "@/components/heading"
 import { Subheading } from "@/components/subheading"
 
-export const metadata = {
-  title: "Documentation - Money New",
-  description: "Learn how to use Money New to track your investments and make better financial decisions.",
+export const metadata: Metadata = {
+  title: "VFitly Documentation for AI Try-On and Wardrobe Workflows",
+  description: "Learn how to use VFitly documentation for AI try-on, clothes changer workflows, product link try-on, wardrobe storage, and virtual fitting room features.",
+  keywords: ["VFitly documentation", "AI try-on docs", "clothes changer tutorial", "wardrobe guide", "virtual fitting room docs"],
+  alternates: {
+    canonical: "/docs",
+  },
 }
 
 const docCategories = [

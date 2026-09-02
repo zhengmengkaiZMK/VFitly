@@ -4,13 +4,21 @@ import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
 import { PricingWithPayment } from "@/components/pricing-with-payment";
 import { Metadata } from "next";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Pricing - VFitly",
+  title: "AI Try-On Pricing for Clothes Changer and Wardrobe Tools",
   description:
-    "VFitly, short for Virtual Fitly, is an AI virtual try-on platform that helps users preview outfits, manage wardrobe items, and create realistic fashion visuals before buying or sharing a look.",
+    "Compare VFitly pricing plans for AI try-on, clothes changer previews, wardrobe storage, and virtual fashion creation workflows.",
+  keywords: ["AI try-on pricing", "clothes changer pricing", "virtual try on plans", "VFitly pricing", "wardrobe tools pricing"],
+  alternates: {
+    canonical: "/pricing",
+  },
   openGraph: {
-    images: ["https://www.vfitly.com/banner.png"],
+    title: "AI Try-On Pricing for Clothes Changer and Wardrobe Tools | VFitly",
+    description:
+      "Choose a VFitly plan for AI try-on, clothes changer previews, wardrobe tools, and fashion visual creation.",
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 

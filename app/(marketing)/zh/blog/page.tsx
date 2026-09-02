@@ -7,10 +7,17 @@ import { Metadata } from "next";
 import { getAllZhBlogPosts } from "@/lib/blog-utils-zh";
 
 export const metadata: Metadata = {
-  title: "博客 - VFitly",
+  title: "VFitly 中文博客 | AI 虚拟试衣指南",
   description:
-    "VFitly 寓意 Virtual Fitly，是一个 AI 虚拟试衣平台，帮助用户预览穿搭效果、管理衣橱单品，并在购买或分享前生成真实自然的时尚视觉内容。",
+    "阅读 VFitly 中文博客，了解 AI 虚拟试衣、AI 换装、商品试穿、虚拟衣橱和时尚内容生成实践。",
+  keywords: ["AI 虚拟试衣博客", "AI 换装教程", "虚拟衣橱", "VFitly 博客"],
+  alternates: {
+    canonical: "/zh/blog",
+  },
   openGraph: {
+    title: "VFitly 中文博客",
+    description: "AI 虚拟试衣、AI 换装和虚拟衣橱的实践文章。",
+    url: "https://www.vfitly.com/zh/blog",
     images: ["https://www.vfitly.com/banner.png"],
   },
 };

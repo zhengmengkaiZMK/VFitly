@@ -2,8 +2,9 @@ import { HistoryDetail } from "@/components/pain-point-history/history-detail";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "分析详情 - VFitly",
-  description: "查看痛点分析详细结果",
+  title: "VFitly 试衣详情 | AI 虚拟试衣生成记录",
+  description: "查看 VFitly AI 虚拟试衣、AI 换装、商品试穿和虚拟衣橱生成结果的详细记录。",
+  keywords: ["VFitly 试衣详情", "AI 虚拟试衣记录", "AI 换装结果", "虚拟衣橱生成记录"],
 };
 
 export default async function ZhHistoryDetailPage({ 

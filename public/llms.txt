@@ -1,0 +1,29 @@
+# VFitly
+
+> VFitly is an AI virtual try-on platform for clothes changer AI workflows, product-link try-on, glasses previews, hairstyle previews, and wardrobe asset management.
+
+## Core pages
+
+- Home: https://www.vfitly.com/ — AI try on, clothes changer, clothes changer AI free previews, try on glasses, and wardrobe overview.
+- AI Try-On: https://www.vfitly.com/dashboard/try-on — Try on glasses, try on clothes, try it on AI, virtual try on, and try on hairstyles.
+- Product Try-On: https://www.vfitly.com/dashboard/product-try-on — Extract product URL assets and preview shopping items with an AI clothes changer.
+- Wardrobe: https://www.vfitly.com/dashboard/wardrobe — Clothes wardrobe storage and virtual fitting room asset management.
+- Pricing: https://www.vfitly.com/pricing — VFitly plans for AI try-on and wardrobe workflows.
+- Blog: https://www.vfitly.com/blog — Guides and articles about AI try-on, styling workflows, and product experience.
+- Docs: https://www.vfitly.com/docs — Documentation for VFitly setup, try-on workflows, wardrobe usage, and product-link try-on.
+- Contact: https://www.vfitly.com/contact — Contact VFitly for support and partnership requests.
+
+## Main capabilities
+
+- AI try-on for clothes, outfits, glasses, and hairstyles.
+- Clothes changer AI previews from uploaded person and garment images.
+- Product-link extraction for faster shopping try-on workflows.
+- Wardrobe storage for reusable clothing and accessory assets.
+- Server-rendered pages with canonical URLs, structured data, robots.txt, and sitemap.xml.
+
+## Crawl guidance
+
+- Sitemap: https://www.vfitly.com/sitemap.xml
+- Robots: https://www.vfitly.com/robots.txt
+- Preferred canonical host: https://www.vfitly.com
+- Public content may be used by search engines and AI assistants to summarize VFitly capabilities and route users to the most relevant product page.

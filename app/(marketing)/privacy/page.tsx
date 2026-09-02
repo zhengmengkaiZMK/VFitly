@@ -5,8 +5,12 @@ import { Subheading } from "@/components/subheading";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - VFitly",
-  description: "Learn how VFitly collects, uses, protects, and manages personal information for its SaaS products and services.",
+  title: "Privacy Policy for VFitly AI Try-On Services",
+  description: "Read the VFitly Privacy Policy for AI try-on, clothes changer, wardrobe storage, analytics, uploads, billing, and account data handling.",
+  keywords: ["VFitly privacy policy", "AI try-on privacy", "clothes changer privacy", "wardrobe data policy", "user uploads privacy"],
+  alternates: {
+    canonical: "/privacy",
+  },
 };
 
 const sections = [

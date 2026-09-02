@@ -7,6 +7,8 @@ import { Container } from "@/components/container"
 import { mdxComponents } from '@/mdx-components'
 import rehypePrettyCode from 'rehype-pretty-code'
 import rehypeSlug from 'rehype-slug'
+import { JsonLd } from '@/components/seo/json-ld'
+import { absoluteUrl } from '@/lib/seo'
 
 interface DocPageProps {
   params: Promise<{
@@ -150,8 +152,51 @@ export default async function ZhDocPage(props: DocPageProps) {
 
   const meta = frontmatter as any
 
+  const docJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: meta.title,
+    description: meta.description || 'VFitly 中文文档，涵盖 AI 虚拟试衣和虚拟衣橱工作流。',
+    url: absoluteUrl(`/zh/docs/${slug}`),
+    inLanguage: 'zh-CN',
+    publisher: {
+      "@type": "Organization",
+      name: "VFitly",
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl('/icon.png'),
+      },
+    },
+  }
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "首页",
+        item: absoluteUrl('/'),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "中文文档",
+        item: absoluteUrl('/zh/docs'),
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: meta.title,
+        item: absoluteUrl(`/zh/docs/${slug}`),
+      },
+    ],
+  }
+
   return (
     <div className="relative overflow-hidden py-20 md:py-0">
+      <JsonLd data={[docJsonLd, breadcrumbJsonLd]} />
       <Background />
       <Container className="pb-20">
         <article className="relative z-20 mx-auto max-w-4xl py-10 md:pt-40">

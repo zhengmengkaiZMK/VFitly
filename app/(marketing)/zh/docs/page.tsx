@@ -5,8 +5,18 @@ import { Heading } from "@/components/heading"
 import { Subheading } from "@/components/subheading"
 
 export const metadata = {
-  title: "文档 - Money New",
-  description: "学习如何使用 Money New 跟踪您的投资并做出更好的财务决策。",
+  title: "VFitly 中文文档 | AI 虚拟试衣与衣橱指南",
+  description: "查看 VFitly 中文文档，了解 AI 虚拟试衣、AI 换装、商品链接试穿、虚拟衣橱和试衣间工作流。",
+  keywords: ["VFitly 中文文档", "AI 虚拟试衣文档", "AI 换装指南", "虚拟衣橱教程"],
+  alternates: {
+    canonical: "/zh/docs",
+  },
+  openGraph: {
+    title: "VFitly 中文文档",
+    description: "AI 虚拟试衣、商品试穿和虚拟衣橱的中文使用指南。",
+    url: "https://www.vfitly.com/zh/docs",
+    images: ["https://www.vfitly.com/banner.png"],
+  },
 }
 
 const docCategories = [

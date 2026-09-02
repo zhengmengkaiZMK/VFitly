@@ -6,10 +6,17 @@ import { Pricing } from "@/components/pricing";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "价格 - VFitly",
+  title: "VFitly 价格 | AI 虚拟试衣套餐",
   description:
-    "VFitly 寓意 Virtual Fitly，是一个 AI 虚拟试衣平台，帮助用户预览穿搭效果、管理衣橱单品，并在购买或分享前生成真实自然的时尚视觉内容。",
+    "查看 VFitly AI 虚拟试衣、AI 换装、商品试穿和虚拟衣橱功能的价格方案，选择适合个人或团队的套餐。",
+  keywords: ["VFitly 价格", "AI 虚拟试衣价格", "AI 换装套餐", "虚拟衣橱订阅"],
+  alternates: {
+    canonical: "/zh/pricing",
+  },
   openGraph: {
+    title: "VFitly 价格方案",
+    description: "选择适合 AI 虚拟试衣、商品试穿和衣橱管理的 VFitly 套餐。",
+    url: "https://www.vfitly.com/zh/pricing",
     images: ["https://www.vfitly.com/banner.png"],
   },
 };

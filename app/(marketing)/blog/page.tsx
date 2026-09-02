@@ -5,13 +5,21 @@ import { Container } from "@/components/container";
 import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
 import { BlogCard } from "@/components/blog-card";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Blogs - VFitly",
+  title: "AI Try-On Blog for Clothes Changer and Virtual Wardrobe Tips",
   description:
-    "VFitly, short for Virtual Fitly, is an AI virtual try-on platform that helps users preview outfits, manage wardrobe items, and create realistic fashion visuals before buying or sharing a look.",
+    "Read VFitly guides about AI try-on, clothes changer workflows, virtual wardrobe organization, product try-on, and fashion image generation.",
+  keywords: ["AI try-on blog", "clothes changer guide", "virtual wardrobe tips", "product try-on guide", "fashion AI blog"],
+  alternates: {
+    canonical: "/blog",
+  },
   openGraph: {
-    images: ["https://www.vfitly.com/banner.png"],
+    title: "AI Try-On Blog for Clothes Changer and Virtual Wardrobe Tips | VFitly",
+    description:
+      "Explore VFitly articles about virtual try-on, clothes changer AI, wardrobe assets, and fashion generation workflows.",
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 

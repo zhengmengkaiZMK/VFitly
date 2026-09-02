@@ -6,8 +6,12 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db/prisma";
 
 export const metadata = {
-  title: "Try-On History | AI SaaS",
-  description: "View generated AI try-on records and image assets",
+  title: "AI Try-On History and Generated Outfit Records",
+  description: "Review VFitly AI try-on history, generated outfit images, source garments, clothes changer results, and wardrobe-based creation records.",
+  keywords: ["AI try-on history", "generated outfit records", "clothes changer results", "wardrobe image history"],
+  alternates: {
+    canonical: "/dashboard/history",
+  },
 };
 
 export default async function TryOnHistoryPage() {

@@ -8,14 +8,15 @@ export const TRY_ON_MULTI_COST = 8;
 export const FREE_DAILY_TRY_ON_LIMIT = 2;
 export const FREE_DAILY_PRODUCT_PREVIEW_LIMIT = 2;
 export const FREE_WARDROBE_LIMIT = 3;
-export const PLUS_MONTHLY_WALK_VIDEO_LIMIT = 10;
-export const ULTRA_MONTHLY_WALK_VIDEO_LIMIT = 20;
+export const FREE_WALK_VIDEO_LIMIT = 1;
+export const PLUS_MONTHLY_WALK_VIDEO_LIMIT = 20;
+export const ULTRA_MONTHLY_WALK_VIDEO_LIMIT = 40;
 
 export function monthlyWalkVideoLimitForPlan(plan: string | null | undefined) {
   const normalized = normalizePlanType(plan);
   if (normalized === "ULTRA") return ULTRA_MONTHLY_WALK_VIDEO_LIMIT;
   if (normalized === "PLUS" || normalized === "PREMIUM") return PLUS_MONTHLY_WALK_VIDEO_LIMIT;
-  return 0;
+  return FREE_WALK_VIDEO_LIMIT;
 }
 
 export function normalizePlanType(plan: string | null | undefined): PlanType {
@@ -30,8 +31,8 @@ export function isPaidPlan(plan: string | null | undefined) {
 
 export function monthlyCreditsForPlan(plan: string | null | undefined) {
   const normalized = normalizePlanType(plan);
-  if (normalized === "ULTRA") return 1000;
-  if (normalized === "PLUS" || normalized === "PREMIUM") return 500;
+  if (normalized === "ULTRA") return 1200;
+  if (normalized === "PLUS" || normalized === "PREMIUM") return 600;
   return 0;
 }
 
@@ -205,6 +206,15 @@ export async function countUsageToday(userId: string, type: string) {
       userId,
       type,
       createdAt: { gte: startOfToday() },
+    },
+  });
+}
+
+export async function countUsageTotal(userId: string, type: string) {
+  return prisma.usageRecord.count({
+    where: {
+      userId,
+      type,
     },
   });
 }

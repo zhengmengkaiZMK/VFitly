@@ -5,8 +5,12 @@ import { Subheading } from "@/components/subheading";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Service - VFitly",
-  description: "Review the general terms that govern your use of VFitly SaaS products and services.",
+  title: "Terms of Service for VFitly AI Try-On Platform",
+  description: "Review VFitly Terms of Service for AI try-on, clothes changer tools, wardrobe storage, generated images, payments, accounts, and acceptable use.",
+  keywords: ["VFitly terms", "AI try-on terms", "clothes changer terms", "wardrobe service terms", "generated images terms"],
+  alternates: {
+    canonical: "/terms",
+  },
 };
 
 const sections = [

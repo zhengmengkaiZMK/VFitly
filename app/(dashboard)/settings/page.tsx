@@ -4,8 +4,12 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "Settings | AI SaaS",
-  description: "Manage your account settings",
+  title: "VFitly Account Settings for AI Try-On Tools",
+  description: "Manage VFitly account settings for AI try-on, clothes changer workflows, wardrobe storage, profile images, and subscription preferences.",
+  keywords: ["VFitly settings", "AI try-on account settings", "clothes changer settings", "wardrobe account settings"],
+  alternates: {
+    canonical: "/settings",
+  },
 };
 
 export default async function SettingsPage() {

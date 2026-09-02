@@ -5,8 +5,18 @@ import { Subheading } from "@/components/subheading";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "服务条款 - VFitly",
-  description: "查看适用于使用 VFitly SaaS 产品和服务的通用服务条款。",
+  title: "VFitly 服务条款 | AI 虚拟试衣使用规则",
+  description: "查看适用于使用 VFitly AI 虚拟试衣、AI 换装、商品试穿和虚拟衣橱产品服务的条款。",
+  keywords: ["VFitly 服务条款", "AI 虚拟试衣条款", "AI 换装使用规则", "虚拟衣橱服务协议"],
+  alternates: {
+    canonical: "/zh/terms",
+  },
+  openGraph: {
+    title: "VFitly 服务条款",
+    description: "VFitly AI 虚拟试衣平台的服务使用规则。",
+    url: "https://www.vfitly.com/zh/terms",
+    images: ["https://www.vfitly.com/banner.png"],
+  },
 };
 
 const sections = [

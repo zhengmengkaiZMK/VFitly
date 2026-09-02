@@ -13,6 +13,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { BlogCard } from "@/components/blog-card"
+import { JsonLd } from "@/components/seo/json-ld"
+import { absoluteUrl } from "@/lib/seo"
 
 export const revalidate = false
 export const dynamic = "force-static"
@@ -111,8 +113,59 @@ export default async function ZhBlogPostPage(props: {
     }
   )
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.description,
+    image: absoluteUrl(post.image),
+    datePublished: post.date,
+    dateModified: post.date,
+    author: {
+      "@type": "Person",
+      name: post.author.name,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "VFitly",
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl("/icon.png"),
+      },
+    },
+    mainEntityOfPage: absoluteUrl(`/zh/blog/${post.slug}`),
+    keywords: [post.category, ...(post.tags || [])].join(", "),
+    inLanguage: "zh-CN",
+  }
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "首页",
+        item: absoluteUrl("/"),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "中文博客",
+        item: absoluteUrl("/zh/blog"),
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: post.title,
+        item: absoluteUrl(`/zh/blog/${post.slug}`),
+      },
+    ],
+  }
+
   return (
     <div className="container max-w-7xl mx-auto px-6">
+      <JsonLd data={[articleJsonLd, breadcrumbJsonLd]} />
       <div className="mx-auto max-w-3xl py-8 lg:py-12">
         {/* Breadcrumb */}
         <div className="mb-8">
