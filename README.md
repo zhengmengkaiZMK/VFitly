@@ -1,7 +1,5 @@
 # AI SaaS Starter
 
-[中文文档](./README.zh-CN.md)
-
 **AI SaaS Starter** is a modern, full-featured SaaS website template perfect for launching your product globally. It includes all essential pages for international SaaS businesses: landing page, blog system, and comprehensive documentation.
 
 ## Features
@@ -10,7 +8,6 @@
 - 📝 **Built-in Blog System** - MDX-powered blog with full Markdown support
 - 📚 **Documentation Pages** - Ready-to-use docs structure for your product
 - 🌓 **Dark Mode** - Seamless light/dark theme switching
-- 🌐 **Internationalization** - Full bilingual support (English & Chinese)
 - 🎨 **Modern UI** - Beautiful, responsive design with Tailwind CSS and Aceternity UI
 - ⚡ **Performance** - Built on Next.js 15 with App Router for optimal speed
 - 🔍 **SEO Ready** - Optimized meta tags and Open Graph support
@@ -122,8 +119,8 @@ ai-saas/
 │   ├── ui/               # UI primitives (buttons, etc)
 │   └── navbar/           # Navigation components
 ├── content/              # MDX content
-│   ├── blog/            # Blog posts (EN & ZH)
-│   └── docs/            # Documentation (EN & ZH)
+│   ├── blog/            # Blog posts
+│   └── docs/            # Documentation
 ├── lib/                  # Utility functions
 │   ├── blog-utils.ts    # Blog helpers
 │   └── utils.ts         # General utilities
@@ -171,12 +168,6 @@ Your documentation content...
 - Edit `app/globals.css` for global styles
 - Modify `tailwind.config.ts` for theme customization
 - Update components in `components/` directory
-
-### Internationalization
-
-- English content: `content/blog/` and `content/docs/`
-- Chinese content: `content/blog/zh/` and `content/docs/zh/`
-- Add translations in respective directories
 
 ## Deployment
 

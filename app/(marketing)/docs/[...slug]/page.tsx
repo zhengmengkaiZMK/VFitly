@@ -10,39 +10,31 @@ import rehypeSlug from 'rehype-slug'
 import { JsonLd } from '@/components/seo/json-ld'
 import { absoluteUrl } from '@/lib/seo'
 
+const visibleDocSlugs = [
+  "quick-start",
+  "getting-started",
+  "ai-clothes-changer",
+  "product-try-on",
+  "virtual-wardrobe",
+  "360-try-on-video",
+  "history-results",
+  "credits-and-plans",
+]
+
 interface DocPageProps {
   params: Promise<{
     slug: string[]
   }>
 }
 
-// 允许动态参数
-export const dynamicParams = true
+// 仅允许当前 VFitly 使用说明文档
+export const dynamicParams = false
 
 // 生成静态参数
 export async function generateStaticParams() {
-  const docsDirectory = path.join(process.cwd(), 'content/docs')
-  
-  function getAllDocs(dir: string, basePath: string = ''): string[][] {
-    const items = fs.readdirSync(dir)
-    let docs: string[][] = []
-
-    for (const item of items) {
-      const fullPath = path.join(dir, item)
-      const stat = fs.statSync(fullPath)
-      
-      if (stat.isDirectory() && item !== 'zh') {
-        docs = docs.concat(getAllDocs(fullPath, path.join(basePath, item)))
-      } else if (item.endsWith('.mdx') && !item.startsWith('meta')) {
-        const slug = path.join(basePath, item.replace('.mdx', ''))
-        docs.push(slug.split(path.sep))
-      }
-    }
-
-    return docs
-  }
-
-  return getAllDocs(docsDirectory)
+  return visibleDocSlugs.map((slug) => ({
+    slug: slug.split('/'),
+  }))
 }
 
 export async function generateMetadata(props: DocPageProps) {

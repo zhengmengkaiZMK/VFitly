@@ -83,9 +83,16 @@ export function getAllBlogPosts(): BlogPost[] {
     return []
   }
   
-  const files = fs.readdirSync(blogDir).filter(file => 
-    file.endsWith('.mdx') && !file.startsWith('_')
-  )
+  const visibleSlugs = new Set([
+    "ai-clothes-changer-online-shopping",
+    "product-try-on-shopping-links",
+    "virtual-wardrobe-ai-try-on",
+    "360-ai-try-on-video-guide",
+  ])
+  const files = fs.readdirSync(blogDir).filter(file => {
+    const slug = file.replace('.mdx', '')
+    return file.endsWith('.mdx') && !file.startsWith('_') && visibleSlugs.has(slug)
+  })
   
   return files.map(file => {
     const slug = file.replace('.mdx', '')

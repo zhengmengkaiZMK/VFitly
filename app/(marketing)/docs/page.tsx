@@ -16,43 +16,33 @@ export const metadata: Metadata = {
 
 const docCategories = [
   {
-    title: "Getting Started",
-    description: "Learn the basics of Money New",
+    title: "Start Using VFitly",
+    description: "Create your first AI virtual try-on result and understand the workspace.",
     href: "/docs/getting-started",
     items: [
-      { title: "Introduction", href: "/docs" },
+      { title: "Documentation Home", href: "/docs" },
       { title: "Quick Start", href: "/docs/quick-start" },
-      { title: "Installation", href: "/docs/installation" },
+      { title: "Getting Started", href: "/docs/getting-started" },
     ]
   },
   {
-    title: "Components",
-    description: "Explore our component library",
-    href: "/docs/components",
+    title: "Core Try-On Tools",
+    description: "Use AI clothes changer and product-link try-on for shopping and content creation.",
+    href: "/docs/ai-clothes-changer",
     items: [
-      { title: "Marquee", href: "/docs/components/marquee" },
-      { title: "Border Beam", href: "/docs/components/border-beam" },
-      { title: "Particles", href: "/docs/components/particles" },
+      { title: "AI Clothes Changer", href: "/docs/ai-clothes-changer" },
+      { title: "Product Try-On", href: "/docs/product-try-on" },
+      { title: "360° Try-On Video", href: "/docs/360-try-on-video" },
     ]
   },
   {
-    title: "Buttons",
-    description: "Interactive button components",
-    href: "/docs/buttons",
+    title: "Manage Assets and Results",
+    description: "Organize reusable clothing assets and review generated try-on outputs.",
+    href: "/docs/virtual-wardrobe",
     items: [
-      { title: "Star Button", href: "/docs/buttons/star-button" },
-      { title: "Confetti Button", href: "/docs/buttons/confetti-button" },
-      { title: "Glowing Button", href: "/docs/buttons/glowing-button" },
-    ]
-  },
-  {
-    title: "Dark Mode",
-    description: "Implement dark mode in your app",
-    href: "/docs/dark-mode",
-    items: [
-      { title: "Overview", href: "/docs/dark-mode" },
-      { title: "Next.js", href: "/docs/dark-mode/next" },
-      { title: "Vite", href: "/docs/dark-mode/vite" },
+      { title: "Virtual Wardrobe", href: "/docs/virtual-wardrobe" },
+      { title: "History and Results", href: "/docs/history-results" },
+      { title: "Credits and Plans", href: "/docs/credits-and-plans" },
     ]
   },
 ]
@@ -65,7 +55,8 @@ export default function DocsPage() {
         <div className="relative z-20 py-10 md:pt-40">
           <Heading as="h1">Documentation</Heading>
           <Subheading className="text-center">
-            Everything you need to know about Money New
+            Everything you need to know about using VFitly for AI virtual try-on,
+            product-link try-on, wardrobe management, and 360° try-on videos.
           </Subheading>
         </div>
 

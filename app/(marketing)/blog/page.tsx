@@ -46,8 +46,8 @@ export default async function ArticlesIndex() {
         <div className="relative z-20 py-10 md:pt-40">
           <Heading as="h1">Blog</Heading>
           <Subheading className="text-center">
-            Discover insightful resources and expert advice from our seasoned
-            team to elevate your knowledge.
+            Practical guides for AI clothes changing, product-link try-on,
+            virtual wardrobes, and 360° try-on videos with VFitly.
           </Subheading>
         </div>
 

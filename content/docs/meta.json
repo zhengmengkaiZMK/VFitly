@@ -1,6 +1,14 @@
 {
   "root": true,
   "pages": [
-    "(root)"
+    "(root)",
+    "quick-start",
+    "getting-started",
+    "ai-clothes-changer",
+    "product-try-on",
+    "virtual-wardrobe",
+    "360-try-on-video",
+    "history-results",
+    "credits-and-plans"
   ]
 }

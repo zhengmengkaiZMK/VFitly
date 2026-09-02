@@ -7,7 +7,6 @@ import { IoIosClose } from "react-icons/io";
 import { Logo } from "../Logo";
 import { useMotionValueEvent, useScroll } from "framer-motion";
 import { ModeSwitcher } from "../mode-switcher";
-import { LanguageSwitcher } from "../language-switcher";
 import { UserNav } from "../user-nav";
 
 export const MobileNavbar = ({ navItems }: any) => {
@@ -43,7 +42,6 @@ export const MobileNavbar = ({ navItems }: any) => {
           <div className="flex items-center justify-between w-full px-5">
             <Logo />
             <div className="flex items-center space-x-2">
-              <LanguageSwitcher />
               <ModeSwitcher />
               <IoIosClose
                 className="h-8 w-8 text-black dark:text-white"
