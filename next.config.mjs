@@ -17,6 +17,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "assets.vfitly.com",
       },
+      {
+        protocol: "https",
+        hostname: "api.producthunt.com",
+      },
     ],
   },
   pageExtensions: ["ts", "tsx", "mdx"],

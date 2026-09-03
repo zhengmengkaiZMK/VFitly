@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { Logo } from "./Logo";
@@ -46,6 +47,20 @@ export const Footer = () => {
             </div>
             <div>{isZh ? "版权所有" : "Copyright"} &copy; 2025 VFitly</div>
             <div className="mt-2">{isZh ? "保留所有权利" : "All rights reserved"}</div>
+            <a
+              href="https://www.producthunt.com/products/vfitly?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-vfitly"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-5 inline-flex"
+              aria-label="View VFitly on Product Hunt"
+            >
+              <Image
+                alt="VFitly - Try on clothes with AI: turn one photo into a styling video | Product Hunt"
+                width={250}
+                height={54}
+                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1239982&theme=light&t=1788409534364"
+              />
+            </a>
           </div>
           <div className="grid grid-cols-2 gap-10 items-start mt-10 md:mt-0">
             <div className="flex justify-center space-y-4 flex-col mt-4">
