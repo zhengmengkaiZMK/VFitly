@@ -73,6 +73,19 @@ export default function RootLayout({
               `,
             }}
           />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                var _hmt = window._hmt = window._hmt || [];
+                (function() {
+                  var hm = document.createElement("script");
+                  hm.src = "https://hm.baidu.com/hm.js?f7e5b116350f432cc30a4d0daf35d4ca";
+                  var s = document.getElementsByTagName("script")[0];
+                  s.parentNode.insertBefore(hm, s);
+                })();
+              `,
+            }}
+          />
           <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd([organizationJsonLd, websiteJsonLd])} />
           <meta name="theme-color" content="#ffffff" />
         </head>
