@@ -117,7 +117,7 @@ export default function TermsOfServicePage() {
         <div className="mb-12 text-center">
           <Heading as="h1">Terms of Service</Heading>
           <Subheading className="text-center">
-            These general Terms of Service explain the rules and responsibilities that apply when you use VFitly SaaS products and services.
+            These Terms of Service explain the rules and responsibilities that apply when you use VFitly products and services.
           </Subheading>
           <p className="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
             Last updated: August 31, 2026
@@ -126,7 +126,7 @@ export default function TermsOfServicePage() {
 
         <div className="space-y-8 rounded-3xl border border-neutral-200 bg-white/80 p-6 shadow-sm backdrop-blur md:p-10 dark:border-neutral-800 dark:bg-neutral-950/80">
           <p className="text-sm leading-7 text-neutral-600 dark:text-neutral-300">
-            These Terms of Service are provided as a general template and may need to be adapted to your specific business model, jurisdiction, payment terms, and legal requirements.
+            These are the Terms of Service governing your access to and use of VFitly. They define the rights, responsibilities, and obligations that apply to all users of VFitly products and services.
           </p>
           {sections.map((section) => (
             <section key={section.title} className="space-y-3">
