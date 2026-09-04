@@ -61,17 +61,8 @@ export const Footer = () => {
                 src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1239982&theme=light&t=1788409534364"
               />
             </a>
-            <a
-              href="https://mossai.org"
-              title="MossAI Tools"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-flex text-xs sm:text-sm transition-colors hover:text-black dark:hover:text-neutral-200"
-            >
-              MossAI Tools
-            </a>
           </div>
-          <div className="grid grid-cols-2 gap-10 items-start mt-10 md:mt-0">
+          <div className="grid grid-cols-2 gap-10 items-start mt-10 md:mt-0 lg:grid-cols-3">
             <div className="flex justify-center space-y-4 flex-col mt-4">
               {links.map((link) => (
                 <Link
@@ -93,6 +84,32 @@ export const Footer = () => {
                   {link.name}
                 </Link>
               ))}
+            </div>
+            <div className="flex justify-center space-y-4 flex-col mt-4">
+              <a
+                href="https://mossai.org"
+                title="MossAI Tools"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors hover:text-black text-muted dark:text-muted-dark dark:hover:text-neutral-400 text-xs sm:text-sm"
+              >
+                MossAI Tools
+              </a>
+              <a
+                href="https://drchecker.net/item/vfitly.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex"
+                aria-label="Check VFitly domain rating on DR Checker"
+              >
+                <Image
+                  src="https://drchecker.net/api/badge?domain=vfitly.com"
+                  alt="DR Checker - Domain Rating"
+                  width={300}
+                  height={120}
+                  className="h-[120px] w-auto"
+                />
+              </a>
             </div>
           </div>
         </div>
