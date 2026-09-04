@@ -31,7 +31,7 @@ export async function generateWalkVideoFromImage(imagePath: string, imageUrl: st
   const fallbackImageDataUrl = `data:${mimeType};base64,${imageBuffer.toString("base64")}`;
   const resolvedImageUrl = publicImageUrl || fallbackImageDataUrl;
 
-  const response = await fetch(buildTaskSubmitUrl(config.baseUrl, provider), {
+  let response = await fetch(buildTaskSubmitUrl(config.baseUrl, provider), {
     method: "POST",
     headers: {
       Authorization: `Bearer ${config.apiKey}`,
@@ -40,8 +40,21 @@ export async function generateWalkVideoFromImage(imagePath: string, imageUrl: st
     body: JSON.stringify(buildTaskSubmitPayload(provider, config.model, resolvedImageUrl)),
   });
 
-  const text = await response.text();
-  const data = parseJson(text);
+  let text = await response.text();
+  let data = parseJson(text);
+
+  if (!response.ok && shouldRetryWithAlternateGrokImagePayload(provider, config.model, data, text)) {
+    response = await fetch(buildTaskSubmitUrl(config.baseUrl, provider), {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${config.apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(buildTaskSubmitPayload(provider, config.model, resolvedImageUrl, true)),
+    });
+    text = await response.text();
+    data = parseJson(text);
+  }
 
   if (!response.ok) {
     throw new Error(extractErrorMessage(data) || text || `${response.status} ${response.statusText}`);
@@ -127,7 +140,7 @@ function resolveWalkVideoProvider(model: string): WalkVideoProvider {
   return "legacy-task";
 }
 
-function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imageUrl: string) {
+function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imageUrl: string, useStringImageForGrok = false) {
   if (provider === "unify-videos") {
     const normalizedModel = model.toLowerCase();
     const payload: Record<string, unknown> = {
@@ -140,7 +153,7 @@ function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imag
     };
 
     if (normalizedModel.includes("grok-imagine")) {
-      payload.image = { url: imageUrl };
+      payload.image = useStringImageForGrok ? imageUrl : { url: imageUrl };
       payload.resolution = "720p";
     } else {
       payload.image_url = imageUrl;
@@ -303,6 +316,20 @@ function extractErrorMessage(data: VideoApiResponse) {
   if (data.data && typeof data.data === "object") return extractErrorMessage(data.data as VideoApiResponse);
   if (data.result && typeof data.result === "object") return extractErrorMessage(data.result as VideoApiResponse);
   return null;
+}
+
+function shouldRetryWithAlternateGrokImagePayload(provider: WalkVideoProvider, model: string, data: VideoApiResponse, text: string) {
+  if (provider !== "unify-videos" || !model.toLowerCase().includes("grok-imagine")) return false;
+
+  const message = `${extractErrorMessage(data) || ""} ${text}`.toLowerCase();
+  return (
+    message.includes("image") &&
+    (message.includes("invalid type") ||
+      message.includes("cannot unmarshal") ||
+      message.includes("failed to deserialize") ||
+      message.includes("expected struct imageurl") ||
+      message.includes("of type string"))
+  );
 }
 
 function sleep(ms: number) {
