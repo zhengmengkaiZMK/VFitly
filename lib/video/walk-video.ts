@@ -140,7 +140,7 @@ function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imag
     };
 
     if (normalizedModel.includes("grok-imagine")) {
-      payload.image = imageUrl;
+      payload.image = { url: imageUrl };
       payload.resolution = "720p";
     } else {
       payload.image_url = imageUrl;
