@@ -129,15 +129,24 @@ function resolveWalkVideoProvider(model: string): WalkVideoProvider {
 
 function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imageUrl: string) {
   if (provider === "unify-videos") {
-    return {
+    const normalizedModel = model.toLowerCase();
+    const payload: Record<string, unknown> = {
       model,
       prompt: walkVideoPrompt,
-      image_url: imageUrl,
       duration: WALK_VIDEO_DURATION_SECONDS,
       aspect_ratio: WALK_VIDEO_ASPECT_RATIO,
       generate_audio: false,
       negative_prompt: "subtitles, logos, watermark, distorted face, changed outfit, changed clothing details",
     };
+
+    if (normalizedModel.includes("grok-imagine")) {
+      payload.image = imageUrl;
+      payload.resolution = "720p";
+    } else {
+      payload.image_url = imageUrl;
+    }
+
+    return payload;
   }
 
   return {
