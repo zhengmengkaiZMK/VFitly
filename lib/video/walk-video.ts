@@ -127,7 +127,7 @@ function resolveWalkVideoProvider(model: string): WalkVideoProvider {
   return "legacy-task";
 }
 
-function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imageUrl: string, useStringImageForGrok = false) {
+function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imageUrl: string) {
   if (provider === "unify-videos") {
     const normalizedModel = model.toLowerCase();
     const payload: Record<string, unknown> = {
@@ -140,7 +140,7 @@ function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imag
     };
 
     if (normalizedModel.includes("grok-imagine")) {
-      payload.image = useStringImageForGrok ? imageUrl : { url: imageUrl };
+      payload.image = imageUrl;
       payload.resolution = "720p";
     } else {
       payload.image_url = imageUrl;
