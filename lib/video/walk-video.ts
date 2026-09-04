@@ -116,7 +116,14 @@ async function pollWalkVideoTask(baseUrl: string, apiKey: string, taskId: string
 
 function resolveWalkVideoProvider(model: string): WalkVideoProvider {
   const normalizedModel = model.toLowerCase();
-  if (normalizedModel.includes("gemini-omni") || normalizedModel.startsWith("veo-")) return "unify-videos";
+  if (
+    normalizedModel.includes("gemini-omni") ||
+    normalizedModel.startsWith("veo-") ||
+    normalizedModel.includes("-video") ||
+    normalizedModel.includes("video-")
+  ) {
+    return "unify-videos";
+  }
   return "legacy-task";
 }
 
