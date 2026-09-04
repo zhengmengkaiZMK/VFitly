@@ -238,27 +238,31 @@ export function TryOnContent() {
     formData.set("size", aspectRatio);
     formData.set("prompt", requirements.trim() ? `${defaultTryOnPrompt}\n\nAdditional requirements: ${requirements.trim()}` : defaultTryOnPrompt);
 
-    const response = await fetch("/api/try-on", {
-      method: "POST",
-      body: formData,
-    });
-    const data = await response.json().catch(() => ({}));
+    try {
+      const response = await fetch("/api/try-on", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json().catch(() => ({}));
 
-    if (!response.ok) {
-      if (response.status === 401) {
-        router.push(loginUrl);
-        return;
-      }
-      if (response.status === 403) {
-        setShowOutfitUpgradeModal(true);
+      if (!response.ok) {
+        if (response.status === 401) {
+          router.push(loginUrl);
+          return;
+        }
+        if (response.status === 403) {
+          setShowOutfitUpgradeModal(true);
+        } else {
+          setError(data.error || "Generation failed. Please try again later.");
+        }
       } else {
-        setError(data.error || "Generation failed. Please try again later.");
+        setJobs((current) => [data.job, ...current]);
       }
-    } else {
-      setJobs((current) => [data.job, ...current]);
+    } catch (generationError) {
+      setError(generationError instanceof Error ? generationError.message : "Generation failed. Please try again later.");
+    } finally {
+      setGenerating(false);
     }
-
-    setGenerating(false);
   }
 
   const selectedWardrobeItems = useMemo(
@@ -316,27 +320,32 @@ export function TryOnContent() {
         : defaultOutfitPrompt,
     );
 
-    const response = await fetch("/api/try-on/outfit-generate", {
-      method: "POST",
-      body: formData,
-    });
-    const data = await response.json().catch(() => ({}));
+    try {
+      const response = await fetch("/api/try-on/outfit-generate", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json().catch(() => ({}));
 
-    if (!response.ok) {
-      if (response.status === 401) {
-        router.push(loginUrl);
-        return;
-      }
-      if (response.status === 403) {
-        setShowOutfitUpgradeModal(true);
+      if (!response.ok) {
+        if (response.status === 401) {
+          setOutfitGenerating(false);
+          router.push(loginUrl);
+          return;
+        }
+        if (response.status === 403) {
+          setShowOutfitUpgradeModal(true);
+        } else {
+          setError(data.error || "Outfit generation failed. Please try again later.");
+        }
       } else {
-        setError(data.error || "Outfit generation failed. Please try again later.");
+        setJobs((current) => [data.job, ...current]);
       }
-    } else {
-      setJobs((current) => [data.job, ...current]);
+    } catch (generationError) {
+      setError(generationError instanceof Error ? generationError.message : "Outfit generation failed. Please try again later.");
+    } finally {
+      setOutfitGenerating(false);
     }
-
-    setOutfitGenerating(false);
   }
 
   async function handleSaveGeneratedLook(job: TryOnJob) {

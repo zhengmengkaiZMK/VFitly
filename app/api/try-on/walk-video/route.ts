@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
-import { requireUser } from "@/lib/auth/current-user";
+import { requireUserOrGuest, guestAssetPrefix } from "@/lib/auth/guest-session";
+import { countGuestWalkVideoUsageToday } from "@/lib/auth/guest-resources";
 import { localPathFromAssetUrl, saveBufferAsset } from "@/lib/storage/assets";
 import { downloadVideoAsset, generateWalkVideoFromImage } from "@/lib/video/walk-video";
 import { countUsageThisMonth, countUsageTotal, isPaidPlan, monthlyWalkVideoLimitForPlan } from "@/lib/billing/credits";
@@ -12,7 +13,7 @@ export async function POST(request: NextRequest) {
   let jobId = "";
 
   try {
-    const user = await requireUser();
+    const { user, guest } = await requireUserOrGuest();
     const body = await request.json().catch(() => ({}));
     jobId = typeof body.jobId === "string" ? body.jobId : "";
 
@@ -20,22 +21,36 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing try-on job id." }, { status: 400 });
     }
 
-    const videoLimit = monthlyWalkVideoLimitForPlan(user.membershipType);
-    const usedVideos = isPaidPlan(user.membershipType)
-      ? await countUsageThisMonth(user.id, "walk-video")
-      : await countUsageTotal(user.id, "walk-video");
+    if (user) {
+      const videoLimit = monthlyWalkVideoLimitForPlan(user.membershipType);
+      const usedVideos = isPaidPlan(user.membershipType)
+        ? await countUsageThisMonth(user.id, "walk-video")
+        : await countUsageTotal(user.id, "walk-video");
 
-    if (usedVideos >= videoLimit) {
-      const error = isPaidPlan(user.membershipType)
-        ? `Your plan includes ${videoLimit} 360° try-on videos per month. Please upgrade to continue.`
-        : "Free accounts include 1 free 360° try-on video per account. Please upgrade to continue.";
-      return NextResponse.json({ error }, { status: 403 });
+      if (usedVideos >= videoLimit) {
+        const error = isPaidPlan(user.membershipType)
+          ? `Your plan includes ${videoLimit} 360° try-on videos per month. Please upgrade to continue.`
+          : "Free accounts include 1 free 360° try-on video per account. Please upgrade to continue.";
+        return NextResponse.json({ error }, { status: 403 });
+      }
+    } else if (guest) {
+      const usedVideos = await countGuestWalkVideoUsageToday(guest.guestId);
+      if (usedVideos >= 1) {
+        return NextResponse.json({ error: "Guest mode includes 1 free 360° try-on video per day. Please sign in or upgrade to continue." }, { status: 403 });
+      }
     }
 
     const job = await prisma.tryOnJob.findFirst({
       where: {
         id: jobId,
-        userId: user.id,
+        ...(user
+          ? { userId: user.id }
+          : {
+              userId: null,
+              guestId: guest?.guestId,
+              isTemporary: true,
+              OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
+            }),
       },
     });
 
@@ -58,10 +73,16 @@ export async function POST(request: NextRequest) {
     let finalVideoUrl = generatedVideo.url || "";
     let finalVideoAssetKey: string | null = null;
 
+    const videoPrefix = user
+      ? `try-on/${user.id}/walk-videos`
+      : guest
+        ? `${guestAssetPrefix(guest.guestId)}/walk-videos`
+        : "try-on/anonymous/walk-videos";
+
     if (generatedVideo.buffer) {
       const storedVideo = await saveBufferAsset(
         generatedVideo.buffer,
-        `try-on/${user.id}/walk-videos`,
+        videoPrefix,
         generatedVideo.extension,
         generatedVideo.mimeType,
       );
@@ -72,7 +93,7 @@ export async function POST(request: NextRequest) {
         const downloadedVideo = await downloadVideoAsset(generatedVideo.url);
         const storedVideo = await saveBufferAsset(
           downloadedVideo.buffer,
-          `try-on/${user.id}/walk-videos`,
+          videoPrefix,
           downloadedVideo.extension,
           downloadedVideo.mimeType,
         );
@@ -102,14 +123,16 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    await prisma.usageRecord.create({
-      data: {
-        userId: user.id,
-        type: "walk-video",
-        cost: 1,
-        metadata: { jobId: job.id, model: walkVideoModel },
-      },
-    });
+    if (user) {
+      await prisma.usageRecord.create({
+        data: {
+          userId: user.id,
+          type: "walk-video",
+          cost: 1,
+          metadata: { jobId: job.id, model: walkVideoModel },
+        },
+      });
+    }
 
     return NextResponse.json({ videoUrl: finalVideoUrl, model: walkVideoModel });
   } catch (error) {

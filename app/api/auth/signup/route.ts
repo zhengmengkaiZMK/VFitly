@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import bcrypt from "bcrypt";
 import { z } from "zod";
+import {
+  clearGuestSessionCookie,
+  getExistingGuestIdFromCookie,
+  promoteGuestResourcesToUser,
+} from "@/lib/auth/guest-resources";
 
 const signupSchema = z.object({
   name: z.string().min(1, "Please enter your name"),
@@ -70,6 +75,12 @@ export async function POST(request: NextRequest) {
       },
     });
     console.log("✅ 配额记录创建成功");
+
+    const guestId = await getExistingGuestIdFromCookie();
+    if (guestId) {
+      await promoteGuestResourcesToUser(guestId, user.id);
+      await clearGuestSessionCookie();
+    }
 
     console.log("🎉 注册流程完成");
     return NextResponse.json(

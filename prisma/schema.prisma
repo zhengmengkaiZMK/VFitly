@@ -251,7 +251,8 @@ model PainPointAnalysis {
 // ==================== AI 衣橱单品表 ====================
 model WardrobeItem {
   id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId           String   @map("user_id") @db.Uuid
+  userId           String?  @map("user_id") @db.Uuid
+  guestId          String?  @map("guest_id") @db.VarChar(64)
   name             String
   category         String   @default("Other")
   color            String?
@@ -269,21 +270,27 @@ model WardrobeItem {
   mimeType         String?  @map("mime_type") @db.VarChar(100)
   imageHash        String?  @map("image_hash") @db.VarChar(128)
   isDeleted        Boolean  @default(false) @map("is_deleted")
+  isTemporary      Boolean  @default(false) @map("is_temporary")
+  expiresAt        DateTime? @map("expires_at") @db.Timestamptz
+  cleanupStatus    String?  @map("cleanup_status") @db.VarChar(32)
   createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
   tryOnJobs TryOnJob[]
 
   @@index([userId, createdAt(sort: Desc)], name: "idx_wardrobe_items_user_created")
   @@index([userId, isDeleted], name: "idx_wardrobe_items_user_deleted")
+  @@index([guestId, isTemporary, expiresAt], name: "idx_wardrobe_items_guest_temporary")
+  @@index([isTemporary, expiresAt], name: "idx_wardrobe_items_temporary_expires")
   @@map("wardrobe_items")
 }
 
 // ==================== AI 试衣任务表 ====================
 model TryOnJob {
   id               String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId           String      @map("user_id") @db.Uuid
+  userId           String?     @map("user_id") @db.Uuid
+  guestId          String?     @map("guest_id") @db.VarChar(64)
   wardrobeItemId   String?     @map("wardrobe_item_id") @db.Uuid
   provider         String?     @default("openai")
   model            String?
@@ -302,14 +309,19 @@ model TryOnJob {
   status           TryOnStatus @default(PENDING)
   error            String?     @db.Text
   metadata         Json        @default("{}")
+  isTemporary      Boolean     @default(false) @map("is_temporary")
+  expiresAt        DateTime?   @map("expires_at") @db.Timestamptz
+  cleanupStatus    String?     @map("cleanup_status") @db.VarChar(32)
   completedAt      DateTime?   @map("completed_at") @db.Timestamptz
   createdAt        DateTime    @default(now()) @map("created_at") @db.Timestamptz
   updatedAt        DateTime    @updatedAt @map("updated_at") @db.Timestamptz
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
   wardrobeItem WardrobeItem? @relation(fields: [wardrobeItemId], references: [id], onDelete: SetNull)
 
   @@index([userId, createdAt(sort: Desc)], name: "idx_try_on_jobs_user_created")
+  @@index([guestId, isTemporary, expiresAt], name: "idx_try_on_jobs_guest_temporary")
+  @@index([isTemporary, expiresAt], name: "idx_try_on_jobs_temporary_expires")
   @@map("try_on_jobs")
 }
 

@@ -3,7 +3,20 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "@/lib/db/prisma";
 import { ensureMonthlyCredits } from "@/lib/billing/credits";
+import {
+  clearGuestSessionCookie,
+  getExistingGuestIdFromCookie,
+  promoteGuestResourcesToUser,
+} from "@/lib/auth/guest-resources";
 import bcrypt from "bcrypt";
+
+async function migrateGuestResources(userId: string) {
+  const guestId = await getExistingGuestIdFromCookie();
+  if (!guestId) return;
+
+  await promoteGuestResourcesToUser(guestId, userId);
+  await clearGuestSessionCookie();
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -67,7 +80,12 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async signIn({ user, account }) {
-      if (account?.provider !== "google") return true;
+      if (account?.provider !== "google") {
+        if (user.id) {
+          await migrateGuestResources(user.id);
+        }
+        return true;
+      }
       if (!user.email) return false;
 
       try {
@@ -96,6 +114,7 @@ export const authOptions: NextAuthOptions = {
         });
 
         await ensureMonthlyCredits(dbUser.id, dbUser.membershipType);
+        await migrateGuestResources(dbUser.id);
 
         user.id = dbUser.id;
         user.membershipType = dbUser.membershipType;

@@ -95,21 +95,6 @@ export const Footer = () => {
               >
                 MossAI Tools
               </a>
-              <a
-                href="https://drchecker.net/item/vfitly.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex"
-                aria-label="Check VFitly domain rating on DR Checker"
-              >
-                <Image
-                  src="https://drchecker.net/api/badge?domain=vfitly.com"
-                  alt="DR Checker - Domain Rating"
-                  width={300}
-                  height={120}
-                  className="h-[120px] w-auto"
-                />
-              </a>
             </div>
           </div>
         </div>
