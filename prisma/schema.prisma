@@ -340,6 +340,18 @@ model UsageRecord {
   @@map("usage_records")
 }
 
+model GuestUsageRecord {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guestId   String   @map("guest_id") @db.VarChar(64)
+  type      String
+  cost      Int      @default(0)
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([guestId, type, createdAt(sort: Desc)], name: "idx_guest_usage_records_guest_type_created")
+  @@map("guest_usage_records")
+}
+
 // ==================== AI 积分账户表 ====================
 model CreditAccount {
   id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid

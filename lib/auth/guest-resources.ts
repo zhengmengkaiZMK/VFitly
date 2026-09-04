@@ -48,6 +48,33 @@ export async function clearGuestSessionCookie() {
   cookieStore.delete(GUEST_ID_COOKIE);
 }
 
+export async function countGuestProductPreviewUsageToday(guestId: string) {
+  if (!isValidGuestId(guestId)) return 0;
+
+  return prisma.guestUsageRecord.count({
+    where: {
+      guestId,
+      type: "product-preview",
+      createdAt: { gte: startOfToday() },
+    },
+  });
+}
+
+export async function countGuestProductTryOnUsageToday(guestId: string) {
+  if (!isValidGuestId(guestId)) return 0;
+
+  return prisma.tryOnJob.count({
+    where: {
+      guestId,
+      userId: null,
+      isTemporary: true,
+      jobType: "PRODUCT_URL_IMAGE",
+      status: "COMPLETED",
+      createdAt: { gte: startOfToday() },
+    },
+  });
+}
+
 export async function countGuestTryOnUsageToday(guestId: string) {
   if (!isValidGuestId(guestId)) return 0;
 

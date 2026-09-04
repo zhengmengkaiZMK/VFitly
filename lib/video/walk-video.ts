@@ -11,37 +11,33 @@ export type GeneratedWalkVideo = {
 };
 
 type VideoApiResponse = Record<string, unknown>;
+type WalkVideoProvider = "legacy-task" | "unify-videos";
 
-const TASK_SUBMIT_ENDPOINT = "/v1/task/submit";
-const TASK_STATUS_ENDPOINT = "/v1/task";
+const LEGACY_TASK_SUBMIT_ENDPOINT = "/v1/task/submit";
+const LEGACY_TASK_STATUS_ENDPOINT = "/v1/task";
+const UNIFY_VIDEO_SUBMIT_ENDPOINT = "/v1/videos";
+const UNIFY_VIDEO_STATUS_ENDPOINT = "/v1/videos";
 const TASK_POLL_INTERVAL_MS = 5000;
 const TASK_MAX_ATTEMPTS = 36;
+const WALK_VIDEO_DURATION_SECONDS = 5;
+const WALK_VIDEO_ASPECT_RATIO = "9:16";
 
 export async function generateWalkVideoFromImage(imagePath: string, imageUrl: string): Promise<GeneratedWalkVideo> {
   const config = getWalkVideoConfig();
+  const provider = resolveWalkVideoProvider(config.model);
   const publicImageUrl = buildPublicImageUrl(imageUrl);
   const imageBuffer = await readFile(imagePath);
   const mimeType = mimeTypeFromPath(imagePath);
   const fallbackImageDataUrl = `data:${mimeType};base64,${imageBuffer.toString("base64")}`;
   const resolvedImageUrl = publicImageUrl || fallbackImageDataUrl;
 
-  const response = await fetch(buildTaskSubmitUrl(config.baseUrl), {
+  const response = await fetch(buildTaskSubmitUrl(config.baseUrl, provider), {
     method: "POST",
     headers: {
       Authorization: `Bearer ${config.apiKey}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      model: config.model,
-      input: {
-        prompt: walkVideoPrompt,
-        start_frames: [resolvedImageUrl],
-        aspect_ratio: "9:16",
-        resolution: "720p",
-        duration: 5,
-        audio: false,
-      },
-    }),
+    body: JSON.stringify(buildTaskSubmitPayload(provider, config.model, resolvedImageUrl)),
   });
 
   const text = await response.text();
@@ -61,7 +57,7 @@ export async function generateWalkVideoFromImage(imagePath: string, imageUrl: st
     throw new Error("The video provider response did not include a task id or video URL.");
   }
 
-  return pollWalkVideoTask(config.baseUrl, config.apiKey, taskId);
+  return pollWalkVideoTask(config.baseUrl, config.apiKey, taskId, provider);
 }
 
 export async function downloadVideoAsset(url: string) {
@@ -78,13 +74,13 @@ export async function downloadVideoAsset(url: string) {
   };
 }
 
-async function pollWalkVideoTask(baseUrl: string, apiKey: string, taskId: string): Promise<GeneratedWalkVideo> {
+async function pollWalkVideoTask(baseUrl: string, apiKey: string, taskId: string, provider: WalkVideoProvider): Promise<GeneratedWalkVideo> {
   let lastPayload: VideoApiResponse = {};
 
   for (let attempt = 0; attempt < TASK_MAX_ATTEMPTS; attempt += 1) {
     await sleep(TASK_POLL_INTERVAL_MS);
 
-    const response = await fetch(buildTaskStatusUrl(baseUrl, taskId), {
+    const response = await fetch(buildTaskStatusUrl(baseUrl, taskId, provider), {
       headers: {
         Authorization: `Bearer ${apiKey}`,
       },
@@ -118,12 +114,56 @@ async function pollWalkVideoTask(baseUrl: string, apiKey: string, taskId: string
   throw new Error(`Walk video generation timed out. Task ID: ${taskId}. Last status: ${extractTaskStatus(lastPayload) || "unknown"}`);
 }
 
-function buildTaskSubmitUrl(baseUrl: string) {
-  return new URL(TASK_SUBMIT_ENDPOINT, `${baseUrl}/`).toString();
+function resolveWalkVideoProvider(model: string): WalkVideoProvider {
+  const normalizedModel = model.toLowerCase();
+  if (normalizedModel.includes("gemini-omni") || normalizedModel.startsWith("veo-")) return "unify-videos";
+  return "legacy-task";
 }
 
-function buildTaskStatusUrl(baseUrl: string, taskId: string) {
-  return new URL(`${TASK_STATUS_ENDPOINT}/${encodeURIComponent(taskId)}`, `${baseUrl}/`).toString();
+function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imageUrl: string) {
+  if (provider === "unify-videos") {
+    return {
+      model,
+      prompt: walkVideoPrompt,
+      image_url: imageUrl,
+      duration: WALK_VIDEO_DURATION_SECONDS,
+      aspect_ratio: WALK_VIDEO_ASPECT_RATIO,
+      generate_audio: false,
+      negative_prompt: "subtitles, logos, watermark, distorted face, changed outfit, changed clothing details",
+    };
+  }
+
+  return {
+    model,
+    input: {
+      prompt: walkVideoPrompt,
+      start_frames: [imageUrl],
+      aspect_ratio: WALK_VIDEO_ASPECT_RATIO,
+      resolution: "720p",
+      duration: WALK_VIDEO_DURATION_SECONDS,
+      audio: false,
+    },
+  };
+}
+
+function buildTaskSubmitUrl(baseUrl: string, provider: WalkVideoProvider) {
+  return buildApiUrl(baseUrl, provider === "unify-videos" ? UNIFY_VIDEO_SUBMIT_ENDPOINT : LEGACY_TASK_SUBMIT_ENDPOINT);
+}
+
+function buildTaskStatusUrl(baseUrl: string, taskId: string, provider: WalkVideoProvider) {
+  const endpoint = provider === "unify-videos" ? UNIFY_VIDEO_STATUS_ENDPOINT : LEGACY_TASK_STATUS_ENDPOINT;
+  return buildApiUrl(baseUrl, `${endpoint}/${encodeURIComponent(taskId)}`);
+}
+
+function buildApiUrl(baseUrl: string, endpoint: string) {
+  const parsedBaseUrl = new URL(baseUrl);
+  let normalizedEndpoint = endpoint.replace(/^\/+/, "");
+
+  if (parsedBaseUrl.pathname.replace(/\/+$/, "").endsWith("/v1") && normalizedEndpoint.startsWith("v1/")) {
+    normalizedEndpoint = normalizedEndpoint.replace(/^v1\/+/, "");
+  }
+
+  return new URL(normalizedEndpoint, `${parsedBaseUrl.toString().replace(/\/+$/, "")}/`).toString();
 }
 
 function parseJson(text: string): VideoApiResponse {

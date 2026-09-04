@@ -5,10 +5,12 @@ import {
   saveProductTryOnRemoteImage,
   saveProductTryOnUpload,
 } from "@/lib/product-try-on/storage";
-import { requireUser } from "@/lib/auth/current-user";
+import { requireUserOrGuest, guestAssetPrefix, guestExpiresAt } from "@/lib/auth/guest-session";
+import { countGuestProductTryOnUsageToday } from "@/lib/auth/guest-resources";
 import { prisma } from "@/lib/db/prisma";
 import { localPathFromAssetUrl } from "@/lib/storage/assets";
 import {
+  FREE_DAILY_TRY_ON_LIMIT,
   TRY_ON_SINGLE_COST,
   ensureSufficientCredits,
   isPaidPlan,
@@ -28,11 +30,11 @@ const MAX_BATCH_SIZE = 12;
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await requireUser();
+    const { user, guest } = await requireUserOrGuest();
     const formData = await request.formData();
     const personImage = formData.get("personImage");
     const garmentsValue = formData.get("garments");
-    const paidPlan = isPaidPlan(user.membershipType);
+    const paidPlan = user ? isPaidPlan(user.membershipType) : false;
 
     if (typeof garmentsValue !== "string") {
       return NextResponse.json({ error: "Please provide product garment images." }, { status: 400 });
@@ -47,27 +49,44 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: `Please select no more than ${MAX_BATCH_SIZE} product garment images at a time.` }, { status: 400 });
     }
 
-    if (!paidPlan) {
+    if (user && !paidPlan) {
       return NextResponse.json(
         { error: "Product link try-on generation is available on Plus and Ultra plans. Free users can preview extracted product images before upgrading." },
         { status: 403 },
       );
     }
 
-    const totalCreditsCost = garments.length * TRY_ON_SINGLE_COST;
-    await ensureSufficientCredits(user.id, user.membershipType, totalCreditsCost);
+    if (!user && guest) {
+      const usedToday = await countGuestProductTryOnUsageToday(guest.guestId);
+      if (usedToday + garments.length > FREE_DAILY_TRY_ON_LIMIT) {
+        return NextResponse.json(
+          {
+            error: "Guest mode includes 2 free Product Try On generations per day. Please sign in to continue.",
+            requiresLogin: true,
+          },
+          { status: 403 },
+        );
+      }
+    }
 
-    let personUrl = user.defaultModelImageUrl || "";
+    const totalCreditsCost = garments.length * TRY_ON_SINGLE_COST;
+    if (user) {
+      await ensureSufficientCredits(user.id, user.membershipType, totalCreditsCost);
+    }
+
+    const assetPrefix = user ? `product-try-on/${user.id}` : `${guestAssetPrefix(guest!.guestId)}/product-try-on`;
+
+    let personUrl = user?.defaultModelImageUrl || "";
     let personPath = personUrl ? await localPathFromAssetUrl(personUrl) || "" : "";
-    let personAssetKey = user.defaultModelAssetKey;
+    let personAssetKey = user?.defaultModelAssetKey || null;
 
     if (personImage instanceof File) {
-      const person = await saveProductTryOnUpload(personImage, `product-try-on/${user.id}/persons`);
+      const person = await saveProductTryOnUpload(personImage, `${assetPrefix}/persons`);
       personUrl = person.url;
       personPath = person.path;
       personAssetKey = person.key;
 
-      if (!user.defaultModelImageUrl) {
+      if (user && !user.defaultModelImageUrl) {
         await prisma.user.update({
           where: { id: user.id },
           data: {
@@ -97,12 +116,17 @@ export async function POST(request: NextRequest) {
       try {
         if (!garment.imageUrl) throw new Error("Missing product image URL.");
 
-        await ensureSufficientCredits(user.id, user.membershipType, TRY_ON_SINGLE_COST);
+        if (user) {
+          await ensureSufficientCredits(user.id, user.membershipType, TRY_ON_SINGLE_COST);
+        }
 
-        const savedGarment = await saveProductTryOnRemoteImage(garment.imageUrl, `product-try-on/${user.id}/garments`);
+        const savedGarment = await saveProductTryOnRemoteImage(garment.imageUrl, `${assetPrefix}/garments`);
         const job = await prisma.tryOnJob.create({
           data: {
-            userId: user.id,
+            userId: user?.id || null,
+            guestId: user ? null : guest!.guestId,
+            isTemporary: !user,
+            expiresAt: user ? null : guestExpiresAt(),
             provider: "openai",
             model: process.env.OPENAI_IMAGE_MODEL || "gpt-image-2",
             jobType: "PRODUCT_URL_IMAGE",
@@ -112,8 +136,8 @@ export async function POST(request: NextRequest) {
             garmentImageUrls: [savedGarment.url],
             garmentAssetKey: savedGarment.key,
             prompt: "Product link virtual try-on",
-            creditsCost: TRY_ON_SINGLE_COST,
-            costCredits: TRY_ON_SINGLE_COST,
+            creditsCost: user ? TRY_ON_SINGLE_COST : 0,
+            costCredits: user ? TRY_ON_SINGLE_COST : 0,
             metadata: { source: "product-link", productImageUrl: garment.imageUrl, label: garment.label || null },
             status: "PENDING",
           },
@@ -129,7 +153,7 @@ export async function POST(request: NextRequest) {
           personImagePath: personPath,
           garmentImagePath: savedGarment.path,
         });
-        const savedResult = await saveProductTryOnGeneratedImage(generated.buffer, `product-try-on/${user.id}/results`, generated.extension);
+        const savedResult = await saveProductTryOnGeneratedImage(generated.buffer, `${assetPrefix}/results`, generated.extension);
         const updatedJob = await prisma.tryOnJob.update({
           where: { id: job.id },
           data: {
@@ -140,19 +164,21 @@ export async function POST(request: NextRequest) {
           },
         });
 
-        await spendCredits(user.id, user.membershipType, TRY_ON_SINGLE_COST, "Product link try-on generation", {
-          jobId: job.id,
-          productImageUrl: garment.imageUrl,
-        });
+        if (user) {
+          await spendCredits(user.id, user.membershipType, TRY_ON_SINGLE_COST, "Product link try-on generation", {
+            jobId: job.id,
+            productImageUrl: garment.imageUrl,
+          });
 
-        await prisma.usageRecord.create({
-          data: {
-            userId: user.id,
-            type: "try-on",
-            cost: TRY_ON_SINGLE_COST,
-            metadata: { jobId: job.id, source: "product-link" },
-          },
-        });
+          await prisma.usageRecord.create({
+            data: {
+              userId: user.id,
+              type: "try-on",
+              cost: TRY_ON_SINGLE_COST,
+              metadata: { jobId: job.id, source: "product-link" },
+            },
+          });
+        }
 
         results.push({
           id: garment.id || updatedJob.id,

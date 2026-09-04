@@ -160,6 +160,7 @@ export function ProductTryOnContent() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
     setSelectedGarmentIds(garments.map((garment) => garment.id));
@@ -221,7 +222,11 @@ export function ProductTryOnContent() {
         setExtracting(false);
         return;
       }
-      setError(data.error || "Failed to extract product garment images.");
+      if (response.status === 403 && data.requiresLogin) {
+        setShowLoginModal(true);
+      } else {
+        setError(data.error || "Failed to extract product garment images.");
+      }
     } else {
       setGarments(data.garments || []);
     }
@@ -255,7 +260,11 @@ export function ProductTryOnContent() {
         return;
       }
       if (response.status === 403) {
-        setShowUpgradeModal(true);
+        if (data.requiresLogin) {
+          setShowLoginModal(true);
+        } else {
+          setShowUpgradeModal(true);
+        }
       } else {
         setError(data.error || "Failed to generate product try-on images.");
       }
@@ -289,7 +298,11 @@ export function ProductTryOnContent() {
         return;
       }
       if (response.status === 403) {
-        setShowUpgradeModal(true);
+        if (data.requiresLogin) {
+          setShowLoginModal(true);
+        } else {
+          setShowUpgradeModal(true);
+        }
       } else {
         setError(data.error || "Failed to save product images to your wardrobe.");
       }
@@ -326,7 +339,11 @@ export function ProductTryOnContent() {
         return;
       }
       if (response.status === 403) {
-        setShowUpgradeModal(true);
+        if (data.requiresLogin) {
+          setShowLoginModal(true);
+        } else {
+          setShowUpgradeModal(true);
+        }
       } else {
         setError(data.error || "Failed to save generated look to wardrobe.");
       }
@@ -613,6 +630,35 @@ export function ProductTryOnContent() {
               <button
                 type="button"
                 onClick={() => setShowUpgradeModal(false)}
+                className="inline-flex flex-1 items-center justify-center rounded-2xl border border-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                Maybe later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-950 p-6 shadow-2xl shadow-black/40">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-400/10 text-purple-200">
+              <IconSparkles className="h-6 w-6" />
+            </div>
+            <h3 className="text-xl font-semibold text-white">Sign in to keep creating</h3>
+            <p className="mt-3 text-sm leading-6 text-slate-300">
+              Guest mode includes 2 free Product Try On uses per day. Sign in to continue and save your generated looks.
+            </p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href={loginUrl}
+                className="inline-flex flex-1 items-center justify-center rounded-2xl bg-purple-300 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-purple-200"
+              >
+                Sign in
+              </Link>
+              <button
+                type="button"
+                onClick={() => setShowLoginModal(false)}
                 className="inline-flex flex-1 items-center justify-center rounded-2xl border border-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
               >
                 Maybe later

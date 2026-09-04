@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { extractProductGarments } from "@/lib/product-try-on/extractor";
-import { requireUser } from "@/lib/auth/current-user";
+import { requireUserOrGuest } from "@/lib/auth/guest-session";
+import { countGuestProductPreviewUsageToday } from "@/lib/auth/guest-resources";
 import {
   FREE_DAILY_PRODUCT_PREVIEW_LIMIT,
   countUsageToday,
@@ -13,7 +14,7 @@ export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await requireUser();
+    const { user, guest } = await requireUserOrGuest();
     const body = await request.json();
     const productUrl = typeof body?.productUrl === "string" ? body.productUrl : "";
 
@@ -21,8 +22,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Please provide a product URL." }, { status: 400 });
     }
 
-    const paidPlan = isPaidPlan(user.membershipType);
-    if (!paidPlan) {
+    const paidPlan = user ? isPaidPlan(user.membershipType) : false;
+    if (user && !paidPlan) {
       const usedToday = await countUsageToday(user.id, "product-preview");
       if (usedToday >= FREE_DAILY_PRODUCT_PREVIEW_LIMIT) {
         return NextResponse.json(
@@ -32,16 +33,40 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    if (!user && guest) {
+      const usedToday = await countGuestProductPreviewUsageToday(guest.guestId);
+      if (usedToday >= FREE_DAILY_PRODUCT_PREVIEW_LIMIT) {
+        return NextResponse.json(
+          {
+            error: "Guest mode includes 2 free product link previews per day. Please sign in to continue.",
+            requiresLogin: true,
+          },
+          { status: 403 },
+        );
+      }
+    }
+
     const garments = await extractProductGarments(productUrl);
 
-    await prisma.usageRecord.create({
-      data: {
-        userId: user.id,
-        type: "product-preview",
-        cost: 0,
-        metadata: { productUrl, garmentCount: garments.length, freeDailyUsage: !paidPlan },
-      },
-    });
+    if (user) {
+      await prisma.usageRecord.create({
+        data: {
+          userId: user.id,
+          type: "product-preview",
+          cost: 0,
+          metadata: { productUrl, garmentCount: garments.length, freeDailyUsage: !paidPlan },
+        },
+      });
+    } else if (guest) {
+      await prisma.guestUsageRecord.create({
+        data: {
+          guestId: guest.guestId,
+          type: "product-preview",
+          cost: 0,
+          metadata: { productUrl, garmentCount: garments.length },
+        },
+      });
+    }
 
     return NextResponse.json({ garments });
   } catch (error) {

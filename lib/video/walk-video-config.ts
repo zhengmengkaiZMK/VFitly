@@ -5,7 +5,7 @@ export type WalkVideoConfig = {
 };
 
 export const walkVideoPrompt =
-  "Use the Final try-on result image as the only visual reference to generate a fashion runway walking video with the grok-imagine-1.5 image-to-video model. The model should complete a smooth 360-degree turn. Duration: 5 seconds. Aspect ratio: 9:16. Resolution: 720p. The person should not smile. The clothing material, color, silhouette, patterns, accessories, and all garment details must remain highly consistent with the input image, with no changes to the outfit design.";
+  "Use the Final try-on result image as the only visual reference to generate a fashion runway walking video. The person should complete a smooth 360-degree turn with natural walking motion. The person should not smile. The clothing material, color, silhouette, patterns, accessories, and all garment details must remain highly consistent with the input image, with no changes to the outfit design.";
 
 export function getWalkVideoConfig(): WalkVideoConfig {
   const apiKey = process.env.WALK_VIDEO_API_KEY;
