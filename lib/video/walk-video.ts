@@ -322,14 +322,7 @@ function shouldRetryWithAlternateGrokImagePayload(provider: WalkVideoProvider, m
   if (provider !== "unify-videos" || !model.toLowerCase().includes("grok-imagine")) return false;
 
   const message = `${extractErrorMessage(data) || ""} ${text}`.toLowerCase();
-  return (
-    message.includes("image") &&
-    (message.includes("invalid type") ||
-      message.includes("cannot unmarshal") ||
-      message.includes("failed to deserialize") ||
-      message.includes("expected struct imageurl") ||
-      message.includes("of type string"))
-  );
+  return message.includes("image") && message.includes("cannot unmarshal object") && message.includes("of type string");
 }
 
 function sleep(ms: number) {
