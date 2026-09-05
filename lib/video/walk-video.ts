@@ -116,6 +116,9 @@ async function pollWalkVideoTask(baseUrl: string, apiKey: string, taskId: string
 
 function resolveWalkVideoProvider(model: string): WalkVideoProvider {
   const normalizedModel = model.toLowerCase();
+  if (normalizedModel.includes("grok-imagine")) {
+    return "legacy-task";
+  }
   if (
     normalizedModel.includes("gemini-omni") ||
     normalizedModel.startsWith("veo-") ||
