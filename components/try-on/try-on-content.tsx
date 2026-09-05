@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { LoadingIndicator } from "@/components/loading-indicator";
 import { IconCheck, IconDownload, IconHanger, IconPhoto, IconSparkles, IconUpload, IconVideo, IconX } from "@tabler/icons-react";
 import { buildLoginRedirectUrl } from "@/lib/auth/login-redirect";
+import { downloadMediaFile } from "@/lib/download-file";
 import { defaultTryOnPrompt, tryOnImageSizes } from "@/lib/wardrobe/constants";
 
 type PreviewImage = {
@@ -177,6 +178,7 @@ export function TryOnContent() {
   const [walkVideoJobId, setWalkVideoJobId] = useState<string | null>(null);
   const [walkVideoUrl, setWalkVideoUrl] = useState("");
   const [walkVideoMessage, setWalkVideoMessage] = useState("");
+  const [downloadingImage, setDownloadingImage] = useState(false);
   const [showOutfitUpgradeModal, setShowOutfitUpgradeModal] = useState(false);
   const resultSectionRef = useRef<HTMLElement>(null);
 
@@ -394,6 +396,19 @@ export function TryOnContent() {
       showError("Unable to save the generated look. Please try again.");
     } finally {
       setSavingGeneratedLookId(null);
+    }
+  }
+
+  async function handleDownloadImage(imageUrl: string, fallbackName: string) {
+    if (!imageUrl || downloadingImage) return;
+
+    setDownloadingImage(true);
+    try {
+      await downloadMediaFile(imageUrl, fallbackName);
+    } catch {
+      showError("Unable to download this image. Please try again.");
+    } finally {
+      setDownloadingImage(false);
     }
   }
 
@@ -688,9 +703,14 @@ export function TryOnContent() {
                 >
                   <IconVideo className="h-4 w-4" /> {walkVideoJobId === latestResult.id ? "Generating runway video..." : "Generate Runway Video"}
                 </button>
-                <a href={latestResult.resultImageUrl} download className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-black px-4 py-2 font-medium text-white dark:bg-white dark:text-black">
-                  <IconDownload className="h-4 w-4" /> Download Image
-                </a>
+                <button
+                  type="button"
+                  onClick={() => handleDownloadImage(latestResult.resultImageUrl!, "vfitly-try-on.png")}
+                  disabled={downloadingImage}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-black px-4 py-2 font-medium text-white disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-black"
+                >
+                  <IconDownload className="h-4 w-4" /> {downloadingImage ? "Downloading..." : "Download Image"}
+                </button>
                 {walkVideoJobId === latestResult.id ? (
                   <div className="rounded-2xl border border-purple-100 bg-purple-50 p-4 dark:border-purple-900/50 dark:bg-purple-950/20">
                     <LoadingIndicator title="Generating runway video" description="Creating a 5-second 9:16 walk video from this final try-on result. You can also check your generation history in your account dashboard later." tone="purple" />

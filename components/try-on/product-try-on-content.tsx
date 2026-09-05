@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LoadingIndicator } from "@/components/loading-indicator";
 import { buildLoginRedirectUrl } from "@/lib/auth/login-redirect";
+import { downloadMediaFile } from "@/lib/download-file";
 import {
   IconDownload,
   IconExternalLink,
@@ -149,6 +150,7 @@ function PersonUploadCard({
 
 export function ProductTryOnContent() {
   const { requireLogin, requireUpgrade, showError } = useFeedback();
+  const [downloadingImageId, setDownloadingImageId] = useState<string | null>(null);
   const router = useRouter();
   const loginUrl = buildLoginRedirectUrl("/dashboard/product-try-on");
   const [productUrl, setProductUrl] = useState("");
@@ -370,6 +372,19 @@ export function ProductTryOnContent() {
       showError("Unable to save the generated look. Please try again.");
     } finally {
       setSavingGeneratedResultId(null);
+    }
+  }
+
+  async function handleDownloadImage(result: TryOnResult) {
+    if (!result.resultUrl || downloadingImageId) return;
+
+    setDownloadingImageId(result.id);
+    try {
+      await downloadMediaFile(result.resultUrl, `vfitly-product-try-on-${result.id}.png`);
+    } catch {
+      showError("Unable to download this image. Please try again.");
+    } finally {
+      setDownloadingImageId(null);
     }
   }
 
@@ -664,9 +679,14 @@ export function ProductTryOnContent() {
                         >
                           {walkVideoJobId === result.jobId ? "Generating runway video..." : "Generate Runway Video"}
                         </button>
-                        <a href={result.resultUrl} download className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-black px-3 py-2 text-xs font-medium text-white dark:bg-white dark:text-black">
-                          <IconDownload className="h-4 w-4" /> Download Image
-                        </a>
+                        <button
+                          type="button"
+                          onClick={() => handleDownloadImage(result)}
+                          disabled={Boolean(downloadingImageId)}
+                          className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-black px-3 py-2 text-xs font-medium text-white disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-black"
+                        >
+                          <IconDownload className="h-4 w-4" /> {downloadingImageId === result.id ? "Downloading..." : "Download Image"}
+                        </button>
                       </>
                     )}
                   </div>
