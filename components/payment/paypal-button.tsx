@@ -1,4 +1,5 @@
 "use client";
+import { FeedbackError, useFeedback } from "@/components/feedback-provider";
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
@@ -191,19 +192,9 @@ export function PayPalButton({
     );
   }
 
-  // 显示错误
-  if (error) {
-    return (
-      <div className="mt-8">
-        <div className="rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-4">
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="mt-8">
+      <FeedbackError message={error} />
       {/* 加载中 */}
       {loading && (
         <div className="flex items-center justify-center py-8">

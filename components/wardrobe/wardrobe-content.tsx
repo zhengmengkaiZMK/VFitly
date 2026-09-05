@@ -1,5 +1,7 @@
 "use client";
 
+import { FeedbackError, useFeedback } from "@/components/feedback-provider";
+
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -19,7 +21,7 @@ type WardrobeItem = {
 };
 
 export function WardrobeContent() {
-  const router = useRouter();
+  const { requireLogin } = useFeedback();
   const loginUrl = buildLoginRedirectUrl("/dashboard/wardrobe");
   const [items, setItems] = useState<WardrobeItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,7 +43,7 @@ export function WardrobeContent() {
 
     if (!response.ok) {
       if (response.status === 401) {
-        router.push(loginUrl);
+        requireLogin(undefined, loginUrl);
         return;
       }
       setError(data.error || "衣橱加载失败");
@@ -68,7 +70,7 @@ export function WardrobeContent() {
 
       if (!response.ok) {
         if (response.status === 401) {
-          router.push(loginUrl);
+          requireLogin(undefined, loginUrl);
           return;
         }
         setError(data.error || "衣物上传失败");
@@ -88,7 +90,7 @@ export function WardrobeContent() {
     const response = await fetch(`/api/wardrobe/${id}`, { method: "DELETE" });
 
     if (response.status === 401) {
-      router.push(loginUrl);
+      requireLogin(undefined, loginUrl);
       return;
     }
 
@@ -123,7 +125,7 @@ export function WardrobeContent() {
       setEditingItem(null);
     } else {
       if (response.status === 401) {
-        router.push(loginUrl);
+        requireLogin(undefined, loginUrl);
         return;
       }
       setError(data.error || "保存失败");
@@ -202,7 +204,7 @@ export function WardrobeContent() {
             </select>
             <input name="color" placeholder="Primary color" className="w-full rounded-2xl border border-neutral-200 bg-transparent p-3 text-sm dark:border-neutral-800" />
             <input name="tags" placeholder="Tags, comma separated" className="w-full rounded-2xl border border-neutral-200 bg-transparent p-3 text-sm dark:border-neutral-800" />
-            {error && <p className="rounded-2xl bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950/30">{error}</p>}
+            <FeedbackError message={error} />
             <button disabled={saving} className="w-full rounded-full bg-blue-600 px-5 py-3 text-sm font-medium text-white disabled:opacity-50">
               {saving ? "Uploading..." : "Add to wardrobe"}
             </button>

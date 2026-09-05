@@ -1,4 +1,5 @@
 "use client";
+import { FeedbackError } from "@/components/feedback-provider";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -95,9 +96,7 @@ function PaymentSuccessContent() {
           <h1 className="mb-2 text-2xl font-bold text-black dark:text-white">
             {isZh ? "验证失败" : "Verification failed"}
           </h1>
-          <p className="mb-6 text-neutral-600 dark:text-neutral-400">
-            {error || (isZh ? "无法验证支付状态" : "Cannot verify payment status")}
-          </p>
+          <FeedbackError message={error || (isZh ? "无法验证支付状态" : "Cannot verify payment status")} />
           <Link href="/dashboard/billing" className="inline-flex items-center justify-center rounded-full bg-neutral-900 px-6 py-3 font-medium text-white transition hover:bg-black">
             {isZh ? "查看账单" : "View billing"}
           </Link>

@@ -1,4 +1,5 @@
 "use client";
+import { FeedbackError, useFeedback } from "@/components/feedback-provider";
 
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -37,6 +38,7 @@ interface PaginationInfo {
 }
 
 export function HistoryList() {
+  const { showError } = useFeedback();
   const pathname = usePathname();
   const router = useRouter();
   const isZh = pathname.startsWith("/zh");
@@ -114,7 +116,7 @@ export function HistoryList() {
       await fetchHistory(pagination.page);
     } catch (err) {
       console.error("Delete error:", err);
-      alert(err instanceof Error ? err.message : "Delete failed");
+      showError(err instanceof Error ? err.message : "Delete failed");
     } finally {
       setDeletingId("");
     }
@@ -163,10 +165,9 @@ export function HistoryList() {
 
   if (error) {
     return (
-      <div className="rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-4">
-        <p className="text-red-600 dark:text-red-400">
-          {isZh ? "加载失败：" : "Error: "}{error}
-        </p>
+      <div className="py-8 text-center">
+        <FeedbackError message={error} />
+        <Button onClick={() => fetchHistory(pagination.page)}>{isZh ? "重试" : "Try again"}</Button>
       </div>
     );
   }

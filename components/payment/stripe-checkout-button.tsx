@@ -1,8 +1,9 @@
 "use client";
+import { FeedbackError, useFeedback } from "@/components/feedback-provider";
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { buildLoginRedirectUrl } from "@/lib/auth/login-redirect";
 
@@ -13,7 +14,7 @@ interface StripeCheckoutButtonProps {
 
 export function StripeCheckoutButton({ planId, onError }: StripeCheckoutButtonProps) {
   const { data: session } = useSession();
-  const router = useRouter();
+  const { requireLogin } = useFeedback();
   const pathname = usePathname();
   const isZh = pathname.startsWith("/zh");
   const [loading, setLoading] = useState(false);
@@ -21,7 +22,7 @@ export function StripeCheckoutButton({ planId, onError }: StripeCheckoutButtonPr
 
   async function startCheckout() {
     if (!session) {
-      router.push(buildLoginRedirectUrl(pathname));
+      requireLogin(undefined, buildLoginRedirectUrl(pathname));
       return;
     }
 
@@ -51,11 +52,7 @@ export function StripeCheckoutButton({ planId, onError }: StripeCheckoutButtonPr
 
   return (
     <div className="mt-8">
-      {error ? (
-        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-        </div>
-      ) : null}
+      <FeedbackError message={error} />
       <button
         type="button"
         onClick={startCheckout}

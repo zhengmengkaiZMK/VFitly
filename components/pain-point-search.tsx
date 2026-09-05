@@ -1,4 +1,5 @@
 "use client";
+import { FeedbackError } from "@/components/feedback-provider";
 
 import { useState, useRef, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -556,11 +557,7 @@ export const PainPointSearch = () => {
         )}
 
         {/* 错误提示 */}
-        {error && (
-          <div className="mt-6 w-full max-w-md mx-auto bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
-            {error}
-          </div>
-        )}
+        <FeedbackError message={error} />
       </div>
 
       {/* 结果展示区 */}

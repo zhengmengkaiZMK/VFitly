@@ -1,5 +1,7 @@
 "use client";
 
+import { FeedbackError, useFeedback } from "@/components/feedback-provider";
+
 import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -146,6 +148,7 @@ function PersonUploadCard({
 }
 
 export function ProductTryOnContent() {
+  const { requireLogin, requireUpgrade, showError } = useFeedback();
   const router = useRouter();
   const loginUrl = buildLoginRedirectUrl("/dashboard/product-try-on");
   const [productUrl, setProductUrl] = useState("");
@@ -229,7 +232,7 @@ export function ProductTryOnContent() {
 
     if (!response.ok) {
       if (response.status === 401) {
-        router.push(loginUrl);
+        requireLogin(undefined, loginUrl);
         setExtracting(false);
         return;
       }
@@ -267,7 +270,9 @@ export function ProductTryOnContent() {
 
     if (!response.ok) {
       if (response.status === 401) {
-        router.push(loginUrl);
+        requireLogin(undefined, loginUrl);
+        setGenerating(false);
+        setSavingWardrobe(false);
         return;
       }
       if (response.status === 403) {
@@ -280,7 +285,10 @@ export function ProductTryOnContent() {
         setError(data.error || "Failed to generate product try-on images.");
       }
     } else {
-      setResults(data.results || []);
+      const generatedResults: TryOnResult[] = data.results || [];
+      setResults(generatedResults);
+      const failures = generatedResults.filter((result) => result.status === "failed");
+      if (failures.length) setError(failures.map((result) => `${result.label}: ${result.error || "This image failed to generate."}`).join("\n"));
     }
 
     setGenerating(false);
@@ -305,7 +313,9 @@ export function ProductTryOnContent() {
 
     if (!response.ok) {
       if (response.status === 401) {
-        router.push(loginUrl);
+        requireLogin(undefined, loginUrl);
+        setGenerating(false);
+        setSavingWardrobe(false);
         return;
       }
       if (response.status === 403) {
@@ -346,24 +356,18 @@ export function ProductTryOnContent() {
       const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        if (response.status === 401) {
-          router.push(loginUrl);
-          return;
-        }
-        if (response.status === 403) {
-          if (data.requiresLogin) {
-            setShowLoginModal(true);
-          } else {
-            setShowUpgradeModal(true);
-          }
+        if (response.status === 401 || data.requiresLogin) {
+          requireLogin(data.error, loginUrl);
+        } else if (response.status === 403) {
+          requireUpgrade(data.error);
         } else {
-          setError(data.error || "Failed to save generated look to wardrobe.");
+          showError(data.error || "Failed to save generated look to wardrobe.");
         }
       } else {
         setMessage(data.duplicated ? "This generated look is already in your wardrobe." : "Generated look saved to your wardrobe.");
       }
     } catch {
-      setError("Unable to save the generated look. Please try again.");
+      showError("Unable to save the generated look. Please try again.");
     } finally {
       setSavingGeneratedResultId(null);
     }
@@ -387,7 +391,12 @@ export function ProductTryOnContent() {
 
       if (!response.ok) {
         if (response.status === 401) {
-          router.push(loginUrl);
+          requireLogin(undefined, loginUrl);
+          return;
+        }
+        if (response.status === 403) {
+          if (data.requiresLogin) setShowLoginModal(true);
+          else setShowUpgradeModal(true);
           return;
         }
         throw new Error(data.error || "Failed to generate runway video.");
@@ -410,6 +419,7 @@ export function ProductTryOnContent() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12">
+      <FeedbackError message={error} />
       <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div>
           <p className="text-sm font-medium uppercase tracking-[0.2em] text-purple-500">Product Link Try-On</p>
@@ -580,7 +590,6 @@ export function ProductTryOnContent() {
               </div>
             </div>
 
-            {error && <p className="mb-4 rounded-2xl bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950/30">{error}</p>}
 
             <button
               type="button"

@@ -1,4 +1,5 @@
 "use client";
+import { FeedbackError } from "@/components/feedback-provider";
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -117,11 +118,7 @@ export default function BillingPage() {
           </Link>
         </div>
 
-        {error && (
-          <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
-            {error}
-          </div>
-        )}
+        <FeedbackError message={error} />
 
         <div className="grid gap-6 lg:grid-cols-3">
           <section className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900 lg:col-span-2">

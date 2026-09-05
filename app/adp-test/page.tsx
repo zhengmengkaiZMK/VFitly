@@ -1,4 +1,5 @@
 'use client';
+import { FeedbackError } from "@/components/feedback-provider";
 
 import { useState, useRef, useEffect } from 'react';
 import { Send, Trash2, Loader2, Bot, User, AlertCircle, CheckCircle2, Clock, Zap } from 'lucide-react';
@@ -211,15 +212,7 @@ export default function ADPTestPage() {
           </div>
 
           {/* Status Messages */}
-          {error && (
-            <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-start gap-2">
-              <AlertCircle size={20} className="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="font-semibold text-red-800 dark:text-red-400">错误</p>
-                <p className="text-red-600 dark:text-red-400 text-sm mt-1">{error}</p>
-              </div>
-            </div>
-          )}
+          <FeedbackError message={error} />
 
           {success && (
             <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-center gap-2">

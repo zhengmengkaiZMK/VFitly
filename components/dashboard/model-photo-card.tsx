@@ -1,4 +1,5 @@
 "use client";
+import { FeedbackError } from "@/components/feedback-provider";
 
 import Image from "next/image";
 import { ChangeEvent, useRef, useState } from "react";
@@ -118,7 +119,7 @@ export function ModelPhotoCard({ imageUrl, onImageChange }: ModelPhotoCardProps)
             {imageUrl ? "Replace full-body photo" : "Upload full-body photo"}
           </Button>
         </div>
-        {uploadError ? <p className="mt-3 text-sm text-red-500">{uploadError}</p> : null}
+        <FeedbackError message={uploadError} />
       </div>
     </div>
   );

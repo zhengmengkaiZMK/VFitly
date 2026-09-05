@@ -1,5 +1,7 @@
 "use client";
 
+import { FeedbackError } from "@/components/feedback-provider";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -96,13 +98,7 @@ export function LoginForm() {
           </div>
 
           <div className="mt-10">
-            {error && (
-              <div className="mb-4 p-3 rounded-md bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-                <p className="text-sm text-red-600 dark:text-red-400">
-                  {error}
-                </p>
-              </div>
-            )}
+            <FeedbackError message={error} />
             <div>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}

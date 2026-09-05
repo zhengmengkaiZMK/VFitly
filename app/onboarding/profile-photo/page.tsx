@@ -1,4 +1,5 @@
 "use client";
+import { FeedbackError } from "@/components/feedback-provider";
 
 import { ChangeEvent, FormEvent, useMemo, useState } from "react";
 import Image from "next/image";
@@ -103,7 +104,7 @@ export default function ProfilePhotoOnboardingPage() {
               <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={handleFileChange} />
             </label>
 
-            {error ? <p className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-950/40 dark:text-red-300">{error}</p> : null}
+            <FeedbackError message={error} />
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <button

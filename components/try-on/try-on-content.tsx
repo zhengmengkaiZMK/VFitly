@@ -1,5 +1,7 @@
 "use client";
 
+import { FeedbackError, useFeedback } from "@/components/feedback-provider";
+
 import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -155,6 +157,7 @@ function UploadCard({
 }
 
 export function TryOnContent() {
+  const { requireLogin, requireUpgrade, showError } = useFeedback();
   const router = useRouter();
   const loginUrl = buildLoginRedirectUrl("/dashboard/try-on");
   const [jobs, setJobs] = useState<TryOnJob[]>([]);
@@ -256,7 +259,7 @@ export function TryOnContent() {
 
       if (!response.ok) {
         if (response.status === 401) {
-          router.push(loginUrl);
+          requireLogin(undefined, loginUrl);
           return;
         }
         if (response.status === 403) {
@@ -339,7 +342,7 @@ export function TryOnContent() {
       if (!response.ok) {
         if (response.status === 401) {
           setOutfitGenerating(false);
-          router.push(loginUrl);
+          requireLogin(undefined, loginUrl);
           return;
         }
         if (response.status === 403) {
@@ -364,32 +367,34 @@ export function TryOnContent() {
     setError("");
     setGeneratedLookMessage("");
 
-    const response = await fetch("/api/wardrobe/generated-look", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        imageUrl: job.resultImageUrl,
-        jobId: job.id,
-        name: job.jobType === "MULTI_WARDROBE_OUTFIT" ? "Generated wardrobe outfit" : "Generated try-on look",
-      }),
-    });
-    const data = await response.json().catch(() => ({}));
+    try {
+      const response = await fetch("/api/wardrobe/generated-look", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          imageUrl: job.resultImageUrl,
+          jobId: job.id,
+          name: job.jobType === "MULTI_WARDROBE_OUTFIT" ? "Generated wardrobe outfit" : "Generated try-on look",
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
 
-    if (!response.ok) {
-      if (response.status === 401) {
-        router.push(loginUrl);
+      if (!response.ok) {
+        if (response.status === 401 || data.requiresLogin) {
+          requireLogin(data.error, loginUrl);
+        } else if (response.status === 403) {
+          requireUpgrade(data.error);
+        } else {
+          showError(data.error || "Failed to save generated look to wardrobe.");
+        }
         return;
       }
-      if (response.status === 403) {
-        setShowOutfitUpgradeModal(true);
-      } else {
-        setError(data.error || "Failed to save generated look to wardrobe.");
-      }
-    } else {
       setGeneratedLookMessage(data.duplicated ? "This generated look is already in your wardrobe." : "Generated look saved to your wardrobe.");
+    } catch {
+      showError("Unable to save the generated look. Please try again.");
+    } finally {
+      setSavingGeneratedLookId(null);
     }
-
-    setSavingGeneratedLookId(null);
   }
 
   async function handleGenerateWalkVideo(job: TryOnJob) {
@@ -410,7 +415,7 @@ export function TryOnContent() {
 
       if (!response.ok) {
         if (response.status === 401) {
-          router.push(loginUrl);
+          requireLogin(undefined, loginUrl);
           return;
         }
         if (response.status === 403) {
@@ -525,7 +530,7 @@ export function TryOnContent() {
               />
             </label>
 
-            {error && <p className="rounded-2xl bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950/30">{error}</p>}
+            <FeedbackError message={error} />
 
             <button disabled={!canGenerate} className="w-full rounded-full bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">
               {generating ? "Generating..." : "Generate Try-On Image"}
@@ -649,7 +654,6 @@ export function TryOnContent() {
 
       <section ref={resultSectionRef} className="mt-6 scroll-mt-24 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
         <h2 className="mb-4 text-xl font-semibold text-black dark:text-white">Final try-on result</h2>
-        {error && <p role="alert" className="mb-4 rounded-2xl bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950/30">{error}</p>}
         {generating || outfitGenerating ? (
           <LoadingIndicator
             title="Creating your try-on image"

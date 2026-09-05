@@ -1,3 +1,4 @@
+import { UnauthorizedError } from "@/lib/auth/current-user";
 import { NextRequest, NextResponse } from "next/server";
 import { extractProductGarments } from "@/lib/product-try-on/extractor";
 import { requireUserOrGuest } from "@/lib/auth/guest-session";
@@ -73,7 +74,7 @@ export async function POST(request: NextRequest) {
     console.error("Product garment extraction failed", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Failed to extract product garment images." },
-      { status: error instanceof Error && error.message.includes("Unauthorized") ? 401 : 400 },
+      { status: error instanceof UnauthorizedError ? 401 : 400 },
     );
   }
 }

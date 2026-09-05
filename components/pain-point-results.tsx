@@ -1,4 +1,5 @@
 "use client";
+import { useFeedback } from "@/components/feedback-provider";
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
@@ -43,6 +44,7 @@ interface PainPointResultsProps {
 }
 
 export const PainPointResults = ({ data, redditPosts = [], xPosts = [], onClose, query }: PainPointResultsProps) => {
+  const { showError } = useFeedback();
   const pathname = usePathname();
   const isZh = pathname.startsWith("/zh");
   const [copySuccess, setCopySuccess] = useState(false);
@@ -93,11 +95,11 @@ export const PainPointResults = ({ data, redditPosts = [], xPosts = [], onClose,
         setCopySuccess(true);
         setTimeout(() => setCopySuccess(false), 2000);
       } else {
-        alert(content.copyError);
+        showError(content.copyError);
       }
     } catch (error) {
       console.error('[PainPointResults] Copy failed:', error);
-      alert(content.copyError);
+      showError(content.copyError);
     }
   };
 
@@ -115,7 +117,7 @@ export const PainPointResults = ({ data, redditPosts = [], xPosts = [], onClose,
       setTimeout(() => setIsExporting(false), 1000);
     } catch (error) {
       console.error('[PainPointResults] Export PDF failed:', error);
-      alert(isZh ? '导出失败，请重试' : 'Export failed, please retry');
+      showError(isZh ? '导出失败，请重试' : 'Export failed, please retry');
       setIsExporting(false);
     }
   };

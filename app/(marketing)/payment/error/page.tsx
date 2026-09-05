@@ -1,4 +1,5 @@
 "use client";
+import { FeedbackError } from "@/components/feedback-provider";
 
 import { Suspense } from "react";
 import { useSearchParams, usePathname } from "next/navigation";
@@ -26,9 +27,7 @@ function PaymentErrorContent() {
             {isZh ? "支付失败" : "Payment Failed"}
           </h1>
           
-          <p className="text-neutral-600 dark:text-neutral-400 mb-2">
-            {errorMessage}
-          </p>
+          <FeedbackError message={errorMessage} />
           
           <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-8">
             {isZh

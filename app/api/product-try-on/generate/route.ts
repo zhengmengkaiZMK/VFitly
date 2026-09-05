@@ -1,3 +1,4 @@
+import { UnauthorizedError } from "@/lib/auth/current-user";
 import { NextRequest, NextResponse } from "next/server";
 import { generateProductTryOnImage } from "@/lib/product-try-on/openai-image";
 import {
@@ -208,7 +209,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ personUrl, results });
   } catch (error) {
     console.error("Product try-on generation failed", error);
-    const status = error instanceof Error && error.message.includes("Unauthorized")
+    const status = error instanceof UnauthorizedError
       ? 401
       : error instanceof Error && error.message.includes("Insufficient credits")
         ? 403

@@ -1,4 +1,5 @@
 'use client';
+import { FeedbackError } from "@/components/feedback-provider";
 
 import { useState } from 'react';
 import { Search, ExternalLink, Loader2, AlertCircle, CheckCircle2, TrendingUp } from 'lucide-react';
@@ -301,16 +302,7 @@ export default function RedditTestPage() {
         </div>
 
         {/* Status Messages */}
-        {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 
-            text-red-700 dark:text-red-400 px-6 py-4 rounded-lg mb-6 flex items-start gap-3">
-            <AlertCircle size={24} className="flex-shrink-0 mt-0.5" />
-            <div>
-              <div className="font-semibold">错误</div>
-              <div>{error}</div>
-            </div>
-          </div>
-        )}
+        <FeedbackError message={error} />
 
         {success && (
           <div className="bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800 

@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { ViewTransitions } from "next-view-transitions";
 import { ThemeProvider } from "@/context/theme-provider";
 import { SessionProvider } from "@/components/session-provider";
+import { FeedbackProvider } from "@/components/feedback-provider";
 import { Analytics } from "@vercel/analytics/next";
 import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL, jsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 
@@ -101,7 +102,7 @@ export default function RootLayout({
             disableTransitionOnChange
             defaultTheme="light"
           >
-            <SessionProvider>{children}</SessionProvider>
+            <SessionProvider><FeedbackProvider>{children}</FeedbackProvider></SessionProvider>
             <Analytics />
           </ThemeProvider>
         </body>

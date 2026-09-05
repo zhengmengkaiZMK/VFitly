@@ -1,4 +1,5 @@
 "use client";
+import { FeedbackError, useFeedback } from "@/components/feedback-provider";
 
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -52,6 +53,7 @@ interface HistoryDetailProps {
 }
 
 export function HistoryDetail({ id }: HistoryDetailProps) {
+  const { showError } = useFeedback();
   const pathname = usePathname();
   const router = useRouter();
   const isZh = pathname.startsWith("/zh");
@@ -127,11 +129,11 @@ export function HistoryDetail({ id }: HistoryDetailProps) {
         setCopySuccess(true);
         setTimeout(() => setCopySuccess(false), 2000);
       } else {
-        alert(content.copyError);
+        showError(content.copyError);
       }
     } catch (error) {
       console.error('[HistoryDetail] Copy failed:', error);
-      alert(content.copyError);
+      showError(content.copyError);
     }
   };
 
@@ -154,7 +156,7 @@ export function HistoryDetail({ id }: HistoryDetailProps) {
       setTimeout(() => setIsExporting(false), 1000);
     } catch (error) {
       console.error('[HistoryDetail] Export PDF failed:', error);
-      alert(isZh ? '导出失败，请重试' : 'Export failed, please retry');
+      showError(isZh ? '导出失败，请重试' : 'Export failed, please retry');
       setIsExporting(false);
     }
   };
@@ -196,11 +198,7 @@ export function HistoryDetail({ id }: HistoryDetailProps) {
           <IconArrowLeft className="h-4 w-4" />
           {content.back}
         </Button>
-        <div className="rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-6">
-          <p className="text-red-600 dark:text-red-400">
-            {isZh ? "加载失败：" : "Error: "}{error || "Record not found"}
-          </p>
-        </div>
+        <FeedbackError message={error || "Record not found"} />
       </div>
     );
   }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireUser } from "@/lib/auth/current-user";
+import { requireUser, UnauthorizedError } from "@/lib/auth/current-user";
 import { FREE_WARDROBE_LIMIT, isPaidPlan } from "@/lib/billing/credits";
 import { prisma } from "@/lib/db/prisma";
 
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Failed to save generated try-on image." },
-      { status: error instanceof Error && error.message.includes("Unauthorized") ? 401 : 400 },
+      { status: error instanceof UnauthorizedError ? 401 : 400 },
     );
   }
 }

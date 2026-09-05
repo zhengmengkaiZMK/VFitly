@@ -1,4 +1,5 @@
 "use client";
+import { FeedbackError } from "@/components/feedback-provider";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -158,7 +159,8 @@ export function ContactForm() {
                 {isSubmitting ? "Submitting..." : "Submit feedback"}
               </Button>
 
-              {submitStatus.type && (
+              <FeedbackError message={submitStatus.type === "error" ? submitStatus.message : ""} />
+              {submitStatus.type === "success" && (
                 <div
                   className={cn(
                     "rounded-lg border p-4 text-sm",
