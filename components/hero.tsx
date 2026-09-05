@@ -1,6 +1,5 @@
 "use client";
 
-import Balancer from "react-wrap-balancer";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Button } from "./button";
@@ -24,9 +23,9 @@ export const Hero = () => {
         transition={{ ease: "easeOut", duration: 0.5 }}
         className="relative z-10 mx-auto mt-6 max-w-6xl text-center text-3xl font-semibold tracking-tight md:text-5xl lg:text-7xl"
       >
-        <Balancer>
+        <span className="block text-balance">
           Your personal AI wardrobe, making try-on easier
-        </Balancer>
+        </span>
       </motion.h1>
 
       <motion.p
@@ -35,9 +34,9 @@ export const Hero = () => {
         transition={{ ease: "easeOut", duration: 0.5, delay: 0.15 }}
         className="relative z-10 mx-auto mt-6 max-w-3xl text-center text-base text-muted dark:text-muted-dark md:text-xl"
       >
-        <Balancer>
+        <span className="block text-balance">
           Upload garments, manage your wardrobe library, and create production-ready virtual fitting images inside one SaaS dashboard.
-        </Balancer>
+        </span>
       </motion.p>
 
       <motion.div

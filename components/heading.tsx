@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
 import { MotionProps } from "framer-motion";
 import React from "react";
-import Balancer from "react-wrap-balancer";
 
 export const Heading = ({
   className,
@@ -34,7 +33,7 @@ export const Heading = ({
       )}
       {...props}
     >
-      <Balancer>{children}</Balancer>
+      <span className="block text-balance">{children}</span>
     </Tag>
   );
 };
