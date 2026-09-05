@@ -11,10 +11,11 @@ export type GeneratedWalkVideo = {
 };
 
 type VideoApiResponse = Record<string, unknown>;
-type WalkVideoProvider = "legacy-task" | "unify-videos";
+type WalkVideoProvider = "legacy-task" | "unify-videos" | "apikey-videos";
 
 const LEGACY_TASK_SUBMIT_ENDPOINT = "/v1/task/submit";
 const LEGACY_TASK_STATUS_ENDPOINT = "/v1/task";
+const APIKEY_VIDEO_SUBMIT_ENDPOINT = "/v1/videos/generations";
 const UNIFY_VIDEO_SUBMIT_ENDPOINT = "/v1/videos";
 const UNIFY_VIDEO_STATUS_ENDPOINT = "/v1/videos";
 const TASK_POLL_INTERVAL_MS = 5000;
@@ -94,7 +95,7 @@ async function pollWalkVideoTask(baseUrl: string, apiKey: string, taskId: string
     }
 
     const status = extractTaskStatus(data);
-    if (status === "success" || status === "completed" || status === "succeeded") {
+    if (status === "success" || status === "completed" || status === "succeeded" || status === "done") {
       const videoUrl = extractVideoUrl(data);
       if (videoUrl) {
         return { url: videoUrl, extension: extensionFromUrl(videoUrl), mimeType: mimeTypeFromUrl(videoUrl), raw: data };
@@ -106,7 +107,7 @@ async function pollWalkVideoTask(baseUrl: string, apiKey: string, taskId: string
       throw new Error("The video task succeeded, but no video URL was returned.");
     }
 
-    if (status === "fail" || status === "failed" || status === "error") {
+    if (status === "fail" || status === "failed" || status === "error" || status === "cancelled") {
       throw new Error(extractErrorMessage(data) || "Walk video generation failed in provider task.");
     }
   }
@@ -116,6 +117,9 @@ async function pollWalkVideoTask(baseUrl: string, apiKey: string, taskId: string
 
 function resolveWalkVideoProvider(model: string): WalkVideoProvider {
   const normalizedModel = model.toLowerCase();
+  if (normalizedModel.includes("grok-imagine-video")) {
+    return "apikey-videos";
+  }
   if (normalizedModel.includes("grok-imagine")) {
     return "legacy-task";
   }
@@ -131,6 +135,18 @@ function resolveWalkVideoProvider(model: string): WalkVideoProvider {
 }
 
 function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imageUrl: string) {
+  if (provider === "apikey-videos") {
+    return {
+      model,
+      prompt: walkVideoPrompt,
+      image: {
+        url: imageUrl,
+      },
+      resolution: "720p",
+      duration: WALK_VIDEO_DURATION_SECONDS,
+    };
+  }
+
   if (provider === "unify-videos") {
     const normalizedModel = model.toLowerCase();
     const payload: Record<string, unknown> = {
@@ -166,11 +182,12 @@ function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imag
 }
 
 function buildTaskSubmitUrl(baseUrl: string, provider: WalkVideoProvider) {
-  return buildApiUrl(resolveProviderBaseUrl(baseUrl, provider), provider === "unify-videos" ? UNIFY_VIDEO_SUBMIT_ENDPOINT : LEGACY_TASK_SUBMIT_ENDPOINT);
+  const endpoint = provider === "apikey-videos" ? APIKEY_VIDEO_SUBMIT_ENDPOINT : provider === "unify-videos" ? UNIFY_VIDEO_SUBMIT_ENDPOINT : LEGACY_TASK_SUBMIT_ENDPOINT;
+  return buildApiUrl(resolveProviderBaseUrl(baseUrl, provider), endpoint);
 }
 
 function buildTaskStatusUrl(baseUrl: string, taskId: string, provider: WalkVideoProvider) {
-  const endpoint = provider === "unify-videos" ? UNIFY_VIDEO_STATUS_ENDPOINT : LEGACY_TASK_STATUS_ENDPOINT;
+  const endpoint = provider === "legacy-task" ? LEGACY_TASK_STATUS_ENDPOINT : UNIFY_VIDEO_STATUS_ENDPOINT;
   return buildApiUrl(resolveProviderBaseUrl(baseUrl, provider), `${endpoint}/${encodeURIComponent(taskId)}`);
 }
 
@@ -232,7 +249,7 @@ function isPublicHttpUrl(url: string) {
 }
 
 function extractTaskId(data: VideoApiResponse): string | null {
-  const directKeys = ["taskId", "task_id", "id"];
+  const directKeys = ["taskId", "task_id", "request_id", "id"];
   for (const key of directKeys) {
     const value = data[key];
     if (typeof value === "string" && value) return value;
@@ -262,7 +279,7 @@ function extractVideoUrl(data: VideoApiResponse): string | null {
     if (typeof value === "string" && value.startsWith("http")) return value;
   }
 
-  const nested = [data.data, data.output, data.outputs, data.result, data.results, data.steps, data.content];
+  const nested = [data.data, data.video, data.output, data.outputs, data.result, data.results, data.steps, data.content];
   for (const value of nested) {
     if (Array.isArray(value)) {
       for (const item of value) {
@@ -290,7 +307,7 @@ function extractBase64Video(data: VideoApiResponse): string | null {
     if (typeof value === "string" && value.length > 100) return value.replace(/^data:video\/[^;]+;base64,/, "");
   }
 
-  const nested = [data.data, data.output, data.outputs, data.result, data.results, data.steps, data.content];
+  const nested = [data.data, data.video, data.output, data.outputs, data.result, data.results, data.steps, data.content];
   for (const value of nested) {
     if (Array.isArray(value)) {
       for (const item of value) {
