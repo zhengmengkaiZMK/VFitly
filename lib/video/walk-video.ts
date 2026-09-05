@@ -166,12 +166,22 @@ function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imag
 }
 
 function buildTaskSubmitUrl(baseUrl: string, provider: WalkVideoProvider) {
-  return buildApiUrl(baseUrl, provider === "unify-videos" ? UNIFY_VIDEO_SUBMIT_ENDPOINT : LEGACY_TASK_SUBMIT_ENDPOINT);
+  return buildApiUrl(resolveProviderBaseUrl(baseUrl, provider), provider === "unify-videos" ? UNIFY_VIDEO_SUBMIT_ENDPOINT : LEGACY_TASK_SUBMIT_ENDPOINT);
 }
 
 function buildTaskStatusUrl(baseUrl: string, taskId: string, provider: WalkVideoProvider) {
   const endpoint = provider === "unify-videos" ? UNIFY_VIDEO_STATUS_ENDPOINT : LEGACY_TASK_STATUS_ENDPOINT;
-  return buildApiUrl(baseUrl, `${endpoint}/${encodeURIComponent(taskId)}`);
+  return buildApiUrl(resolveProviderBaseUrl(baseUrl, provider), `${endpoint}/${encodeURIComponent(taskId)}`);
+}
+
+function resolveProviderBaseUrl(baseUrl: string, provider: WalkVideoProvider) {
+  if (provider !== "legacy-task") return baseUrl;
+
+  const parsedBaseUrl = new URL(baseUrl);
+  if (parsedBaseUrl.hostname === "new.12ai.org") {
+    parsedBaseUrl.hostname = "cdn.12ai.org";
+  }
+  return parsedBaseUrl.toString().replace(/\/+$/, "");
 }
 
 function buildApiUrl(baseUrl: string, endpoint: string) {
