@@ -161,6 +161,17 @@ export function ProductTryOnContent() {
   const [message, setMessage] = useState("");
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const resultSectionRef = useRef<HTMLElement>(null);
+  const [walkVideoJobId, setWalkVideoJobId] = useState<string | null>(null);
+  const [walkVideoUrls, setWalkVideoUrls] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!generating) return;
+    resultSectionRef.current?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+      block: "start",
+    });
+  }, [generating]);
 
   useEffect(() => {
     setSelectedGarmentIds(garments.map((garment) => garment.id));
@@ -322,36 +333,72 @@ export function ProductTryOnContent() {
     setError("");
     setMessage("");
 
-    const response = await fetch("/api/wardrobe/generated-look", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        imageUrl: result.resultUrl,
-        jobId: result.jobId,
-        name: `Generated product look - ${result.label}`,
-      }),
-    });
-    const data = await response.json().catch(() => ({}));
+    try {
+      const response = await fetch("/api/wardrobe/generated-look", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          imageUrl: result.resultUrl,
+          jobId: result.jobId,
+          name: `Generated product look - ${result.label}`,
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
 
-    if (!response.ok) {
-      if (response.status === 401) {
-        router.push(loginUrl);
-        return;
-      }
-      if (response.status === 403) {
-        if (data.requiresLogin) {
-          setShowLoginModal(true);
+      if (!response.ok) {
+        if (response.status === 401) {
+          router.push(loginUrl);
+          return;
+        }
+        if (response.status === 403) {
+          if (data.requiresLogin) {
+            setShowLoginModal(true);
+          } else {
+            setShowUpgradeModal(true);
+          }
         } else {
-          setShowUpgradeModal(true);
+          setError(data.error || "Failed to save generated look to wardrobe.");
         }
       } else {
-        setError(data.error || "Failed to save generated look to wardrobe.");
+        setMessage(data.duplicated ? "This generated look is already in your wardrobe." : "Generated look saved to your wardrobe.");
       }
-    } else {
-      setMessage(data.duplicated ? "This generated look is already in your wardrobe." : "Generated look saved to your wardrobe.");
+    } catch {
+      setError("Unable to save the generated look. Please try again.");
+    } finally {
+      setSavingGeneratedResultId(null);
     }
+  }
 
-    setSavingGeneratedResultId(null);
+  async function handleGenerateWalkVideo(result: TryOnResult) {
+    if (!result.jobId || !result.resultUrl || walkVideoJobId) return;
+
+    const jobId = result.jobId;
+    setWalkVideoJobId(jobId);
+    setError("");
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/try-on/walk-video", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId }),
+      });
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          router.push(loginUrl);
+          return;
+        }
+        throw new Error(data.error || "Failed to generate runway video.");
+      }
+      if (!data.videoUrl) throw new Error("The video task finished, but no playable video URL was returned.");
+      setWalkVideoUrls((current) => ({ ...current, [jobId]: data.videoUrl }));
+    } catch (videoError) {
+      setError(videoError instanceof Error ? videoError.message : "Failed to generate runway video.");
+    } finally {
+      setWalkVideoJobId(null);
+    }
   }
 
   const selectedGarments = useMemo(
@@ -551,7 +598,7 @@ export function ProductTryOnContent() {
         </aside>
       </div>
 
-      <section className="mt-6 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+      <section ref={resultSectionRef} className="mt-6 scroll-mt-24 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
         <div className="mb-4 flex flex-col justify-between gap-3 md:flex-row md:items-center">
           <div>
             <h2 className="text-xl font-semibold text-black dark:text-white">Generated try-on results</h2>
@@ -591,11 +638,40 @@ export function ProductTryOnContent() {
                       Garment
                     </a>
                     {result.resultUrl && (
-                      <a href={result.resultUrl} download className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-black px-3 py-2 text-xs font-medium text-white dark:bg-white dark:text-black">
-                        <IconDownload className="h-4 w-4" /> Download
-                      </a>
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => handleSaveGeneratedResult(result)}
+                          disabled={Boolean(savingGeneratedResultId)}
+                          className="inline-flex w-full items-center justify-center rounded-full bg-purple-600 px-3 py-2 text-xs font-medium text-white hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          {savingGeneratedResultId === result.id ? "Saving..." : "Save to Generated Looks"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleGenerateWalkVideo(result)}
+                          disabled={!result.jobId || Boolean(walkVideoJobId)}
+                          className="inline-flex w-full items-center justify-center rounded-full border border-neutral-200 px-3 py-2 text-xs font-medium disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700"
+                        >
+                          {walkVideoJobId === result.jobId ? "Generating runway video..." : "Generate Runway Video"}
+                        </button>
+                        <a href={result.resultUrl} download className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-black px-3 py-2 text-xs font-medium text-white dark:bg-white dark:text-black">
+                          <IconDownload className="h-4 w-4" /> Download Image
+                        </a>
+                      </>
                     )}
                   </div>
+                  {result.jobId && walkVideoJobId === result.jobId && (
+                    <LoadingIndicator title="Creating runway video" description="This may take a few minutes. Please keep this page open." tone="purple" />
+                  )}
+                  {result.jobId && walkVideoUrls[result.jobId] && (
+                    <div className="space-y-3">
+                      <video src={walkVideoUrls[result.jobId]} controls playsInline className="w-full rounded-2xl bg-black" />
+                      <a href={walkVideoUrls[result.jobId]} download className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-neutral-200 px-3 py-2 text-xs font-medium dark:border-neutral-700">
+                        <IconDownload className="h-4 w-4" /> Download Video
+                      </a>
+                    </div>
+                  )}
                 </div>
               </article>
             ))}

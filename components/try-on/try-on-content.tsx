@@ -175,6 +175,15 @@ export function TryOnContent() {
   const [walkVideoUrl, setWalkVideoUrl] = useState("");
   const [walkVideoMessage, setWalkVideoMessage] = useState("");
   const [showOutfitUpgradeModal, setShowOutfitUpgradeModal] = useState(false);
+  const resultSectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!generating && !outfitGenerating) return;
+    resultSectionRef.current?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+      block: "start",
+    });
+  }, [generating, outfitGenerating]);
 
   useEffect(() => {
     Promise.all([loadJobs(), loadWardrobeItems()]).finally(() => setLoading(false));
@@ -638,8 +647,9 @@ export function TryOnContent() {
         </div>
       </section>
 
-      <section className="mt-6 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+      <section ref={resultSectionRef} className="mt-6 scroll-mt-24 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
         <h2 className="mb-4 text-xl font-semibold text-black dark:text-white">Final try-on result</h2>
+        {error && <p role="alert" className="mb-4 rounded-2xl bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950/30">{error}</p>}
         {generating || outfitGenerating ? (
           <LoadingIndicator
             title="Creating your try-on image"
