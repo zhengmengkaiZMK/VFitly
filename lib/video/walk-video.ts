@@ -11,11 +11,11 @@ export type GeneratedWalkVideo = {
 };
 
 type VideoApiResponse = Record<string, unknown>;
-type WalkVideoProvider = "legacy-task" | "unify-videos" | "apikey-videos";
+type WalkVideoProvider = "legacy-task" | "unify-videos" | "generic-videos";
 
 const LEGACY_TASK_SUBMIT_ENDPOINT = "/v1/task/submit";
 const LEGACY_TASK_STATUS_ENDPOINT = "/v1/task";
-const APIKEY_VIDEO_SUBMIT_ENDPOINT = "/v1/videos/generations";
+const GENERIC_VIDEO_ENDPOINT = "/v1/video/generations";
 const UNIFY_VIDEO_SUBMIT_ENDPOINT = "/v1/videos";
 const UNIFY_VIDEO_STATUS_ENDPOINT = "/v1/videos";
 const TASK_POLL_INTERVAL_MS = 5000;
@@ -118,7 +118,7 @@ async function pollWalkVideoTask(baseUrl: string, apiKey: string, taskId: string
 function resolveWalkVideoProvider(model: string): WalkVideoProvider {
   const normalizedModel = model.toLowerCase();
   if (normalizedModel.includes("grok-imagine-video")) {
-    return "apikey-videos";
+    return "generic-videos";
   }
   if (normalizedModel.includes("grok-imagine")) {
     return "legacy-task";
@@ -135,13 +135,11 @@ function resolveWalkVideoProvider(model: string): WalkVideoProvider {
 }
 
 function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imageUrl: string) {
-  if (provider === "apikey-videos") {
+  if (provider === "generic-videos") {
     return {
       model,
       prompt: walkVideoPrompt,
-      image: {
-        url: imageUrl,
-      },
+      image: imageUrl,
       resolution: "720p",
       duration: WALK_VIDEO_DURATION_SECONDS,
     };
@@ -182,12 +180,12 @@ function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imag
 }
 
 function buildTaskSubmitUrl(baseUrl: string, provider: WalkVideoProvider) {
-  const endpoint = provider === "apikey-videos" ? APIKEY_VIDEO_SUBMIT_ENDPOINT : provider === "unify-videos" ? UNIFY_VIDEO_SUBMIT_ENDPOINT : LEGACY_TASK_SUBMIT_ENDPOINT;
+  const endpoint = provider === "generic-videos" ? GENERIC_VIDEO_ENDPOINT : provider === "unify-videos" ? UNIFY_VIDEO_SUBMIT_ENDPOINT : LEGACY_TASK_SUBMIT_ENDPOINT;
   return buildApiUrl(resolveProviderBaseUrl(baseUrl, provider), endpoint);
 }
 
 function buildTaskStatusUrl(baseUrl: string, taskId: string, provider: WalkVideoProvider) {
-  const endpoint = provider === "legacy-task" ? LEGACY_TASK_STATUS_ENDPOINT : UNIFY_VIDEO_STATUS_ENDPOINT;
+  const endpoint = provider === "generic-videos" ? GENERIC_VIDEO_ENDPOINT : provider === "legacy-task" ? LEGACY_TASK_STATUS_ENDPOINT : UNIFY_VIDEO_STATUS_ENDPOINT;
   return buildApiUrl(resolveProviderBaseUrl(baseUrl, provider), `${endpoint}/${encodeURIComponent(taskId)}`);
 }
 
