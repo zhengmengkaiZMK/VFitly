@@ -139,7 +139,9 @@ function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imag
     return {
       model,
       prompt: walkVideoPrompt,
-      image: imageUrl,
+      image: {
+        url: imageUrl,
+      },
       resolution: "720p",
       duration: WALK_VIDEO_DURATION_SECONDS,
     };
