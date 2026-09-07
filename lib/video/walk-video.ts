@@ -11,13 +11,15 @@ export type GeneratedWalkVideo = {
 };
 
 type VideoApiResponse = Record<string, unknown>;
-type WalkVideoProvider = "legacy-task" | "unify-videos" | "generic-videos";
+type WalkVideoProvider = "legacy-task" | "unify-videos" | "generic-videos" | "minimax-h3";
 
 const LEGACY_TASK_SUBMIT_ENDPOINT = "/v1/task/submit";
 const LEGACY_TASK_STATUS_ENDPOINT = "/v1/task";
 const GENERIC_VIDEO_ENDPOINT = "/v1/video/generations";
 const UNIFY_VIDEO_SUBMIT_ENDPOINT = "/v1/videos";
 const UNIFY_VIDEO_STATUS_ENDPOINT = "/v1/videos";
+const MINIMAX_H3_VIDEO_ENDPOINT = "/wavespeed-ai/minimax-h3/image-to-video";
+const MINIMAX_H3_STATUS_ENDPOINT = "/predictions";
 const TASK_POLL_INTERVAL_MS = 5000;
 const TASK_MAX_ATTEMPTS = 36;
 const WALK_VIDEO_DURATION_SECONDS = 5;
@@ -117,6 +119,9 @@ async function pollWalkVideoTask(baseUrl: string, apiKey: string, taskId: string
 
 function resolveWalkVideoProvider(model: string): WalkVideoProvider {
   const normalizedModel = model.toLowerCase();
+  if (normalizedModel.includes("minimax") && normalizedModel.includes("h3")) {
+    return "minimax-h3";
+  }
   if (normalizedModel.includes("grok-imagine-video")) {
     return "generic-videos";
   }
@@ -135,6 +140,16 @@ function resolveWalkVideoProvider(model: string): WalkVideoProvider {
 }
 
 function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imageUrl: string) {
+  if (provider === "minimax-h3") {
+    return {
+      model,
+      prompt: walkVideoPrompt,
+      image: imageUrl,
+      resolution: "768p",
+      duration: WALK_VIDEO_DURATION_SECONDS,
+    };
+  }
+
   if (provider === "generic-videos") {
     return {
       model,
@@ -181,12 +196,28 @@ function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imag
 }
 
 function buildTaskSubmitUrl(baseUrl: string, provider: WalkVideoProvider) {
-  const endpoint = provider === "generic-videos" ? GENERIC_VIDEO_ENDPOINT : provider === "unify-videos" ? UNIFY_VIDEO_SUBMIT_ENDPOINT : LEGACY_TASK_SUBMIT_ENDPOINT;
+  const endpoint =
+    provider === "minimax-h3"
+      ? MINIMAX_H3_VIDEO_ENDPOINT
+      : provider === "generic-videos"
+        ? GENERIC_VIDEO_ENDPOINT
+        : provider === "unify-videos"
+          ? UNIFY_VIDEO_SUBMIT_ENDPOINT
+          : LEGACY_TASK_SUBMIT_ENDPOINT;
   return buildApiUrl(resolveProviderBaseUrl(baseUrl, provider), endpoint);
 }
 
 function buildTaskStatusUrl(baseUrl: string, taskId: string, provider: WalkVideoProvider) {
-  const endpoint = provider === "generic-videos" ? GENERIC_VIDEO_ENDPOINT : provider === "legacy-task" ? LEGACY_TASK_STATUS_ENDPOINT : UNIFY_VIDEO_STATUS_ENDPOINT;
+  if (provider === "minimax-h3") {
+    return buildApiUrl(resolveProviderBaseUrl(baseUrl, provider), `${MINIMAX_H3_STATUS_ENDPOINT}/${encodeURIComponent(taskId)}/result`);
+  }
+
+  const endpoint =
+    provider === "generic-videos"
+      ? GENERIC_VIDEO_ENDPOINT
+      : provider === "legacy-task"
+        ? LEGACY_TASK_STATUS_ENDPOINT
+        : UNIFY_VIDEO_STATUS_ENDPOINT;
   return buildApiUrl(resolveProviderBaseUrl(baseUrl, provider), `${endpoint}/${encodeURIComponent(taskId)}`);
 }
 
