@@ -11,15 +11,19 @@ export type GeneratedWalkVideo = {
 };
 
 type VideoApiResponse = Record<string, unknown>;
-type WalkVideoProvider = "legacy-task" | "unify-videos" | "generic-videos" | "minimax-h3";
+type WalkVideoProvider = "legacy-task" | "unify-videos" | "generic-videos" | "minimax-h3-wavespeed" | "minimax-h3-agentsflare";
+
+type MiniMaxH3Provider = Extract<WalkVideoProvider, "minimax-h3-wavespeed" | "minimax-h3-agentsflare">;
 
 const LEGACY_TASK_SUBMIT_ENDPOINT = "/v1/task/submit";
 const LEGACY_TASK_STATUS_ENDPOINT = "/v1/task";
 const GENERIC_VIDEO_ENDPOINT = "/v1/video/generations";
 const UNIFY_VIDEO_SUBMIT_ENDPOINT = "/v1/videos";
 const UNIFY_VIDEO_STATUS_ENDPOINT = "/v1/videos";
-const MINIMAX_H3_VIDEO_ENDPOINT = "/wavespeed-ai/minimax-h3/image-to-video";
-const MINIMAX_H3_STATUS_ENDPOINT = "/predictions";
+const MINIMAX_H3_WAVESPEED_VIDEO_ENDPOINT = "/wavespeed-ai/minimax-h3/image-to-video";
+const MINIMAX_H3_WAVESPEED_STATUS_ENDPOINT = "/predictions";
+const MINIMAX_H3_AGENTSFLARE_VIDEO_ENDPOINT = "/minimax/v2/video_generation";
+const MINIMAX_H3_AGENTSFLARE_STATUS_ENDPOINT = "/minimax/v2/query/video_generation";
 const TASK_POLL_INTERVAL_MS = 5000;
 const TASK_MAX_ATTEMPTS = 36;
 const WALK_VIDEO_DURATION_SECONDS = 5;
@@ -27,7 +31,7 @@ const WALK_VIDEO_ASPECT_RATIO = "9:16";
 
 export async function generateWalkVideoFromImage(imagePath: string, imageUrl: string): Promise<GeneratedWalkVideo> {
   const config = getWalkVideoConfig();
-  const provider = resolveWalkVideoProvider(config.model);
+  const provider = resolveWalkVideoProvider(config.model, config.baseUrl);
   const publicImageUrl = buildPublicImageUrl(imageUrl);
   const imageBuffer = await readFile(imagePath);
   const mimeType = mimeTypeFromPath(imagePath);
@@ -98,7 +102,7 @@ async function pollWalkVideoTask(baseUrl: string, apiKey: string, taskId: string
 
     const status = extractTaskStatus(data);
     if (status === "success" || status === "completed" || status === "succeeded" || status === "done") {
-      const videoUrl = extractVideoUrl(data);
+      const videoUrl = extractVideoUrl(data) || (await resolveVideoFileUrl(baseUrl, apiKey, data, provider));
       if (videoUrl) {
         return { url: videoUrl, extension: extensionFromUrl(videoUrl), mimeType: mimeTypeFromUrl(videoUrl), raw: data };
       }
@@ -117,10 +121,31 @@ async function pollWalkVideoTask(baseUrl: string, apiKey: string, taskId: string
   throw new Error(`Walk video generation timed out. Task ID: ${taskId}. Last status: ${extractTaskStatus(lastPayload) || "unknown"}`);
 }
 
-function resolveWalkVideoProvider(model: string): WalkVideoProvider {
+async function resolveVideoFileUrl(baseUrl: string, apiKey: string, data: VideoApiResponse, provider: WalkVideoProvider) {
+  if (provider !== "minimax-h3-agentsflare") return null;
+
+  const fileId = extractFileId(data);
+  if (!fileId) return null;
+
+  const response = await fetch(buildApiUrl(resolveProviderBaseUrl(baseUrl, provider), `/minimax/v1/files/retrieve?file_id=${encodeURIComponent(fileId)}`), {
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
+  });
+  const text = await response.text();
+  const payload = parseJson(text);
+
+  if (!response.ok) {
+    throw new Error(extractErrorMessage(payload) || text || `${response.status} ${response.statusText}`);
+  }
+
+  return extractVideoUrl(payload);
+}
+
+function resolveWalkVideoProvider(model: string, baseUrl: string): WalkVideoProvider {
   const normalizedModel = model.toLowerCase();
   if (normalizedModel.includes("minimax") && normalizedModel.includes("h3")) {
-    return "minimax-h3";
+    return baseUrl.toLowerCase().includes("wavespeed") ? "minimax-h3-wavespeed" : "minimax-h3-agentsflare";
   }
   if (normalizedModel.includes("grok-imagine-video")) {
     return "generic-videos";
@@ -140,13 +165,23 @@ function resolveWalkVideoProvider(model: string): WalkVideoProvider {
 }
 
 function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imageUrl: string) {
-  if (provider === "minimax-h3") {
+  if (provider === "minimax-h3-wavespeed") {
     return {
       model,
       prompt: walkVideoPrompt,
       image: imageUrl,
-      resolution: "768p",
       duration: WALK_VIDEO_DURATION_SECONDS,
+      resolution: "768p",
+    };
+  }
+
+  if (provider === "minimax-h3-agentsflare") {
+    return {
+      model_name: model,
+      prompt: walkVideoPrompt,
+      first_frame_image: imageUrl,
+      duration: WALK_VIDEO_DURATION_SECONDS,
+      resolution: "768P",
     };
   }
 
@@ -195,21 +230,31 @@ function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imag
   };
 }
 
+function isMiniMaxH3Provider(provider: WalkVideoProvider): provider is MiniMaxH3Provider {
+  return provider === "minimax-h3-wavespeed" || provider === "minimax-h3-agentsflare";
+}
+
 function buildTaskSubmitUrl(baseUrl: string, provider: WalkVideoProvider) {
   const endpoint =
-    provider === "minimax-h3"
-      ? MINIMAX_H3_VIDEO_ENDPOINT
-      : provider === "generic-videos"
-        ? GENERIC_VIDEO_ENDPOINT
-        : provider === "unify-videos"
-          ? UNIFY_VIDEO_SUBMIT_ENDPOINT
-          : LEGACY_TASK_SUBMIT_ENDPOINT;
+    provider === "minimax-h3-wavespeed"
+      ? MINIMAX_H3_WAVESPEED_VIDEO_ENDPOINT
+      : provider === "minimax-h3-agentsflare"
+        ? MINIMAX_H3_AGENTSFLARE_VIDEO_ENDPOINT
+        : provider === "generic-videos"
+          ? GENERIC_VIDEO_ENDPOINT
+          : provider === "unify-videos"
+            ? UNIFY_VIDEO_SUBMIT_ENDPOINT
+            : LEGACY_TASK_SUBMIT_ENDPOINT;
   return buildApiUrl(resolveProviderBaseUrl(baseUrl, provider), endpoint);
 }
 
 function buildTaskStatusUrl(baseUrl: string, taskId: string, provider: WalkVideoProvider) {
-  if (provider === "minimax-h3") {
-    return buildApiUrl(resolveProviderBaseUrl(baseUrl, provider), `${MINIMAX_H3_STATUS_ENDPOINT}/${encodeURIComponent(taskId)}/result`);
+  if (provider === "minimax-h3-wavespeed") {
+    return buildApiUrl(resolveProviderBaseUrl(baseUrl, provider), `${MINIMAX_H3_WAVESPEED_STATUS_ENDPOINT}/${encodeURIComponent(taskId)}/result`);
+  }
+
+  if (provider === "minimax-h3-agentsflare") {
+    return buildApiUrl(resolveProviderBaseUrl(baseUrl, provider), `${MINIMAX_H3_AGENTSFLARE_STATUS_ENDPOINT}?task_id=${encodeURIComponent(taskId)}`);
   }
 
   const endpoint =
@@ -279,37 +324,42 @@ function isPublicHttpUrl(url: string) {
 }
 
 function extractTaskId(data: VideoApiResponse): string | null {
-  const directKeys = ["taskId", "task_id", "request_id", "id"];
+  const directKeys = ["taskId", "task_id", "request_id", "prediction_id", "predictionId", "id"];
   for (const key of directKeys) {
     const value = data[key];
     if (typeof value === "string" && value) return value;
+    if (typeof value === "number" && Number.isFinite(value)) return String(value);
   }
 
+  if (data.task && typeof data.task === "object") return extractTaskId(data.task as VideoApiResponse);
+  if (data.prediction && typeof data.prediction === "object") return extractTaskId(data.prediction as VideoApiResponse);
   if (data.data && typeof data.data === "object") return extractTaskId(data.data as VideoApiResponse);
   if (data.result && typeof data.result === "object") return extractTaskId(data.result as VideoApiResponse);
   return null;
 }
 
 function extractTaskStatus(data: VideoApiResponse): string | null {
-  const directKeys = ["status", "state"];
+  const directKeys = ["status", "state", "task_status"];
   for (const key of directKeys) {
     const value = data[key];
     if (typeof value === "string" && value) return value.toLowerCase();
   }
 
+  if (data.task && typeof data.task === "object") return extractTaskStatus(data.task as VideoApiResponse);
+  if (data.prediction && typeof data.prediction === "object") return extractTaskStatus(data.prediction as VideoApiResponse);
   if (data.data && typeof data.data === "object") return extractTaskStatus(data.data as VideoApiResponse);
   if (data.result && typeof data.result === "object") return extractTaskStatus(data.result as VideoApiResponse);
   return null;
 }
 
 function extractVideoUrl(data: VideoApiResponse): string | null {
-  const directKeys = ["url", "video_url", "videoUrl", "output_url", "outputUrl"];
+  const directKeys = ["url", "video_url", "videoUrl", "output_url", "outputUrl", "file_url", "fileUrl", "download_url", "downloadUrl"];
   for (const key of directKeys) {
     const value = data[key];
     if (typeof value === "string" && value.startsWith("http")) return value;
   }
 
-  const nested = [data.data, data.video, data.output, data.outputs, data.result, data.results, data.steps, data.content];
+  const nested = [data.data, data.video, data.output, data.outputs, data.result, data.results, data.steps, data.content, data.task, data.prediction, data.urls, data.file];
   for (const value of nested) {
     if (Array.isArray(value)) {
       for (const item of value) {
@@ -324,6 +374,32 @@ function extractVideoUrl(data: VideoApiResponse): string | null {
       if (found) return found;
     } else if (typeof value === "string" && value.startsWith("http")) {
       return value;
+    }
+  }
+
+  return null;
+}
+
+function extractFileId(data: VideoApiResponse): string | null {
+  const directKeys = ["file_id", "fileId", "video_file_id", "videoFileId"];
+  for (const key of directKeys) {
+    const value = data[key];
+    if (typeof value === "string" && value) return value;
+    if (typeof value === "number" && Number.isFinite(value)) return String(value);
+  }
+
+  const nested = [data.data, data.video, data.output, data.outputs, data.result, data.results, data.file, data.files];
+  for (const value of nested) {
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        if (item && typeof item === "object") {
+          const found = extractFileId(item as VideoApiResponse);
+          if (found) return found;
+        }
+      }
+    } else if (value && typeof value === "object") {
+      const found = extractFileId(value as VideoApiResponse);
+      if (found) return found;
     }
   }
 
