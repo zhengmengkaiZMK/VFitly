@@ -11,7 +11,7 @@ export type GeneratedWalkVideo = {
 };
 
 type VideoApiResponse = Record<string, unknown>;
-type WalkVideoProvider = "runapi-grok" | "legacy-task" | "unify-videos" | "generic-videos" | "minimax-h3-wavespeed" | "minimax-h3-agentsflare";
+type WalkVideoProvider = "legacy-task" | "unify-videos" | "generic-videos" | "minimax-h3-wavespeed" | "minimax-h3-agentsflare";
 
 type MiniMaxH3Provider = Extract<WalkVideoProvider, "minimax-h3-wavespeed" | "minimax-h3-agentsflare">;
 
@@ -43,7 +43,6 @@ export async function generateWalkVideoFromImage(imagePath: string, imageUrl: st
     headers: {
       Authorization: `Bearer ${config.apiKey}`,
       "Content-Type": "application/json",
-      ...(provider === "runapi-grok" ? { Accept: "application/json" } : {}),
     },
     body: JSON.stringify(buildTaskSubmitPayload(provider, config.model, resolvedImageUrl)),
   });
@@ -91,7 +90,6 @@ async function pollWalkVideoTask(baseUrl: string, apiKey: string, taskId: string
     const response = await fetch(buildTaskStatusUrl(baseUrl, taskId, provider), {
       headers: {
         Authorization: `Bearer ${apiKey}`,
-        ...(provider === "runapi-grok" ? { Accept: "application/json" } : {}),
       },
     });
     const text = await response.text();
@@ -146,11 +144,8 @@ async function resolveVideoFileUrl(baseUrl: string, apiKey: string, data: VideoA
 
 function resolveWalkVideoProvider(model: string, baseUrl: string): WalkVideoProvider {
   const normalizedModel = model.toLowerCase();
-  const hostname = new URL(baseUrl).hostname.toLowerCase();
-  if ((hostname === "runapi.co" || hostname === "runapi.host") && normalizedModel.startsWith("grok-")) {
-    return "runapi-grok";
-  }
   if (normalizedModel.includes("minimax") && normalizedModel.includes("h3")) {
+    const hostname = new URL(baseUrl).hostname.toLowerCase();
     if (hostname === "new.12ai.org" || hostname === "cdn.12ai.org") {
       return "legacy-task";
     }
@@ -174,15 +169,6 @@ function resolveWalkVideoProvider(model: string, baseUrl: string): WalkVideoProv
 }
 
 function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imageUrl: string) {
-  if (provider === "runapi-grok") {
-    return {
-      model: model.toLowerCase(),
-      prompt: walkVideoPrompt,
-      size: "720x1280",
-      images: [imageUrl],
-    };
-  }
-
   if (provider === "legacy-task" && model.toLowerCase() === "minimax-h3") {
     if (!isPublicHttpUrl(imageUrl)) {
       throw new Error("MiniMax-H3 requires a publicly accessible image URL. Please configure NEXT_PUBLIC_APP_URL or NEXTAUTH_URL with your public site URL.");
@@ -276,7 +262,7 @@ function buildTaskSubmitUrl(baseUrl: string, provider: WalkVideoProvider) {
         ? MINIMAX_H3_AGENTSFLARE_VIDEO_ENDPOINT
         : provider === "generic-videos"
           ? GENERIC_VIDEO_ENDPOINT
-          : provider === "unify-videos" || provider === "runapi-grok"
+          : provider === "unify-videos"
             ? UNIFY_VIDEO_SUBMIT_ENDPOINT
             : LEGACY_TASK_SUBMIT_ENDPOINT;
   return buildApiUrl(resolveProviderBaseUrl(baseUrl, provider), endpoint);
