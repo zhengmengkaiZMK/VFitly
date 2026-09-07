@@ -11,7 +11,7 @@ export type GeneratedWalkVideo = {
 };
 
 type VideoApiResponse = Record<string, unknown>;
-type WalkVideoProvider = "legacy-task" | "unify-videos" | "generic-videos" | "minimax-h3-wavespeed" | "minimax-h3-agentsflare";
+type WalkVideoProvider = "apikey-fun-grok" | "legacy-task" | "unify-videos" | "generic-videos" | "minimax-h3-wavespeed" | "minimax-h3-agentsflare";
 
 type MiniMaxH3Provider = Extract<WalkVideoProvider, "minimax-h3-wavespeed" | "minimax-h3-agentsflare">;
 
@@ -110,6 +110,21 @@ async function pollWalkVideoTask(baseUrl: string, apiKey: string, taskId: string
       if (base64Video) {
         return { buffer: Buffer.from(base64Video, "base64"), extension: "mp4", mimeType: "video/mp4", raw: data };
       }
+      if (provider === "apikey-fun-grok") {
+        const contentResponse = await fetch(`${buildTaskStatusUrl(baseUrl, taskId, provider)}/content`, {
+          headers: { Authorization: `Bearer ${apiKey}` },
+        });
+        if (!contentResponse.ok) {
+          throw new Error(`Generated video could not be downloaded (${contentResponse.status}). Task ID: ${taskId}`);
+        }
+        const contentType = contentResponse.headers.get("content-type")?.split(";")[0].trim() || "video/mp4";
+        if (!contentType.startsWith("video/") && contentType !== "application/octet-stream") {
+          throw new Error("The video content endpoint did not return a video file.");
+        }
+        const buffer = Buffer.from(await contentResponse.arrayBuffer());
+        if (!buffer.length) throw new Error("The video content endpoint returned an empty file.");
+        return { buffer, extension: extensionFromMimeType(contentType) || "mp4", mimeType: contentType === "application/octet-stream" ? "video/mp4" : contentType, raw: data };
+      }
       throw new Error("The video task succeeded, but no video URL was returned.");
     }
 
@@ -144,6 +159,9 @@ async function resolveVideoFileUrl(baseUrl: string, apiKey: string, data: VideoA
 
 function resolveWalkVideoProvider(model: string, baseUrl: string): WalkVideoProvider {
   const normalizedModel = model.toLowerCase();
+  if (normalizedModel === "grok-imagine-video" && new URL(baseUrl).hostname.toLowerCase() === "api.apikey.fun") {
+    return "apikey-fun-grok";
+  }
   if (normalizedModel.includes("minimax") && normalizedModel.includes("h3")) {
     const hostname = new URL(baseUrl).hostname.toLowerCase();
     if (hostname === "new.12ai.org" || hostname === "cdn.12ai.org") {
@@ -169,6 +187,16 @@ function resolveWalkVideoProvider(model: string, baseUrl: string): WalkVideoProv
 }
 
 function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imageUrl: string) {
+  if (provider === "apikey-fun-grok") {
+    return {
+      model: model.toLowerCase(),
+      prompt: walkVideoPrompt,
+      image: { url: imageUrl },
+      resolution: "720p",
+      duration: WALK_VIDEO_DURATION_SECONDS,
+    };
+  }
+
   if (provider === "legacy-task" && model.toLowerCase() === "minimax-h3") {
     if (!isPublicHttpUrl(imageUrl)) {
       throw new Error("MiniMax-H3 requires a publicly accessible image URL. Please configure NEXT_PUBLIC_APP_URL or NEXTAUTH_URL with your public site URL.");
@@ -255,6 +283,10 @@ function isMiniMaxH3Provider(provider: WalkVideoProvider): provider is MiniMaxH3
 }
 
 function buildTaskSubmitUrl(baseUrl: string, provider: WalkVideoProvider) {
+  if (provider === "apikey-fun-grok") {
+    return buildApiUrl(baseUrl, "/v1/videos/generations");
+  }
+
   const endpoint =
     provider === "minimax-h3-wavespeed"
       ? MINIMAX_H3_WAVESPEED_VIDEO_ENDPOINT
