@@ -145,6 +145,10 @@ async function resolveVideoFileUrl(baseUrl: string, apiKey: string, data: VideoA
 function resolveWalkVideoProvider(model: string, baseUrl: string): WalkVideoProvider {
   const normalizedModel = model.toLowerCase();
   if (normalizedModel.includes("minimax") && normalizedModel.includes("h3")) {
+    const hostname = new URL(baseUrl).hostname.toLowerCase();
+    if (hostname === "new.12ai.org" || hostname === "cdn.12ai.org") {
+      return "legacy-task";
+    }
     return baseUrl.toLowerCase().includes("wavespeed") ? "minimax-h3-wavespeed" : "minimax-h3-agentsflare";
   }
   if (normalizedModel.includes("grok-imagine-video")) {
@@ -165,6 +169,22 @@ function resolveWalkVideoProvider(model: string, baseUrl: string): WalkVideoProv
 }
 
 function buildTaskSubmitPayload(provider: WalkVideoProvider, model: string, imageUrl: string) {
+  if (provider === "legacy-task" && model.toLowerCase() === "minimax-h3") {
+    if (!isPublicHttpUrl(imageUrl)) {
+      throw new Error("MiniMax-H3 requires a publicly accessible image URL. Please configure NEXT_PUBLIC_APP_URL or NEXTAUTH_URL with your public site URL.");
+    }
+    return {
+      model: "MiniMax-H3",
+      input: {
+        prompt: walkVideoPrompt,
+        image_references: [{ url: imageUrl }],
+        aspect_ratio: WALK_VIDEO_ASPECT_RATIO,
+        resolution: "768P",
+        duration: WALK_VIDEO_DURATION_SECONDS,
+      },
+    };
+  }
+
   if (provider === "minimax-h3-wavespeed") {
     return {
       model,
