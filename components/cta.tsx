@@ -7,14 +7,14 @@ import { Button } from "./button";
 
 const faqs = [
   {
-    question: "What is this platform used for?",
+    question: "How can I try on wedding dresses at home with AI?",
     answer:
-      "This platform helps you create AI-powered virtual try-on previews from your own photos and clothing images, so you can see how an outfit may look before making a purchase.",
+      "Upload a clear photo of yourself and an image of a wedding dress to generate a virtual bridal preview. Compare dress ideas and save your favorite looks before booking an in-person fitting.",
   },
   {
-    question: "Who is this platform best suited for?",
+    question: "Does an AI wedding dress preview replace a real fitting?",
     answer:
-      "It is designed for online shoppers, fashion lovers, creators, stylists, boutique teams, and anyone who wants to compare outfits more confidently before buying clothes online.",
+      "No. VFitly creates AI visual previews, not measurements or fit guarantees. It does not ship dresses to your home. Check sizing, fabric, comfort and alterations with a bridal retailer or tailor.",
   },
   {
     question: "Can I generate videos to view an outfit from different angles?",
@@ -86,11 +86,11 @@ export const CTA = () => {
 
             <div className="relative px-6 pb-14 pt-20 sm:px-10 sm:pb-20 lg:px-[4.5rem]">
               <h2 className="text-center text-balance mx-auto text-3xl md:text-5xl font-semibold tracking-[-0.015em] text-white">
-                Build your AI fitting room today
+                Ready to try on wedding dresses at home?
               </h2>
               <p className="mt-4 max-w-[30rem] text-center mx-auto text-base/6 text-neutral-200">
                 <Balancer>
-                  Upload your photo and outfit images to generate realistic AI try-on previews, compare styles, and create dynamic showcase videos before you buy or share your look.
+                  Create your first AI bridal preview with your photo and a wedding dress image. Explore silhouettes, save the looks you love, and bring your shortlist to a real fitting.
                 </Balancer>
               </p>
 

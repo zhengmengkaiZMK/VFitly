@@ -9,18 +9,19 @@ import {
   HomeCTA 
 } from "@/components/home-sections";
 
+const homeTitle = "Try On Wedding Dresses at Home with AI | VFitly";
+const homeDescription = "Try on wedding dresses at home with VFitly AI. Upload your photo and a dress image, preview bridal styles, and save your favorite looks before a fitting.";
+
 export const metadata: Metadata = {
-  title: "VFitly Try On, Clothes Changer AI and Virtual Wardrobe",
-  description:
-    "VFitly helps you try on outfits, use a clothes changer AI free preview, try on glasses, and manage wardrobe assets for realistic virtual styling.",
-  keywords: ["VFitly", "try on", "clothes changer", "clothes changer ai", "clothes changer ai free", "try on glasses", "wardrobe", "virtual wardrobe"],
+  title: { absolute: homeTitle },
+  description: homeDescription,
+  keywords: ["try on wedding dresses at home", "AI wedding dress try on", "virtual wedding dress try on", "bridal dress preview", "AI virtual fitting room", "VFitly"],
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "VFitly Try On, Clothes Changer AI and Virtual Wardrobe",
-    description:
-      "Try on clothes and glasses with VFitly's clothes changer AI, then save looks and garment assets in your virtual wardrobe.",
+    title: homeTitle,
+    description: homeDescription,
     url: SITE_URL,
     siteName: SITE_NAME,
     images: [DEFAULT_OG_IMAGE],
@@ -28,9 +29,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "VFitly Try On, Clothes Changer AI and Virtual Wardrobe",
-    description:
-      "Use VFitly for AI try on, clothes changer AI free previews, try on glasses, and wardrobe organization.",
+    title: homeTitle,
+    description: homeDescription,
     images: [DEFAULT_OG_IMAGE],
   },
 };
@@ -44,7 +44,7 @@ const homeJsonLd = [
     applicationCategory: "LifestyleApplication",
     operatingSystem: "Web",
     description:
-      "VFitly is an AI try-on and clothes changer web app for clothes, glasses, outfits, and wardrobe management.",
+      "VFitly helps you try on wedding dresses at home with AI-generated previews from your photo and a dress image, plus a virtual wardrobe for saving bridal looks.",
     offers: {
       "@type": "Offer",
       price: "0",
@@ -57,18 +57,18 @@ const homeJsonLd = [
     mainEntity: [
       {
         "@type": "Question",
-        name: "What can I try on with VFitly?",
+        name: "How can I try on wedding dresses at home with AI?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "VFitly supports AI try-on previews for clothes, glasses, outfit ideas, and wardrobe-based garment assets.",
+          text: "Upload a clear photo of yourself and an image of a wedding dress to generate a virtual bridal preview. Compare dress ideas and save your favorite looks before booking an in-person fitting.",
         },
       },
       {
         "@type": "Question",
-        name: "Does VFitly include a clothes changer AI workflow?",
+        name: "Does an AI wedding dress preview replace a real fitting?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Yes. VFitly provides a clothes changer AI workflow that helps preview clothing items on a person image before buying or sharing a look.",
+          text: "No. VFitly creates AI visual previews, not measurements or fit guarantees. It does not ship dresses to your home. Check sizing, fabric, comfort and alterations with a bridal retailer or tailor.",
         },
       },
     ],

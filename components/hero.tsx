@@ -14,7 +14,7 @@ export const Hero = () => {
         transition={{ ease: "easeOut", duration: 0.5 }}
         className="mx-auto mb-6 rounded-full border border-neutral-200 bg-white/70 px-4 py-2 text-sm text-neutral-600 shadow-sm backdrop-blur dark:border-neutral-800 dark:bg-neutral-900/70 dark:text-neutral-300"
       >
-        AI Virtual Try-On Studio for Modern Fashion Enthusiasts
+        AI Wedding Dress Try-On — Your Virtual Bridal Fitting Room
       </motion.div>
 
       <motion.h1
@@ -24,7 +24,7 @@ export const Hero = () => {
         className="relative z-10 mx-auto mt-6 max-w-6xl text-center text-3xl font-semibold tracking-tight md:text-5xl lg:text-7xl"
       >
         <span className="block text-balance">
-          Your personal AI wardrobe, making try-on easier
+          Try on wedding dresses at home with AI
         </span>
       </motion.h1>
 
@@ -35,7 +35,7 @@ export const Hero = () => {
         className="relative z-10 mx-auto mt-6 max-w-3xl text-center text-base text-muted dark:text-muted-dark md:text-xl"
       >
         <span className="block text-balance">
-          Upload garments, manage your wardrobe library, and create production-ready virtual fitting images inside one SaaS dashboard.
+          Explore your bridal style before visiting a boutique. Upload your photo and a wedding dress image to create an AI try-on preview, compare looks, and save your favorites in your virtual wardrobe.
         </span>
       </motion.p>
 
@@ -83,9 +83,9 @@ export const Hero = () => {
         className="relative z-10 mx-auto mt-14 grid w-full max-w-5xl grid-cols-1 gap-4 px-4 md:grid-cols-3"
       >
         {[
-          ["Wardrobe Library", "Centralize tops, dresses, outerwear and accessories."],
-          ["AI Try-On", "Blend people and garments into realistic visual results."],
-          ["360° Showcase Video", "Turn your try-on looks into dynamic videos so users can see every outfit in motion."],
+          ["Bridal Wardrobe", "Collect wedding dress images and keep your favorite bridal looks together."],
+          ["AI Wedding Dress Preview", "Try on wedding dresses at home virtually using your own photo."],
+          ["Bridal Look Video", "Bring a generated bridal look to life with an AI video preview."],
         ].map(([title, description]) => (
           <div key={title} className="rounded-3xl border border-neutral-200 bg-white/65 p-6 shadow-sm backdrop-blur dark:border-neutral-800 dark:bg-neutral-900/60">
             <h3 className="font-semibold text-black dark:text-white">{title}</h3>

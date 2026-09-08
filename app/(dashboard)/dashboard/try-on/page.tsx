@@ -3,30 +3,43 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { TryOnContent } from "@/components/try-on/try-on-content";
 import { absoluteUrl } from "@/lib/seo";
 
+const tryOnTitle = "Virtual Fitting Room – AI Clothes Try-On | VFitly";
+const tryOnDescription =
+  "Explore VFitly's AI virtual fitting room. Upload your photo and clothing images, preview outfits online, and save your favorite looks to your virtual wardrobe.";
+
 export const metadata: Metadata = {
-  title: "AI Try On for Clothes, Glasses and Hairstyles",
-  description:
-    "Use VFitly to try on glasses, try on clothes, test hairstyles, and preview outfits with a virtual try on and try it on AI experience.",
-  keywords: ["try on glasses", "try on clothes", "try it on ai", "virtual try on", "try on", "try on hairstyles", "AI try on"],
+  title: { absolute: tryOnTitle },
+  description: tryOnDescription,
+  keywords: [
+    "virtual fitting room",
+    "AI virtual fitting room",
+    "online virtual fitting room",
+    "virtual fitting room for clothes",
+    "AI clothes try on",
+    "virtual outfit try on",
+    "VFitly",
+  ],
   alternates: {
     canonical: "/dashboard/try-on",
   },
   openGraph: {
-    title: "AI Try On for Clothes, Glasses and Hairstyles | VFitly",
-    description:
-      "Create virtual try-on previews for clothes, glasses, outfits, and hairstyles with VFitly's AI try on tools.",
+    title: tryOnTitle,
+    description: tryOnDescription,
+  },
+  twitter: {
+    title: tryOnTitle,
+    description: tryOnDescription,
   },
 };
 
 const tryOnJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: "VFitly AI Try On",
+  name: "VFitly AI Virtual Fitting Room",
   url: absoluteUrl("/dashboard/try-on"),
   applicationCategory: "LifestyleApplication",
   operatingSystem: "Web",
-  description:
-    "Try on glasses, clothes, hairstyles, and outfits with VFitly's virtual try on and try it on AI experience.",
+  description: tryOnDescription,
 };
 
 export default function DashboardTryOnPage() {

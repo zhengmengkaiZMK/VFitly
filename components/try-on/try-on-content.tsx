@@ -474,10 +474,10 @@ export function TryOnContent() {
     <div className="mx-auto max-w-7xl px-4 py-12">
       <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div>
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-blue-500">AI Try-On Studio</p>
-          <h1 className="mt-3 text-3xl font-bold text-black dark:text-white">Generate realistic outfit previews</h1>
+          <p className="text-sm font-medium uppercase tracking-[0.2em] text-blue-500">AI-Powered Outfit Try-On</p>
+          <h1 className="mt-3 text-3xl font-bold text-black dark:text-white">Your AI virtual fitting room</h1>
           <p className="mt-2 max-w-2xl text-neutral-600 dark:text-neutral-400">
-            Upload a person photo and a clothing image, choose the final aspect ratio, add optional requirements, and create a polished try-on result.
+            Preview outfits online with VFitly&apos;s virtual fitting room. Upload your photo and a clothing image, choose an aspect ratio, and add optional styling requirements to create your AI try-on preview.
           </p>
         </div>
         <Link href="/dashboard/wardrobe" className="rounded-full border border-neutral-200 px-5 py-3 text-sm font-medium dark:border-neutral-700">
@@ -511,7 +511,7 @@ export function TryOnContent() {
               <IconSparkles className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="font-semibold text-black dark:text-white">Create try-on</h2>
+              <h2 className="font-semibold text-black dark:text-white">Virtual fitting room settings</h2>
               <p className="text-sm text-neutral-500">Use one person image plus one clothing image.</p>
             </div>
           </div>
@@ -567,7 +567,7 @@ export function TryOnContent() {
             <div>
               <h2 className="text-xl font-semibold text-black dark:text-white">Create outfit from wardrobe</h2>
               <p className="mt-1 max-w-2xl text-sm text-neutral-600 dark:text-neutral-400">
-                Select 2-4 wardrobe items from different categories, such as one dress and one pair of shoes.
+                Build a complete look in your virtual fitting room. Select 2-4 wardrobe items from different categories, such as one dress and one pair of shoes, to preview them together.
               </p>
             </div>
           </div>
@@ -668,7 +668,8 @@ export function TryOnContent() {
       </section>
 
       <section ref={resultSectionRef} className="mt-6 scroll-mt-24 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-        <h2 className="mb-4 text-xl font-semibold text-black dark:text-white">Final try-on result</h2>
+        <h2 className="mb-4 text-xl font-semibold text-black dark:text-white">Your virtual fitting room preview</h2>
+        <p className="mb-4 text-sm text-neutral-500 dark:text-neutral-400">Explore your AI outfit preview, download the image, or save your favorite look to your wardrobe. Previews are for style inspiration and do not guarantee sizing or physical fit.</p>
         {generating || outfitGenerating ? (
           <LoadingIndicator
             title="Creating your try-on image"

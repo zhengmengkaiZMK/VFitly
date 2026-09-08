@@ -15,23 +15,23 @@ import {
 export const GridFeatures = () => {
   const features = [
     {
-      title: "Realistic AI try-on",
-      description: "Generate fitting visuals from a person image and a selected garment while preserving pose, light and body shape.",
+      title: "AI bridal try-on",
+      description: "Try on wedding dresses at home with AI previews created from your photo and a dress image. Explore the look, not a guaranteed fit.",
       icon: <IconSparkles />,
     },
     {
-      title: "Wardrobe management",
-      description: "Upload, classify and manage tops, dresses, outerwear, shoes and accessories in one visual library.",
+      title: "Your bridal wardrobe",
+      description: "Organize wedding dress images alongside your everyday clothes and accessories in one visual library.",
       icon: <IconHanger />,
     },
     {
-      title: "Image-first workflow",
-      description: "Save upload assets and generated looks with a workflow designed for fashion ecommerce and creators.",
+      title: "Start with your photo",
+      description: "Use a clear, well-lit photo and a dress image to explore bridal looks before visiting a boutique.",
       icon: <IconCamera />,
     },
     {
-      title: "Style metadata",
-      description: "Track categories, colors and tags so garments are easy to find and reuse across try-on sessions.",
+      title: "Organize bridal styles",
+      description: "Use categories, colors and tags to find and revisit the dress ideas you want to compare.",
       icon: <IconPalette />,
     },
     {
@@ -40,18 +40,18 @@ export const GridFeatures = () => {
       icon: <IconShieldLock />,
     },
     {
-      title: "360° Outfit Video",
-      description: "Generate dynamic try-on videos and view the outfit from every angle with a 360° showcase effect.",
+      title: "Bridal look videos",
+      description: "Turn a generated wedding dress preview into an AI video to explore your bridal look in motion.",
       icon: <IconRotate360 />,
     },
     {
-      title: "Download results",
-      description: "Preview generated try-on images and download finished visuals for campaigns, listings or social posts.",
+      title: "Save your bridal shortlist",
+      description: "Download your favorite AI dress previews to discuss styling ideas with friends or your bridal consultant.",
       icon: <IconDownload />,
     },
     {
-      title: "Generation history",
-      description: "Keep a record of try-on jobs, prompts, source garments and generated outputs for future iteration.",
+      title: "Revisit dress ideas",
+      description: "Keep your source dress images and generated previews in your try-on history as you explore different bridal styles.",
       icon: <IconHistory />,
     },
   ];
