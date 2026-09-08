@@ -14,7 +14,7 @@ export const Hero = () => {
         transition={{ ease: "easeOut", duration: 0.5 }}
         className="mx-auto mb-6 rounded-full border border-neutral-200 bg-white/70 px-4 py-2 text-sm text-neutral-600 shadow-sm backdrop-blur dark:border-neutral-800 dark:bg-neutral-900/70 dark:text-neutral-300"
       >
-        AI Wedding Dress Try-On — Your Virtual Bridal Fitting Room
+        AI Virtual Fitting Room — Wedding Dresses & Everyday Style
       </motion.div>
 
       <motion.h1
@@ -35,7 +35,7 @@ export const Hero = () => {
         className="relative z-10 mx-auto mt-6 max-w-3xl text-center text-base text-muted dark:text-muted-dark md:text-xl"
       >
         <span className="block text-balance">
-          Explore your bridal style before visiting a boutique. Upload your photo and a wedding dress image to create an AI try-on preview, compare looks, and save your favorites in your virtual wardrobe.
+          Find your dream bridal look—and your next everyday favorite. Upload your photo and a clothing image to preview wedding dresses, occasion wear, work outfits or casual styles with AI, then save the looks you love in your virtual wardrobe.
         </span>
       </motion.p>
 
@@ -83,9 +83,9 @@ export const Hero = () => {
         className="relative z-10 mx-auto mt-14 grid w-full max-w-5xl grid-cols-1 gap-4 px-4 md:grid-cols-3"
       >
         {[
-          ["Bridal Wardrobe", "Collect wedding dress images and keep your favorite bridal looks together."],
+          ["Your Virtual Wardrobe", "Organize wedding dress inspiration, everyday clothes and occasion outfits in one place."],
           ["AI Wedding Dress Preview", "Try on wedding dresses at home virtually using your own photo."],
-          ["Bridal Look Video", "Bring a generated bridal look to life with an AI video preview."],
+          ["Outfit Video Preview", "Bring your favorite bridal, evening or everyday look to life with an AI video preview."],
         ].map(([title, description]) => (
           <div key={title} className="rounded-3xl border border-neutral-200 bg-white/65 p-6 shadow-sm backdrop-blur dark:border-neutral-800 dark:bg-neutral-900/60">
             <h3 className="font-semibold text-black dark:text-white">{title}</h3>

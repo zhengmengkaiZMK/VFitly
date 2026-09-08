@@ -90,7 +90,7 @@ export const CTA = () => {
               </h2>
               <p className="mt-4 max-w-[30rem] text-center mx-auto text-base/6 text-neutral-200">
                 <Balancer>
-                  Create your first AI bridal preview with your photo and a wedding dress image. Explore silhouettes, save the looks you love, and bring your shortlist to a real fitting.
+                  Start with your dream wedding dress, or explore an evening outfit, a workday look or a casual favorite. Upload your photo and a clothing image to preview your style and save the looks you love.
                 </Balancer>
               </p>
 

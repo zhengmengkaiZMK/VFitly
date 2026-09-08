@@ -15,23 +15,23 @@ import {
 export const GridFeatures = () => {
   const features = [
     {
-      title: "AI bridal try-on",
+      title: "AI wedding dress try-on",
       description: "Try on wedding dresses at home with AI previews created from your photo and a dress image. Explore the look, not a guaranteed fit.",
       icon: <IconSparkles />,
     },
     {
-      title: "Your bridal wardrobe",
-      description: "Organize wedding dress images alongside your everyday clothes and accessories in one visual library.",
+      title: "One wardrobe, every occasion",
+      description: "Keep wedding dress ideas, everyday clothes, occasion wear and accessories together in one visual library.",
       icon: <IconHanger />,
     },
     {
-      title: "Start with your photo",
-      description: "Use a clear, well-lit photo and a dress image to explore bridal looks before visiting a boutique.",
+      title: "Try outfits on your photo",
+      description: "Upload a clear, well-lit photo and a clothing image to preview anything from a bridal gown to a casual jacket.",
       icon: <IconCamera />,
     },
     {
-      title: "Organize bridal styles",
-      description: "Use categories, colors and tags to find and revisit the dress ideas you want to compare.",
+      title: "Organize your personal style",
+      description: "Use categories, colors and tags to revisit bridal favorites, plan workwear or find ideas for your next night out.",
       icon: <IconPalette />,
     },
     {
@@ -40,18 +40,18 @@ export const GridFeatures = () => {
       icon: <IconShieldLock />,
     },
     {
-      title: "Bridal look videos",
-      description: "Turn a generated wedding dress preview into an AI video to explore your bridal look in motion.",
+      title: "See your look in motion",
+      description: "Turn a generated outfit preview into an AI video, whether you are exploring a wedding dress, evening look or everyday outfit.",
       icon: <IconRotate360 />,
     },
     {
-      title: "Save your bridal shortlist",
-      description: "Download your favorite AI dress previews to discuss styling ideas with friends or your bridal consultant.",
+      title: "Save and share your favorites",
+      description: "Download AI outfit previews to share styling ideas with friends, plan your wardrobe or bring a bridal shortlist to a fitting.",
       icon: <IconDownload />,
     },
     {
-      title: "Revisit dress ideas",
-      description: "Keep your source dress images and generated previews in your try-on history as you explore different bridal styles.",
+      title: "Revisit every outfit idea",
+      description: "Find your source clothing images and generated previews in your try-on history, from wedding dress inspiration to everyday styling.",
       icon: <IconHistory />,
     },
   ];
