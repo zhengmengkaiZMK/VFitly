@@ -61,24 +61,6 @@ export const Footer = () => {
                 src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1239982&theme=light&t=1788409534364"
               />
             </a>
-            <div className="mt-4">
-              <a
-                href="https://openhunts.com"
-                target="_blank"
-                title="OpenHunts Club"
-                rel="noopener noreferrer"
-                className="inline-flex"
-              >
-                <Image
-                  alt="OpenHunts Club Member"
-                  height={105}
-                  src="https://cdn.openhunts.com/badges/club.webp"
-                  style={{ width: "195px", height: "auto" }}
-                  width={486}
-                  unoptimized
-                />
-              </a>
-            </div>
           </div>
           <div className="grid grid-cols-2 gap-10 items-start mt-10 md:mt-0 lg:grid-cols-3">
             <div className="flex justify-center space-y-4 flex-col mt-4">
