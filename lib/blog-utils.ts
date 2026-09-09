@@ -84,6 +84,7 @@ export function getAllBlogPosts(): BlogPost[] {
   }
   
   const visibleSlugs = new Set([
+    "how-to-try-on-wedding-dresses-at-home",
     "ai-clothes-changer-online-shopping",
     "product-try-on-shopping-links",
     "virtual-wardrobe-ai-try-on",
