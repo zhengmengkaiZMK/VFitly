@@ -83,8 +83,8 @@ export default function Home() {
           <section id="bridal-preview" aria-labelledby="bridal-preview-title" className="relative z-10 w-full scroll-mt-24">
             <TryOnContent bridal />
           </section>
-          <HomeGridFeatures />
           <BridalGuide />
+          <HomeGridFeatures />
           <HomeTestimonials />
         </Container>
         <div className="relative">

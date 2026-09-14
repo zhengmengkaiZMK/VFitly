@@ -32,7 +32,11 @@ const comparisonPoints = [
 
 export function BridalGuide() {
   return (
-    <article className="relative z-10 w-full py-12 md:py-20">
+    <article className="relative z-10 w-full pb-12 pt-2 md:pb-20 md:pt-4">
+      <div className="mx-auto mb-12 max-w-5xl px-4 md:mb-16">
+        <div className="h-px w-full bg-neutral-200 dark:bg-neutral-800" />
+      </div>
+
       <header className="mx-auto max-w-3xl px-4 text-center">
         <p className="text-sm font-medium uppercase tracking-[0.2em] text-blue-500">Bridal Guide</p>
         <h2 className="mt-4 text-3xl font-medium tracking-tight text-black dark:text-white md:text-5xl md:leading-tight">
