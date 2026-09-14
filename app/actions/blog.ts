@@ -24,11 +24,11 @@ const schema = z.object({
     }
   }).pipe(z.string().min(1).max(180).regex(/^[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)*$/u, "Use letters (including Chinese), numbers, spaces or hyphens; URLs must contain an article path")),
   title: z.string().trim().min(1).max(200),
-  description: z.string().trim().max(1000),
-  category: z.string().trim().min(1).max(100),
-  content: z.string().trim().min(1).max(300000),
+  description: z.string().trim().max(1000).default(""),
+  category: z.string().trim().max(100).transform(value => value || "Uncategorized").default("Uncategorized"),
+  content: z.string().trim().min(1, "Please enter the article body").max(300000),
   image: z.string().max(2048).refine(value => /^\/(?!\/)[^\s\\]*$/.test(value) || /^https:\/\/[^\s\\]+$/.test(value), "Use a site-relative or HTTPS image URL"),
-  status: z.enum(["DRAFT", "PUBLISHED"]),
+  status: z.enum(["DRAFT", "PUBLISHED"]).default("DRAFT"),
   tags: z.array(z.string().max(60)).max(20),
 });
 function refresh(slug: string) {
@@ -39,10 +39,10 @@ function errorMessage(error: unknown) {
   console.error("Blog operation failed", error);
   return "Unable to save changes. Please retry.";
 }
-export async function saveBlogPost(form: FormData): Promise<{ error: string } | undefined> {
+export async function saveBlogPost(form: FormData, intent?: "DRAFT" | "PUBLISHED"): Promise<{ error: string } | undefined> {
   const admin = await getBlogAdmin();
   if (!admin) return { error: "Administrator access required." };
-  const parsed = schema.safeParse({ ...Object.fromEntries(form), category: form.get("category") || "Uncategorized", image: form.get("image") || "/placeholder.jpg", tags: String(form.get("tags") || "").split(",").map(tag => tag.trim()).filter(Boolean) });
+  const parsed = schema.safeParse({ ...Object.fromEntries(form), status: intent ?? (form.get("status") || undefined), category: String(form.get("category") || "").trim() || "Uncategorized", image: String(form.get("image") || "").trim() || "/placeholder.jpg", tags: String(form.get("tags") || "").split(",").map(tag => tag.trim()).filter(Boolean) });
   if (!parsed.success) return { error: parsed.error.issues.map(issue => `${issue.path.join(".")}: ${issue.message}`).join("; ") };
   const { id, ...data } = parsed.data;
   if (fs.existsSync(path.join(process.cwd(), "content/blog", `${data.slug}.mdx`)) || fs.existsSync(path.join(process.cwd(), "app/(marketing)/blog", data.slug))) return { error: "This URL belongs to an existing file-based article. Choose a different slug." };
