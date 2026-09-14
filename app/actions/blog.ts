@@ -11,7 +11,18 @@ import { prisma } from "@/lib/db/prisma";
 
 const schema = z.object({
   id: z.union([z.literal(""), z.string().uuid()]),
-  slug: z.string().min(1).max(180).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+  slug: z.string().trim().min(1).max(2048).transform((value, ctx) => {
+    try {
+      if (/^https?:\/\//i.test(value)) {
+        value = new URL(value).pathname.split("/").filter(Boolean).pop() || "";
+      }
+      return decodeURIComponent(value).normalize("NFKC").toLowerCase()
+        .replace(/\s+/gu, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+    } catch {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Enter a valid article slug or HTTP(S) URL" });
+      return z.NEVER;
+    }
+  }).pipe(z.string().min(1).max(180).regex(/^[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)*$/u, "Use letters (including Chinese), numbers, spaces or hyphens; URLs must contain an article path")),
   title: z.string().trim().min(1).max(200),
   description: z.string().trim().max(1000),
   category: z.string().trim().min(1).max(100),
