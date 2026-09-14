@@ -55,10 +55,10 @@ export const Footer = () => {
               aria-label="View VFitly on Product Hunt"
             >
               <Image
-                alt="VFitly - Try on clothes with AI: turn one photo into a styling video | Product Hunt"
+                
                 width={250}
                 height={54}
-                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1239982&theme=light&t=1788409534364"
+                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1239982&theme=light&t=1788409534364" alt="VFitly，AI virtual try-on，generate try-on image and try-on video"
               />
             </a>
           </div>

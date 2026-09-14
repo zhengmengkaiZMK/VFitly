@@ -7,8 +7,9 @@ import { Subheading } from "@/components/subheading"
 
 export const metadata: Metadata = {
   title: "VFitly Documentation for AI Try-On and Wardrobe Workflows",
-  description: "Learn how to use VFitly documentation for AI try-on, clothes changer workflows, product link try-on, wardrobe storage, and virtual fitting room features.",
-  keywords: ["VFitly documentation", "AI try-on docs", "clothes changer tutorial", "wardrobe guide", "virtual fitting room docs"],
+  description: "Learn to use VFitly AI virtual try-on with step-by-step guides to photo uploads, garment selection, product links, image and video generation, and credits.",
+  keywords: [
+    "AI virtual try-on","VFitly documentation", "AI try-on docs", "clothes changer tutorial", "wardrobe guide", "virtual fitting room docs"],
   alternates: {
     canonical: "/docs",
   },

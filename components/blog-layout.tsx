@@ -26,10 +26,10 @@ export function BlogLayout({
           <div className="flex space-x-2 items-center ">
             <Image
               src={blog.author.src}
-              alt={blog.author.name}
+              
               width={20}
               height={20}
-              className="rounded-full h-5 w-5"
+              className="rounded-full h-5 w-5" alt="VFitly，AI virtual try-on，generate try-on image and try-on video"
             />
             <p className="text-sm font-normal text-muted dark:text-muted-dark">
               {blog.author.name}
@@ -50,7 +50,7 @@ export function BlogLayout({
             height="800"
             width="800"
             className="h-40 md:h-96 w-full aspect-square object-cover rounded-3xl"
-            alt={blog.title}
+             alt="VFitly，AI virtual try-on，generate try-on image and try-on video"
           />
         ) : (
           <div className="h-40 md:h-96 w-full aspect-squace rounded-3xl shadow-derek dark:bg-neutral-900 flex items-center justify-center">

@@ -2,6 +2,7 @@ const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXTAUTH_URL ||
 
 export const SITE_URL = siteUrl;
 export const SITE_NAME = "VFitly";
+export const IMAGE_ALT_TEXT = "VFitly，AI virtual try-on，generate try-on image and try-on video";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/banner.png`;
 
 export function absoluteUrl(path = "/") {

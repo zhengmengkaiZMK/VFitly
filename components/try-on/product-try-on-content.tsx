@@ -119,7 +119,7 @@ function PersonUploadCard({
       >
         {value ? (
           <>
-            <Image src={value.preview} alt="Person preview" fill unoptimized className="object-contain" sizes="(max-width: 1024px) 100vw, 420px" />
+            <Image src={value.preview}  fill unoptimized className="object-contain" sizes="(max-width: 1024px) 100vw, 420px" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
             <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-black/70 px-3 py-1 text-xs font-medium text-white backdrop-blur">
               {value.source === "default" ? "Using saved full-body photo · Click to change" : "Uploaded photo · Click to change"}
             </span>
@@ -550,7 +550,7 @@ export function ProductTryOnContent() {
                       }`}
                     >
                       <div className="relative aspect-[4/5] bg-white dark:bg-neutral-950">
-                        <Image src={garment.imageUrl} alt={garment.label} fill unoptimized className="object-contain" sizes="(max-width: 768px) 100vw, 280px" />
+                        <Image src={garment.imageUrl}  fill unoptimized className="object-contain" sizes="(max-width: 768px) 100vw, 280px" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
                         <div className={`absolute left-3 top-3 rounded-full px-3 py-1.5 text-xs font-semibold shadow-sm backdrop-blur ${checked ? "bg-purple-600 text-white" : "bg-white/90 text-neutral-600 dark:bg-black/70 dark:text-neutral-200"}`}>
                           {checked ? "Selected" : "Click to select"}
                         </div>
@@ -644,7 +644,7 @@ export function ProductTryOnContent() {
               <article key={result.id} className="overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-black">
                 <div className="relative aspect-[4/5] bg-white dark:bg-neutral-950">
                   {result.resultUrl ? (
-                    <Image src={result.resultUrl} alt={result.label} fill unoptimized className="object-contain" sizes="(max-width: 768px) 100vw, 360px" />
+                    <Image src={result.resultUrl}  fill unoptimized className="object-contain" sizes="(max-width: 768px) 100vw, 360px" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
                   ) : (
                     <div className="flex h-full flex-col items-center justify-center p-6 text-center text-sm text-red-500">
                       <IconX className="mb-3 h-8 w-8" />

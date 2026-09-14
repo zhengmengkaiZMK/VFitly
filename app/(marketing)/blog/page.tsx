@@ -12,15 +12,16 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "AI Try-On Blog for Clothes Changer and Virtual Wardrobe Tips",
   description:
-    "Read VFitly guides about AI try-on, clothes changer workflows, virtual wardrobe organization, product try-on, and fashion image generation.",
-  keywords: ["AI try-on blog", "clothes changer guide", "virtual wardrobe tips", "product try-on guide", "fashion AI blog"],
+    "Read VFitly guides to AI virtual try-on, wedding dress previews, outfit images and try-on videos. Discover photo tips and ways to organize your virtual wardrobe.",
+  keywords: [
+    "AI virtual try-on","AI try-on blog", "clothes changer guide", "virtual wardrobe tips", "product try-on guide", "fashion AI blog"],
   alternates: {
     canonical: "/blog",
   },
   openGraph: {
     title: "AI Try-On Blog for Clothes Changer and Virtual Wardrobe Tips | VFitly",
     description:
-      "Explore VFitly articles about virtual try-on, clothes changer AI, wardrobe assets, and fashion generation workflows.",
+      "Read VFitly guides to AI virtual try-on, wedding dress previews, outfit images and try-on videos. Discover photo tips and ways to organize your virtual wardrobe.",
     images: [DEFAULT_OG_IMAGE],
   },
 };

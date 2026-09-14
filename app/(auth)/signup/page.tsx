@@ -5,8 +5,9 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Sign Up for VFitly AI Try-On and Clothes Changer",
   description:
-    "Create a VFitly account to use AI try-on, clothes changer previews, product link try-on, virtual wardrobe storage, and fashion image tools.",
-  keywords: ["VFitly signup", "AI try-on signup", "clothes changer account", "virtual wardrobe account"],
+    "Create your VFitly account for AI virtual try-on. Preview outfits from your photos, generate try-on images and videos, and build your virtual wardrobe.",
+  keywords: [
+    "AI virtual try-on","VFitly signup", "AI try-on signup", "clothes changer account", "virtual wardrobe account"],
   alternates: {
     canonical: "/signup",
   },

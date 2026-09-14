@@ -236,7 +236,7 @@ export function WardrobeContent() {
                 {garmentItems.map((item) => (
                   <div key={item.id} className="overflow-hidden rounded-3xl border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-black">
                     <div className="relative aspect-square bg-white dark:bg-neutral-950">
-                      <Image src={item.imageUrl} alt={item.name} fill className="object-contain p-4" sizes="(max-width: 768px) 100vw, 33vw" />
+                      <Image src={item.imageUrl}  fill className="object-contain p-4" sizes="(max-width: 768px) 100vw, 33vw" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
                     </div>
                     <div className="p-4">
                       <div className="flex items-start justify-between gap-3">
@@ -290,7 +290,7 @@ export function WardrobeContent() {
                 {generatedLooks.map((item) => (
                   <div key={item.id} className="overflow-hidden rounded-3xl border border-blue-100 bg-blue-50/40 dark:border-blue-900/40 dark:bg-blue-950/10">
                     <div className="relative aspect-[2/3] bg-white dark:bg-neutral-950">
-                      <Image src={item.imageUrl} alt={item.name} fill className="object-contain" sizes="(max-width: 768px) 100vw, 33vw" />
+                      <Image src={item.imageUrl}  fill className="object-contain" sizes="(max-width: 768px) 100vw, 33vw" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
                     </div>
                     <div className="p-4">
                       <div className="flex items-start justify-between gap-3">

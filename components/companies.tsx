@@ -106,10 +106,10 @@ export const Companies = () => {
             >
               <Image
                 src={logo.src}
-                alt={logo.title}
+                
                 width="100"
                 height="100"
-                className="md:h-20 md:w-40 h-10 w-20 object-contain filter"
+                className="md:h-20 md:w-40 h-10 w-20 object-contain filter" alt="VFitly，AI virtual try-on，generate try-on image and try-on video"
               />
             </motion.div>
           ))}

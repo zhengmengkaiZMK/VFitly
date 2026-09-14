@@ -35,10 +35,11 @@ export async function generateMetadata(props: {
 
   return {
     title: post.title,
-    description: post.description,
+    description: `${post.description} Explore AI virtual try-on ideas, generate try-on images and try-on videos, and plan your wardrobe with VFitly.`,
+    keywords: ["AI virtual try-on", "generate try-on image", "generate try-on video", post.category, ...(post.tags || [])],
     openGraph: {
       title: post.title,
-      description: post.description,
+      description: `${post.description} Explore AI virtual try-on ideas, generate try-on images and try-on videos, and plan your wardrobe with VFitly.`,
       type: "article",
       publishedTime: post.date,
       authors: [post.author.name],
@@ -47,7 +48,7 @@ export async function generateMetadata(props: {
           url: post.image,
           width: 1200,
           height: 630,
-          alt: post.title,
+          alt: "VFitly，AI virtual try-on，generate try-on image and try-on video",
         },
       ],
     },
@@ -122,7 +123,8 @@ export default async function BlogPostPage(props: {
       },
     },
     mainEntityOfPage: absoluteUrl(`/blog/${post.slug}`),
-    keywords: [post.category, ...(post.tags || [])].join(", "),
+    keywords: [
+    "AI virtual try-on",post.category, ...(post.tags || [])].join(", "),
   }
 
   const breadcrumbJsonLd = {
@@ -186,7 +188,7 @@ export default async function BlogPostPage(props: {
           {/* Author Info */}
           <div className="flex items-center gap-3">
             <Avatar className="size-12">
-              <AvatarImage src={post.author.avatar} alt={post.author.name} />
+              <AvatarImage src={post.author.avatar}  alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
               <AvatarFallback>
                 {post.author.name
                   .split(" ")
@@ -214,11 +216,11 @@ export default async function BlogPostPage(props: {
         <div className="my-12">
           <Image
             src={post.image}
-            alt={post.title}
+            
             width={1200}
             height={630}
             className="rounded-xl"
-            priority
+            priority alt="VFitly，AI virtual try-on，generate try-on image and try-on video"
           />
         </div>
 
@@ -231,7 +233,7 @@ export default async function BlogPostPage(props: {
         <Separator className="my-12" />
         <div className="bg-muted/50 flex items-start gap-4 rounded-xl border p-6">
           <Avatar className="size-16 flex-shrink-0">
-            <AvatarImage src={post.author.avatar} alt={post.author.name} />
+            <AvatarImage src={post.author.avatar}  alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
             <AvatarFallback>
               {post.author.name
                 .split(" ")

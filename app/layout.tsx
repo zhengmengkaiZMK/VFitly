@@ -16,9 +16,12 @@ export const metadata: Metadata = {
     template: "%s | VFitly",
   },
   description:
-    "VFitly is an AI try on platform for clothes changer AI, free clothes changer previews, try on glasses, virtual outfits, and wardrobe management.",
+    "Use VFitly AI virtual try-on to preview clothes from your photos, generate outfit images and try-on videos, and organize garments in a virtual wardrobe.",
   keywords: [
     "VFitly",
+    "AI virtual try-on",
+    "generate try-on image",
+    "generate try-on video",
     "try on",
     "clothes changer",
     "clothes changer ai",
@@ -39,7 +42,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "VFitly | AI Clothes Changer and Virtual Try-On Wardrobe",
     description:
-      "Try on clothes, glasses, and outfits with VFitly's AI clothes changer and organize your virtual wardrobe assets online.",
+      "Use VFitly AI virtual try-on to preview clothes from your photos, generate outfit images and try-on videos, and organize garments in a virtual wardrobe.",
     url: SITE_URL,
     siteName: SITE_NAME,
     images: [DEFAULT_OG_IMAGE],
@@ -49,7 +52,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "VFitly | AI Clothes Changer and Virtual Try-On Wardrobe",
     description:
-      "Use VFitly for AI try on, clothes changer AI previews, try on glasses, and wardrobe management.",
+      "Use VFitly AI virtual try-on to preview clothes from your photos, generate outfit images and try-on videos, and organize garments in a virtual wardrobe.",
     images: [DEFAULT_OG_IMAGE],
   },
 };

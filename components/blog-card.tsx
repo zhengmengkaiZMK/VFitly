@@ -18,10 +18,10 @@ export const BlogCard = ({ blog }: { blog: BlogWithSlug }) => {
       {blog.image ? (
         <BlurImage
           src={blog.image || ""}
-          alt={blog.title}
+          
           height="800"
           width="800"
-          className="h-52 object-cover object-top w-full"
+          className="h-52 object-cover object-top w-full" alt="VFitly，AI virtual try-on，generate try-on image and try-on video"
         />
       ) : (
         <div className="h-52 flex items-center justify-center bg-white dark:bg-neutral-900">
@@ -32,10 +32,10 @@ export const BlogCard = ({ blog }: { blog: BlogWithSlug }) => {
         <div className="flex space-x-2 items-center  mb-2">
           <Image
             src={blog.author.src}
-            alt={blog.author.name}
+            
             width={20}
             height={20}
-            className="rounded-full h-5 w-5"
+            className="rounded-full h-5 w-5" alt="VFitly，AI virtual try-on，generate try-on image and try-on video"
           />
           <p className="text-sm font-normal text-muted">{blog.author.name}</p>
         </div>

@@ -7,8 +7,9 @@ import { prisma } from "@/lib/db/prisma";
 
 export const metadata = {
   title: "AI Try-On History and Generated Outfit Records",
-  description: "Review VFitly AI try-on history, generated outfit images, source garments, clothes changer results, and wardrobe-based creation records.",
-  keywords: ["AI try-on history", "generated outfit records", "clothes changer results", "wardrobe image history"],
+  description: "Browse your VFitly AI virtual try-on history. Revisit generated outfit images, inspect source garments, and open creation details for your saved results.",
+  keywords: [
+    "AI virtual try-on","AI try-on history", "generated outfit records", "clothes changer results", "wardrobe image history"],
   alternates: {
     canonical: "/dashboard/history",
   },
@@ -69,7 +70,7 @@ export default async function TryOnHistoryPage() {
             >
               <div className="relative aspect-[4/5] bg-neutral-100 dark:bg-neutral-900">
                 {job.resultImageUrl ? (
-                  <Image src={job.resultImageUrl} alt="AI try-on result" fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
+                  <Image src={job.resultImageUrl}  fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
                 ) : (
                   <div className="flex h-full items-center justify-center text-sm text-neutral-500">{job.status}</div>
                 )}

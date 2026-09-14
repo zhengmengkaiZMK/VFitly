@@ -17,19 +17,19 @@ export const Logo = () => {
     >
       <Image
         src="/logo1.png"
-        alt="VFitly"
+        
         width={1947}
         height={624}
         priority
-        className="h-8 w-auto object-contain dark:hidden"
+        className="h-8 w-auto object-contain dark:hidden" alt="VFitly，AI virtual try-on，generate try-on image and try-on video"
       />
       <Image
         src="/logo2.png"
-        alt="VFitly"
+        
         width={1947}
         height={624}
         priority
-        className="hidden h-8 w-auto object-contain dark:block"
+        className="hidden h-8 w-auto object-contain dark:block" alt="VFitly，AI virtual try-on，generate try-on image and try-on video"
       />
     </Link>
   );

@@ -35,10 +35,10 @@ export const SkeletonOne = () => {
           <div className="p-2 bg-white dark:bg-black dark:border-neutral-700 border border-neutral-200 rounded-[24px] flex-shrink-0">
             <BlurImage
               src="/skeleton-one.png"
-              alt="header"
+              
               width={800}
               height={800}
-              className="rounded-[20px] w-full h-full object-cover object-bottom aspect-square flex-shrink-0 grayscale"
+              className="rounded-[20px] w-full h-full object-cover object-bottom aspect-square flex-shrink-0 grayscale" alt="VFitly，AI virtual try-on，generate try-on image and try-on video"
             />
           </div>
         </div>
@@ -46,10 +46,10 @@ export const SkeletonOne = () => {
           <div className="p-2 bg-white dark:bg-black dark:border-neutral-700 border border-neutral-200 rounded-[24px] flex-shrink-0">
             <BlurImage
               src="/tyler.jpeg"
-              alt="header"
+              
               width={800}
               height={800}
-              className="rounded-[20px] w-full h-full object-cover object-bottom aspect-square flex-shrink-0 grayscale"
+              className="rounded-[20px] w-full h-full object-cover object-bottom aspect-square flex-shrink-0 grayscale" alt="VFitly，AI virtual try-on，generate try-on image and try-on video"
             />
           </div>
         </div>
@@ -79,10 +79,10 @@ const UserMessage = ({ children }: { children: React.ReactNode }) => {
     >
       <Image
         src="/avatar.jpeg"
-        alt="avatar"
+        
         height="100"
         width="100"
-        className="rounded-full h-4 w-4 md:h-10 md:w-10"
+        className="rounded-full h-4 w-4 md:h-10 md:w-10" alt="VFitly，AI virtual try-on，generate try-on image and try-on video"
       />
       <p className="text-[10px] sm:text-sm text-neutral-500">{children}</p>
     </motion.div>

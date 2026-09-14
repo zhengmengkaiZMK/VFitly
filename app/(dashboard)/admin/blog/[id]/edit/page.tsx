@@ -6,7 +6,9 @@ import { getPublishedBlogPosts } from "@/lib/blog-posts";
 import { prisma } from "@/lib/db/prisma";
 import { BlogEditor } from "@/components/admin/blog-editor";
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Edit article", robots: { index: false, follow: false } };
+export const metadata = {
+  keywords: ["AI virtual try-on"],
+  description: "Edit a VFitly AI virtual try-on article. Update its title, summary, images, and content, then manage publication for readers of the VFitly blog.", title: "Edit article", robots: { index: false, follow: false } };
 export default async function EditBlogPage({ params }: { params: Promise<{ id: string }> }) {
   if (!await getBlogAdmin()) redirect("/login");
   const { id } = await params;

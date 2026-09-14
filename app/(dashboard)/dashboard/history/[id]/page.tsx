@@ -6,8 +6,9 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db/prisma";
 
 export const metadata = {
+  keywords: ["AI virtual try-on"],
   title: "Try-On Detail | AI SaaS",
-  description: "View AI try-on generation details",
+  description: "Inspect a VFitly AI virtual try-on result, including the generated image, source photos and garments, and generation details. Download or revisit your outfit preview.",
 };
 
 export default async function HistoryDetailPage({
@@ -61,7 +62,7 @@ export default async function HistoryDetailPage({
           </div>
           <div className="relative aspect-[4/5] bg-neutral-100 dark:bg-neutral-900">
             {job.resultImageUrl ? (
-              <Image src={job.resultImageUrl} alt="AI try-on result" fill className="object-contain" sizes="(max-width: 1024px) 100vw, 60vw" priority />
+              <Image src={job.resultImageUrl}  fill className="object-contain" sizes="(max-width: 1024px) 100vw, 60vw" priority alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
             ) : (
               <div className="flex h-full items-center justify-center text-neutral-500">No result image available</div>
             )}
@@ -125,7 +126,7 @@ function AssetCard({ title, url }: { title: string; url: string }) {
   return (
     <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900">
       <div className="relative aspect-square">
-        <Image src={url} alt={title} fill className="object-cover" sizes="160px" />
+        <Image src={url}  fill className="object-cover" sizes="160px" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
       </div>
       <div className="p-2 text-xs font-medium text-neutral-700 dark:text-neutral-300">{title}</div>
     </div>

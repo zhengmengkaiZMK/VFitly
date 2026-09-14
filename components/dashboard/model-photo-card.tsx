@@ -80,10 +80,10 @@ export function ModelPhotoCard({ imageUrl, onImageChange }: ModelPhotoCardProps)
           {imageUrl ? (
             <Image
               src={imageUrl}
-              alt="Default full-body model photo"
+              
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-contain"
+              className="object-contain" alt="VFitly，AI virtual try-on，generate try-on image and try-on video"
             />
           ) : (
             <div className="px-6 text-center">

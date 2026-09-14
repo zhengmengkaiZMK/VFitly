@@ -21,7 +21,7 @@ export function BlogEditor({ post, links }: { post?: BlogEditorPost; links: { ti
   useEffect(() => { const warn = (event: BeforeUnloadEvent) => { if (dirty) { event.preventDefault(); event.returnValue = ""; } }; window.addEventListener("beforeunload", warn); return () => window.removeEventListener("beforeunload", warn); }, [dirty]);
   async function upload(file: File | undefined, cover: boolean) {
     if (!file) return; setBusy(true); setError("");
-    try { const data = new FormData(); data.set("file", file); const response = await fetch("/api/admin/blog/images", { method: "POST", body: data }); const result = await response.json(); if (!response.ok) throw new Error(result.error); if (cover) setImage(result.url); else editor?.chain().focus().setImage({ src: result.url, alt: file.name }).run(); setDirty(true); }
+    try { const data = new FormData(); data.set("file", file); const response = await fetch("/api/admin/blog/images", { method: "POST", body: data }); const result = await response.json(); if (!response.ok) throw new Error(result.error); if (cover) setImage(result.url); else editor?.chain().focus().setImage({ src: result.url, alt: "VFitly，AI virtual try-on，generate try-on image and try-on video" }).run(); setDirty(true); }
     catch (error) { setError(error instanceof Error ? error.message : "Upload failed"); } finally { setBusy(false); }
   }
   const button = "rounded-lg border px-3 py-2 text-sm hover:bg-muted disabled:opacity-50";

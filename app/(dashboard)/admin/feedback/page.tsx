@@ -6,8 +6,9 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db/prisma";
 
 export const metadata = {
+  keywords: ["AI virtual try-on"],
   title: "Feedback | Admin",
-  description: "Review customer feedback submissions",
+  description: "Review VFitly customer feedback about AI virtual try-on, generated images and videos, uploads, account access, and billing to investigate support requests.",
 };
 
 async function markFeedbackReviewed(formData: FormData) {

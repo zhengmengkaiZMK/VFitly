@@ -6,8 +6,9 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Terms of Service for VFitly AI Try-On Platform",
-  description: "Review VFitly Terms of Service for AI try-on, clothes changer tools, wardrobe storage, generated images, payments, accounts, and acceptable use.",
-  keywords: ["VFitly terms", "AI try-on terms", "clothes changer terms", "wardrobe service terms", "generated images terms"],
+  description: "Review the VFitly terms for AI virtual try-on, including uploaded content, generated images and videos, acceptable use, credits, subscriptions, and service limits.",
+  keywords: [
+    "AI virtual try-on","VFitly terms", "AI try-on terms", "clothes changer terms", "wardrobe service terms", "generated images terms"],
   alternates: {
     canonical: "/terms",
   },

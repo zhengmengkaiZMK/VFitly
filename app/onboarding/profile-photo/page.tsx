@@ -91,7 +91,7 @@ export default function ProfilePhotoOnboardingPage() {
           <form onSubmit={handleSubmit} className="rounded-[2rem] border border-neutral-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-neutral-950/90">
             <label className="group flex min-h-[420px] cursor-pointer flex-col items-center justify-center overflow-hidden rounded-[1.5rem] border-2 border-dashed border-neutral-300 bg-neutral-50 text-center transition hover:border-neutral-900 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:border-white dark:hover:bg-neutral-800">
               {previewUrl ? (
-                <Image src={previewUrl} alt="Full-body preview" width={800} height={1000} className="h-full max-h-[520px] w-full object-contain" />
+                <Image src={previewUrl}  width={800} height={1000} className="h-full max-h-[520px] w-full object-contain" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
               ) : (
                 <div className="p-8">
                   <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-neutral-900 text-white dark:bg-white dark:text-black">

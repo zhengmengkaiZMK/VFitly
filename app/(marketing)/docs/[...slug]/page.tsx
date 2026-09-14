@@ -57,13 +57,14 @@ export async function generateMetadata(props: DocPageProps) {
   })
 
   const title = (frontmatter as any).title || 'Documentation'
-  const description = (frontmatter as any).description || 'VFitly documentation for AI try-on, clothes changer workflows, product try-on, wardrobe storage, and virtual fitting room features.'
+  const description = `${(frontmatter as any).description || 'VFitly documentation for AI virtual try-on, generating try-on images and try-on videos, clothes changer workflows, product try-on, and virtual wardrobe management.'} Learn how AI virtual try-on helps you create outfit images and videos and manage virtual looks.`
   const canonicalUrl = absoluteUrl(`/docs/${slug}`)
 
   return {
     title: `${title} | VFitly Docs`,
     description,
-    keywords: ["VFitly documentation", "AI try-on docs", "clothes changer guide", "virtual wardrobe docs", title],
+    keywords: [
+    "AI virtual try-on","VFitly documentation", "AI try-on docs", "clothes changer guide", "virtual wardrobe docs", title],
     alternates: {
       canonical: canonicalUrl,
     },

@@ -9,15 +9,16 @@ import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "AI Try-On Pricing for Clothes Changer and Wardrobe Tools",
   description:
-    "Compare VFitly pricing plans for AI try-on, clothes changer previews, wardrobe storage, and virtual fashion creation workflows.",
-  keywords: ["AI try-on pricing", "clothes changer pricing", "virtual try on plans", "VFitly pricing", "wardrobe tools pricing"],
+    "Compare VFitly plans and credits for AI virtual try-on. Choose an option for generating outfit images and try-on videos, with clear pricing and usage limits.",
+  keywords: [
+    "AI virtual try-on","AI try-on pricing", "clothes changer pricing", "virtual try on plans", "VFitly pricing", "wardrobe tools pricing"],
   alternates: {
     canonical: "/pricing",
   },
   openGraph: {
     title: "AI Try-On Pricing for Clothes Changer and Wardrobe Tools | VFitly",
     description:
-      "Choose a VFitly plan for AI try-on, clothes changer previews, wardrobe tools, and fashion visual creation.",
+      "Compare VFitly plans and credits for AI virtual try-on. Choose an option for generating outfit images and try-on videos, with clear pricing and usage limits.",
     images: [DEFAULT_OG_IMAGE],
   },
 };

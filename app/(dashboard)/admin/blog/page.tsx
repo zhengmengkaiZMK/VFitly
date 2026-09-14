@@ -5,7 +5,9 @@ import { prisma } from "@/lib/db/prisma";
 import { changeBlogStatus } from "@/app/actions/blog";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Blog management", robots: { index: false, follow: false } };
+export const metadata = {
+  keywords: ["AI virtual try-on"],
+  description: "Manage VFitly articles about AI virtual try-on. Review drafts and published guides, edit content and cover images, and maintain the blog.", title: "Blog management", robots: { index: false, follow: false } };
 export default async function AdminBlogPage() {
   if (!await getBlogAdmin()) redirect("/login");
   const posts = await prisma.blogPost.findMany({ orderBy: { updatedAt: "desc" }, select: { id: true, title: true, slug: true, category: true, status: true, authorName: true, updatedAt: true } });

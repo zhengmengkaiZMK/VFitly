@@ -9,15 +9,16 @@ import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "Contact VFitly for AI Try-On and Clothes Changer Support",
   description:
-    "Contact VFitly for help with AI try-on, clothes changer workflows, wardrobe assets, product try-on, billing, and account support.",
-  keywords: ["contact VFitly", "AI try-on support", "clothes changer support", "wardrobe support", "product try-on help"],
+    "Contact VFitly support for help with AI virtual try-on, photo uploads, generated images and videos, wardrobe assets, account access, or billing questions.",
+  keywords: [
+    "AI virtual try-on","contact VFitly", "AI try-on support", "clothes changer support", "wardrobe support", "product try-on help"],
   alternates: {
     canonical: "/contact",
   },
   openGraph: {
     title: "Contact VFitly for AI Try-On and Clothes Changer Support",
     description:
-      "Get support for VFitly AI try-on, clothes changer, wardrobe, product try-on, and account questions.",
+      "Contact VFitly support for help with AI virtual try-on, photo uploads, generated images and videos, wardrobe assets, account access, or billing questions.",
     images: [DEFAULT_OG_IMAGE],
   },
 };

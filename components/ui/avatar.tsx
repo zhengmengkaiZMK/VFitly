@@ -29,7 +29,7 @@ function AvatarImage({
     <AvatarPrimitive.Image
       data-slot="avatar-image"
       className={cn("aspect-square size-full", className)}
-      {...props}
+      {...props} alt="VFitly，AI virtual try-on，generate try-on image and try-on video"
     />
   )
 }

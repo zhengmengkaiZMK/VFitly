@@ -128,7 +128,7 @@ function UploadCard({
       >
         {value ? (
           <>
-            <Image src={value.preview} alt={`${title} preview`} fill unoptimized className="object-contain" sizes="(max-width: 1024px) 100vw, 360px" />
+            <Image src={value.preview}  fill unoptimized className="object-contain" sizes="(max-width: 1024px) 100vw, 360px" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
             <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-black/70 px-3 py-1 text-xs font-medium text-white backdrop-blur">
               {value.source === "default" ? "Using saved full-body photo · Click to change" : "Uploaded photo · Click to change"}
             </span>
@@ -598,7 +598,7 @@ export function TryOnContent() {
                       }`}
                     >
                       <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-neutral-100 dark:bg-black">
-                        <Image src={item.imageUrl} alt={item.name} fill unoptimized className="object-cover" sizes="220px" />
+                        <Image src={item.imageUrl}  fill unoptimized className="object-cover" sizes="220px" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
                         {selected ? (
                           <span className="absolute right-2 top-2 rounded-full bg-blue-600 p-1 text-white">
                             <IconCheck className="h-4 w-4" />
@@ -683,7 +683,7 @@ export function TryOnContent() {
             {walkVideoMessage && <p className="rounded-2xl bg-purple-50 p-3 text-sm text-purple-700 dark:bg-purple-950/30 dark:text-purple-300">{walkVideoMessage}</p>}
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_260px]">
               <div className="relative min-h-[420px] overflow-hidden rounded-3xl bg-neutral-50 dark:bg-black">
-                <Image src={latestResult.resultImageUrl} alt="Generated try-on result" fill className="object-contain" sizes="(max-width: 1024px) 100vw, 70vw" />
+                <Image src={latestResult.resultImageUrl}  fill className="object-contain" sizes="(max-width: 1024px) 100vw, 70vw" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
               </div>
               <div className="space-y-4 text-sm text-neutral-600 dark:text-neutral-400">
                 <p>Status: <span className="font-medium text-green-600">{latestResult.status}</span></p>

@@ -6,8 +6,9 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy for VFitly AI Try-On Services",
-  description: "Read the VFitly Privacy Policy for AI try-on, clothes changer, wardrobe storage, analytics, uploads, billing, and account data handling.",
-  keywords: ["VFitly privacy policy", "AI try-on privacy", "clothes changer privacy", "wardrobe data policy", "user uploads privacy"],
+  description: "Read how VFitly handles photos, wardrobe assets, generated images and videos, account details, and billing data when you use AI virtual try-on.",
+  keywords: [
+    "AI virtual try-on","VFitly privacy policy", "AI try-on privacy", "clothes changer privacy", "wardrobe data policy", "user uploads privacy"],
   alternates: {
     canonical: "/privacy",
   },

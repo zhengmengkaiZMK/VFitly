@@ -10,18 +10,19 @@ import {
 } from "@/components/home-sections";
 
 const homeTitle = "Try On Wedding Dresses at Home with AI | VFitly";
-const homeDescription = "Try on wedding dresses at home with VFitly AI. Upload your photo and a dress image, preview bridal styles, and save your favorite looks before a fitting.";
+const homeDescription = "Explore wedding dresses and everyday outfits with VFitly AI virtual try-on. Upload your photo and clothing images to generate outfit previews and try-on videos.";
 
 export const metadata: Metadata = {
   title: { absolute: homeTitle },
-  description: homeDescription,
-  keywords: ["try on wedding dresses at home", "AI wedding dress try on", "virtual wedding dress try on", "bridal dress preview", "AI virtual fitting room", "VFitly"],
+  description: "Explore wedding dresses and everyday outfits with VFitly AI virtual try-on. Upload your photo and clothing images to generate outfit previews and try-on videos.",
+  keywords: [
+    "AI virtual try-on","try on wedding dresses at home", "AI wedding dress try on", "virtual wedding dress try on", "bridal dress preview", "AI virtual fitting room", "VFitly"],
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: homeTitle,
-    description: homeDescription,
+    description: "Explore wedding dresses and everyday outfits with VFitly AI virtual try-on. Upload your photo and clothing images to generate outfit previews and try-on videos.",
     url: SITE_URL,
     siteName: SITE_NAME,
     images: [DEFAULT_OG_IMAGE],
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: homeTitle,
-    description: homeDescription,
+    description: "Explore wedding dresses and everyday outfits with VFitly AI virtual try-on. Upload your photo and clothing images to generate outfit previews and try-on videos.",
     images: [DEFAULT_OG_IMAGE],
   },
 };

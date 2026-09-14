@@ -2,6 +2,7 @@
 
 import clsx from "clsx";
 import Image from "next/image";
+import { IMAGE_ALT_TEXT } from "@/lib/seo";
 import React, { useState } from "react";
 
 interface IBlurImage {
@@ -41,8 +42,8 @@ export const BlurImage = ({
       decoding="async"
       blurDataURL={src}
       layout={layout}
-      alt={alt ? alt : "Avatar"}
-      {...rest}
+      
+      {...rest} alt={IMAGE_ALT_TEXT}
     />
   );
 };

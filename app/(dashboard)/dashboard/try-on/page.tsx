@@ -5,12 +5,13 @@ import { absoluteUrl } from "@/lib/seo";
 
 const tryOnTitle = "Virtual Fitting Room – AI Clothes Try-On | VFitly";
 const tryOnDescription =
-  "Explore VFitly's AI virtual fitting room. Upload your photo and clothing images, preview outfits online, and save your favorite looks to your virtual wardrobe.";
+  "Use VFitly AI virtual try-on to preview outfits from your photo and garment images. Reuse wardrobe items, generate try-on images, and turn results into videos.";
 
 export const metadata: Metadata = {
   title: { absolute: tryOnTitle },
-  description: tryOnDescription,
+  description: "Use VFitly AI virtual try-on to preview outfits from your photo and garment images. Reuse wardrobe items, generate try-on images, and turn results into videos.",
   keywords: [
+    "AI virtual try-on",
     "virtual fitting room",
     "AI virtual fitting room",
     "online virtual fitting room",
@@ -24,11 +25,11 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: tryOnTitle,
-    description: tryOnDescription,
+    description: "Use VFitly AI virtual try-on to preview outfits from your photo and garment images. Reuse wardrobe items, generate try-on images, and turn results into videos.",
   },
   twitter: {
     title: tryOnTitle,
-    description: tryOnDescription,
+    description: "Use VFitly AI virtual try-on to preview outfits from your photo and garment images. Reuse wardrobe items, generate try-on images, and turn results into videos.",
   },
 };
 

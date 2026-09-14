@@ -6,9 +6,10 @@ import { cn } from "@/lib/utils";
 import { Footer } from "@/components/footer";
 
 export const metadata: Metadata = {
+  keywords: ["AI virtual try-on"],
   title: "VFitly",
   description:
-    "VFitly, short for Virtual Fitly, is an AI virtual try-on platform that helps users preview outfits, manage wardrobe items, and create realistic fashion visuals before buying or sharing a look.",
+    "Use VFitly AI virtual try-on to preview clothes from your photos, generate outfit images and try-on videos, and organize garments in a virtual wardrobe.",
   openGraph: {
     images: ["https://www.vfitly.com/banner.png"],
   },

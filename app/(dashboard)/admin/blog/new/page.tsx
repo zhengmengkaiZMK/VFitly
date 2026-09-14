@@ -4,7 +4,9 @@ import { getBlogAdmin } from "@/lib/blog-admin";
 import { getPublishedBlogPosts } from "@/lib/blog-posts";
 import { BlogEditor } from "@/components/admin/blog-editor";
 export const dynamic = "force-dynamic";
-export const metadata = { title: "New article", robots: { index: false, follow: false } };
+export const metadata = {
+  keywords: ["AI virtual try-on"],
+  description: "Create a VFitly article about AI virtual try-on. Add a title, summary, cover image, and practical guidance for outfit image and video workflows.", title: "New article", robots: { index: false, follow: false } };
 export default async function NewBlogPage() {
   if (!await getBlogAdmin()) redirect("/login");
   const posts = await getPublishedBlogPosts();

@@ -6,15 +6,16 @@ import { absoluteUrl } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "Clothes Wardrobe Storage and Virtual Fitting Room",
   description:
-    "Organize clothes wardrobe assets in VFitly, store garment images, and reuse them in a virtual fitting room for faster AI try-on previews.",
-  keywords: ["clothes wardrobe", "virtual fitting room", "clothes wardrobe storage", "wardrobe", "garment assets", "AI wardrobe"],
+    "Organize garment images in your VFitly virtual wardrobe. Find and reuse saved clothes for AI virtual try-on and create new outfit images and try-on videos.",
+  keywords: [
+    "AI virtual try-on","clothes wardrobe", "virtual fitting room", "clothes wardrobe storage", "wardrobe", "garment assets", "AI wardrobe"],
   alternates: {
     canonical: "/dashboard/wardrobe",
   },
   openGraph: {
     title: "Clothes Wardrobe Storage and Virtual Fitting Room | VFitly",
     description:
-      "Save garment assets in a clothes wardrobe and use VFitly as a virtual fitting room for AI try-on creation.",
+      "Organize garment images in your VFitly virtual wardrobe. Find and reuse saved clothes for AI virtual try-on and create new outfit images and try-on videos.",
   },
 };
 

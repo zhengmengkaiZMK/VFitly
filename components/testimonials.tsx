@@ -167,7 +167,7 @@ function Testimonial({
             width={150}
             height={150}
             className="h-10 w-10 rounded-full"
-            alt={name}
+             alt="VFitly，AI virtual try-on，generate try-on image and try-on video"
           />
           <div>
             <h3 className="text-sm  font-medium text-neutral-500 dark:text-neutral-300">

@@ -5,8 +5,9 @@ import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "VFitly Account Settings for AI Try-On Tools",
-  description: "Manage VFitly account settings for AI try-on, clothes changer workflows, wardrobe storage, profile images, and subscription preferences.",
-  keywords: ["VFitly settings", "AI try-on account settings", "clothes changer settings", "wardrobe account settings"],
+  description: "Manage your VFitly profile, account preferences, and subscription settings for AI virtual try-on, saved wardrobe assets, and outfit image and video creation.",
+  keywords: [
+    "AI virtual try-on","VFitly settings", "AI try-on account settings", "clothes changer settings", "wardrobe account settings"],
   alternates: {
     canonical: "/settings",
   },

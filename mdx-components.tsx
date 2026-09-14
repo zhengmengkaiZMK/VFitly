@@ -4,6 +4,7 @@ import { Link } from "next-view-transitions"
 import { type MDXComponents } from "mdx/types"
 
 import { cn } from "@/lib/utils"
+import { IMAGE_ALT_TEXT } from "@/lib/seo"
 
 export const mdxComponents: MDXComponents = {
   h1: ({ className, ...props }: React.ComponentProps<"h1">) => (
@@ -105,7 +106,7 @@ export const mdxComponents: MDXComponents = {
   ),
   img: ({ className, alt, ...props }: React.ComponentProps<"img">) => (
     // eslint-disable-next-line @next/next/no-img-element
-    <img className={cn("rounded-md", className)} alt={alt} {...props} />
+    <img className={cn("rounded-md", className)}  {...props} alt={IMAGE_ALT_TEXT} />
   ),
   hr: ({ ...props }: React.ComponentProps<"hr">) => (
     <hr className="my-4 md:my-8" {...props} />
@@ -192,8 +193,8 @@ export const mdxComponents: MDXComponents = {
       src={src as string}
       width={Number(width)}
       height={Number(height)}
-      alt={alt || ""}
-      {...props}
+      
+      {...props} alt={IMAGE_ALT_TEXT}
     />
   ),
   Link: ({ className, ...props }: React.ComponentProps<typeof Link>) => (
