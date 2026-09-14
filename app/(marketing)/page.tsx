@@ -9,12 +9,16 @@ import {
   HomeCTA 
 } from "@/components/home-sections";
 
+import { BridalGuide } from "@/components/bridal-guide";
+import { bridalFaqs } from "@/lib/bridal-content";
+import { TryOnContent } from "@/components/try-on/try-on-content";
+
 const homeTitle = "Try On Wedding Dresses at Home with AI | VFitly";
-const homeDescription = "Explore wedding dresses and everyday outfits with VFitly AI virtual try-on. Upload your photo and clothing images to generate outfit previews and try-on videos.";
+const homeDescription = "Try on wedding dresses at home with VFitly AI virtual try on. Upload your photo and a dress image to compare bridal looks and create a personal style shortlist.";
 
 export const metadata: Metadata = {
   title: { absolute: homeTitle },
-  description: "Explore wedding dresses and everyday outfits with VFitly AI virtual try-on. Upload your photo and clothing images to generate outfit previews and try-on videos.",
+  description: homeDescription,
   keywords: [
     "AI virtual try-on","try on wedding dresses at home", "AI wedding dress try on", "virtual wedding dress try on", "bridal dress preview", "AI virtual fitting room", "VFitly"],
   alternates: {
@@ -22,7 +26,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: homeTitle,
-    description: "Explore wedding dresses and everyday outfits with VFitly AI virtual try-on. Upload your photo and clothing images to generate outfit previews and try-on videos.",
+    description: homeDescription,
     url: SITE_URL,
     siteName: SITE_NAME,
     images: [DEFAULT_OG_IMAGE],
@@ -31,7 +35,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: homeTitle,
-    description: "Explore wedding dresses and everyday outfits with VFitly AI virtual try-on. Upload your photo and clothing images to generate outfit previews and try-on videos.",
+    description: homeDescription,
     images: [DEFAULT_OG_IMAGE],
   },
 };
@@ -55,24 +59,14 @@ const homeJsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "How can I try on wedding dresses at home with AI?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Upload a clear photo of yourself and an image of a wedding dress to generate a virtual bridal preview. Compare dress ideas and save your favorite looks before booking an in-person fitting.",
-        },
+    mainEntity: bridalFaqs.map(({ question, answer }) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: answer,
       },
-      {
-        "@type": "Question",
-        name: "Does an AI wedding dress preview replace a real fitting?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "No. VFitly creates AI visual previews, not measurements or fit guarantees. It does not ship dresses to your home. Check sizing, fabric, comfort and alterations with a bridal retailer or tailor.",
-        },
-      },
-    ],
+    })),
   },
 ];
 
@@ -86,7 +80,11 @@ export default function Home() {
         </div>
         <Container className="flex flex-col items-center">
           <HomeHero />
+          <section id="bridal-preview" aria-labelledby="bridal-preview-title" className="relative z-10 w-full scroll-mt-24">
+            <TryOnContent bridal />
+          </section>
           <HomeGridFeatures />
+          <BridalGuide />
           <HomeTestimonials />
         </Container>
         <div className="relative">

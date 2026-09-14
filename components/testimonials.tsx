@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Heading } from "./heading";
-import { Subheading } from "./subheading";
 import { cn } from "@/lib/utils";
 import { InViewDiv } from "./in-view-div";
 import { useMemo } from "react";
@@ -19,13 +18,15 @@ export const Testimonials = () => {
       <Heading as="h2">
         {isZh
           ? "为爱美女性打造的 AI 试衣体验"
-          : "Made for Anyone Who Wants to See the Fit Before They Buy"}
+          : "Compare Wedding Dress Styles Before an Appointment"}
       </Heading>
-      <Subheading className="text-center max-w-lg mx-auto">
-        {isZh
-          ? "在下单前预览衣服穿在自己身上的真实效果，轻松比较搭配、版型和风格，买衣服更安心。"
-          : "Preview how outfits look on you before checkout, compare styles with confidence, and make every clothing purchase feel easier."}
-      </Subheading>
+      <p className="text-sm md:text-base my-4 text-muted font-normal dark:text-muted-dark text-center max-w-lg mx-auto">
+        <span className="block text-balance">
+          {isZh
+            ? "在下单前预览衣服穿在自己身上的真实效果，轻松比较搭配、版型和风格，买衣服更安心。"
+            : "Explore wedding dress silhouettes and compare your favorite styles before a bridal appointment. These visual previews cannot guarantee fit or replace an in-person fitting."}
+        </span>
+      </p>
       <TestimonialGrid />
     </div>
   );

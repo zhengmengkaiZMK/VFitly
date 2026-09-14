@@ -157,10 +157,10 @@ function UploadCard({
   );
 }
 
-export function TryOnContent() {
+export function TryOnContent({ bridal = false }: { bridal?: boolean }) {
   const { requireLogin, requireUpgrade, showError } = useFeedback();
   const router = useRouter();
-  const loginUrl = buildLoginRedirectUrl("/dashboard/try-on");
+  const loginUrl = buildLoginRedirectUrl(bridal ? "/#bridal-preview" : "/dashboard/try-on");
   const [jobs, setJobs] = useState<TryOnJob[]>([]);
   const [wardrobeItems, setWardrobeItems] = useState<WardrobeItem[]>([]);
   const [selectedWardrobeIds, setSelectedWardrobeIds] = useState<string[]>([]);
@@ -475,9 +475,15 @@ export function TryOnContent() {
       <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div>
           <p className="text-sm font-medium uppercase tracking-[0.2em] text-blue-500">AI-Powered Outfit Try-On</p>
-          <h1 className="mt-3 text-3xl font-bold text-black dark:text-white">Your Virtual Fitting Room for AI Clothes Try-On</h1>
+          {bridal ? (
+            <h2 id="bridal-preview-title" className="mt-3 text-3xl font-bold text-black dark:text-white">Start Your Bridal Preview</h2>
+          ) : (
+            <h1 className="mt-3 text-3xl font-bold text-black dark:text-white">Your Virtual Fitting Room for AI Clothes Try-On</h1>
+          )}
           <p className="mt-2 max-w-2xl text-neutral-600 dark:text-neutral-400">
-            Preview outfits online with VFitly&apos;s virtual fitting room. Upload your photo and a clothing image, choose an aspect ratio, and add optional styling requirements to create your AI try-on preview.
+            {bridal
+              ? "Upload your photo and one gown image to explore a bridal look. Generation is subject to your available allowance or credits. If you leave this page to sign in, you may need to select your photos again."
+              : "Preview outfits online with VFitly's virtual fitting room. Upload your photo and a clothing image, choose an aspect ratio, and add optional styling requirements to create your AI try-on preview."}
           </p>
         </div>
         <Link href="/dashboard/wardrobe" className="rounded-full border border-neutral-200 px-5 py-3 text-sm font-medium dark:border-neutral-700">
@@ -549,7 +555,7 @@ export function TryOnContent() {
             <FeedbackError message={error} />
 
             <button disabled={!canGenerate} className="w-full rounded-full bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">
-              {generating ? "Generating..." : "Generate Try-On Image"}
+              {generating ? "Generating..." : bridal ? "Generate Bridal Preview" : "Generate Try-On Image"}
             </button>
 
             {!person || !garment ? (
