@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { IconHanger, IconHistory, IconMessageReport, IconSparkles, IconSettings, IconWallet } from "@tabler/icons-react";
+import { IconHanger, IconHistory, IconMessageReport, IconSparkles, IconSettings, IconWallet, IconArticle } from "@tabler/icons-react";
 import { UserInfoCard } from "./user-info-card";
 import { ModelPhotoCard } from "./model-photo-card";
 import { MembershipCard } from "./membership-card";
@@ -133,6 +133,12 @@ export function DashboardContent() {
           description: "Review user feedback messages and reply directly by email.",
           href: "/admin/feedback",
           icon: IconMessageReport,
+        },
+        {
+          title: "Blog Management",
+          description: "Create, edit, preview and publish blog articles.",
+          href: "/admin/blog",
+          icon: IconArticle,
         },
       ]
     : [];

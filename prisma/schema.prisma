@@ -44,6 +44,33 @@ enum UserRole {
   ADMIN
 }
 
+enum BlogPostStatus {
+  DRAFT
+  PUBLISHED
+  OFFLINE
+}
+
+model BlogPost {
+  id          String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String @unique @db.VarChar(180)
+  title       String @db.VarChar(200)
+  description String @db.Text
+  content     String @db.Text
+  category    String @db.VarChar(100)
+  tags        String[] @default([])
+  image       String @db.Text
+  authorName  String @map("author_name") @db.VarChar(100)
+  createdById String @map("created_by_id") @db.Uuid
+  updatedById String @map("updated_by_id") @db.Uuid
+  status      BlogPostStatus @default(DRAFT)
+  publishedAt DateTime? @map("published_at") @db.Timestamptz
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status, publishedAt(sort: Desc)], name: "idx_blog_posts_published")
+  @@map("blog_posts")
+}
+
 // ==================== 用户表 ====================
 model User {
   id                  String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid

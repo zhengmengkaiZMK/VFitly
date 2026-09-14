@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
-import { getAllBlogPosts } from "@/lib/blog-utils";
+import { getPublishedBlogPosts } from "@/lib/blog-posts";
 import { SITE_URL } from "@/lib/seo";
+
+export const dynamic = "force-dynamic";
 
 const staticRoutes = [
   "",
@@ -42,7 +44,7 @@ function getDocsRoutes() {
   ];
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   const staticEntries = staticRoutes.map((route) => ({
@@ -52,7 +54,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === "" ? 1 : route.startsWith("/dashboard") ? 0.8 : 0.7,
   })) satisfies MetadataRoute.Sitemap;
 
-  const blogEntries = getAllBlogPosts().map((post) => ({
+  const blogEntries = (await getPublishedBlogPosts()).map((post) => ({
     url: routeUrl(`/blog/${post.slug}`),
     lastModified: new Date(post.date),
     changeFrequency: "monthly" as const,

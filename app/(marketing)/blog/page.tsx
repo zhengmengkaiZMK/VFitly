@@ -1,11 +1,13 @@
 import { type Metadata } from "next";
-import { getAllBlogPosts } from "@/lib/blog-utils";
+import { getPublishedBlogPosts } from "@/lib/blog-posts";
 import { Background } from "@/components/background";
 import { Container } from "@/components/container";
 import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
 import { BlogCard } from "@/components/blog-card";
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "AI Try-On Blog for Clothes Changer and Virtual Wardrobe Tips",
@@ -24,7 +26,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ArticlesIndex() {
-  const blogPosts = getAllBlogPosts();
+  const blogPosts = await getPublishedBlogPosts();
   
   // Convert to old blog format with correct author structure
   const blogs = blogPosts.map(post => ({

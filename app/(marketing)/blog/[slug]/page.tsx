@@ -8,7 +8,8 @@ import path from "path"
 import { compileMDX } from "next-mdx-remote/rsc"
 import { mdxComponents } from "@/mdx-components"
 
-import { getAllBlogPosts, getRelatedPosts, calculateReadTime } from "@/lib/blog-utils"
+import { getPublishedBlogPosts } from "@/lib/blog-posts";
+import { BlogMarkdown } from "@/components/blog-markdown";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -16,22 +17,16 @@ import { BlogCard } from "@/components/blog-card"
 import { JsonLd } from "@/components/seo/json-ld"
 import { absoluteUrl } from "@/lib/seo"
 
-export const revalidate = false
-export const dynamic = "force-static"
-export const dynamicParams = false
+export const revalidate = 60
+export const dynamic = "force-dynamic"
+export const dynamicParams = true
 
-export function generateStaticParams() {
-  const posts = getAllBlogPosts()
-  return posts.map((post) => ({
-    slug: post.slug,
-  }))
-}
 
 export async function generateMetadata(props: {
   params: Promise<{ slug: string }>
 }) {
   const params = await props.params
-  const posts = getAllBlogPosts()
+  const posts = await getPublishedBlogPosts()
   const post = posts.find(p => p.slug === params.slug)
 
   if (!post) {
@@ -63,45 +58,38 @@ export default async function BlogPostPage(props: {
   params: Promise<{ slug: string }>
 }) {
   const params = await props.params
-  const posts = getAllBlogPosts()
+  const posts = await getPublishedBlogPosts()
   const post = posts.find(p => p.slug === params.slug)
 
   if (!post) {
     notFound()
   }
 
-  // 读取并编译 MDX 文件
   const filePath = path.join(process.cwd(), "content", "blog", `${params.slug}.mdx`)
-  const fileContent = fs.readFileSync(filePath, "utf-8")
-  const { content } = await compileMDX({
-    source: fileContent,
-    options: { parseFrontmatter: true },
-    components: {
-      ...mdxComponents,
-      Steps: ({ ...props }) => (
-        <div
-          className="[&>h3]:step steps mb-12 [counter-reset:step] *:[h3]:first:!mt-0"
-          {...props}
-        />
-      ),
-      Step: ({ className, ...props }: React.ComponentProps<"h3">) => (
-        <h3
-          className={`mt-6 scroll-m-28 text-xl font-medium tracking-tight ${className || ''}`}
-          {...props}
-        />
-      ),
-      Callout: ({ className, children, ...props }: React.ComponentProps<"div">) => (
-        <div
-          className={`my-6 flex items-start rounded-md border border-l-4 p-4 ${className || ''}`}
-          {...props}
-        >
-          <div>{children}</div>
-        </div>
-      ),
-    },
-  })
+  const isDatabasePost = Boolean(post.content)
+  let content: React.ReactNode
+
+  if (isDatabasePost) {
+    content = <BlogMarkdown content={post.content!} />
+  } else {
+    const fileContent = fs.readFileSync(filePath, "utf-8")
+    const compiled = await compileMDX({
+      source: fileContent,
+      options: { parseFrontmatter: true },
+      components: {
+        ...mdxComponents,
+        Steps: ({ ...props }) => <div className="[&>h3]:step steps mb-12 [counter-reset:step] *:[h3]:first:!mt-0" {...props} />,
+        Step: ({ className, ...props }: React.ComponentProps<"h3">) => <h3 className={`mt-6 scroll-m-28 text-xl font-medium tracking-tight ${className || ''}`} {...props} />,
+        Callout: ({ className, children, ...props }: React.ComponentProps<"div">) => <div className={`my-6 flex items-start rounded-md border border-l-4 p-4 ${className || ''}`} {...props}><div>{children}</div></div>,
+      },
+    })
+    content = compiled.content
+  }
   
-  const relatedPosts = getRelatedPosts(params.slug, 3)
+  const relatedPosts = posts
+    .filter(item => item.slug !== params.slug)
+    .sort((a, b) => (a.category === post.category ? -1 : 1) - (b.category === post.category ? -1 : 1))
+    .slice(0, 3)
 
   // 格式化日期
   const formattedDate = new Date(post.date).toLocaleDateString(
@@ -303,7 +291,7 @@ export default async function BlogPostPage(props: {
               {relatedPosts.map((relatedPost) => {
                 const blogWithSlug = {
                   ...relatedPost,
-                  slug: `/blog/${relatedPost.slug}`,
+                  slug: relatedPost.slug,
                   author: {
                     name: relatedPost.author.name,
                     src: relatedPost.author.avatar,
