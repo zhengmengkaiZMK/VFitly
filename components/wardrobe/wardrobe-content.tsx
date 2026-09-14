@@ -29,6 +29,7 @@ export function WardrobeContent() {
   const [error, setError] = useState("");
   const [editingItem, setEditingItem] = useState<WardrobeItem | null>(null);
   const [selectedImageName, setSelectedImageName] = useState("No image selected");
+  const [needsLogin, setNeedsLogin] = useState(false);
 
   useEffect(() => {
     loadItems();
@@ -39,14 +40,15 @@ export function WardrobeContent() {
     setError("");
 
     const response = await fetch("/api/wardrobe");
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
       if (response.status === 401) {
+        setNeedsLogin(true);
         requireLogin(undefined, loginUrl);
-        return;
+      } else {
+        setError(data.error || "衣橱加载失败");
       }
-      setError(data.error || "衣橱加载失败");
     } else {
       setItems(data.items || []);
     }
@@ -150,9 +152,9 @@ export function WardrobeContent() {
       <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div>
           <p className="text-sm font-medium uppercase tracking-[0.2em] text-blue-500">Wardrobe Library</p>
-          <h1 className="mt-3 text-3xl font-bold text-black dark:text-white">Manage your fashion assets</h1>
+          <h1 className="mt-3 text-3xl font-bold text-black dark:text-white">Virtual wardrobe: organize clothes for AI try-on</h1>
           <p className="mt-2 max-w-2xl text-neutral-600 dark:text-neutral-400">
-            Upload garment images, organize metadata and prepare reusable clothing assets for AI try-on generation.
+            A virtual wardrobe keeps your clothing images in one place so you can reuse them instead of uploading the same file again. Add a garment once, describe it with a category, colour and tags, then apply it to any try-on or outfit preview.
           </p>
         </div>
         <a href="/dashboard/try-on" className="rounded-full bg-black px-5 py-3 text-sm font-medium text-white dark:bg-white dark:text-black">
@@ -176,7 +178,7 @@ export function WardrobeContent() {
               <IconPlus className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="font-semibold text-black dark:text-white">Upload garment</h2>
+              <h2 className="font-semibold text-black dark:text-white">Add garments to your virtual wardrobe</h2>
               <p className="text-sm text-neutral-500">PNG, JPG, WEBP, max 12MB</p>
             </div>
           </div>
@@ -215,7 +217,7 @@ export function WardrobeContent() {
           <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
             <div className="mb-5 flex items-center justify-between gap-3">
               <div>
-                <h2 className="font-semibold text-black dark:text-white">Garment assets</h2>
+                <h2 className="font-semibold text-black dark:text-white">Your virtual wardrobe items</h2>
                 <p className="text-sm text-neutral-500">Reusable clothing images for AI try-on generation.</p>
               </div>
               <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
@@ -225,6 +227,17 @@ export function WardrobeContent() {
 
             {loading ? (
               <p className="text-neutral-500">Loading wardrobe...</p>
+            ) : needsLogin ? (
+              <div className="flex min-h-[320px] flex-col items-center justify-center rounded-3xl border border-dashed border-neutral-300 text-center dark:border-neutral-700">
+                <IconHanger className="mb-4 h-12 w-12 text-neutral-400" />
+                <h3 className="text-lg font-semibold text-black dark:text-white">Sign in to open your virtual wardrobe</h3>
+                <p className="mt-2 max-w-md text-sm text-neutral-500">
+                  Garments, categories and tags are stored with your account, so your virtual wardrobe stays private. Sign in to upload your first item or pick up where you left off.
+                </p>
+                <a href={loginUrl} className="mt-5 rounded-full bg-blue-600 px-5 py-3 text-sm font-medium text-white">
+                  Sign in to your wardrobe
+                </a>
+              </div>
             ) : garmentItems.length === 0 ? (
               <div className="flex min-h-[320px] flex-col items-center justify-center rounded-3xl border border-dashed border-neutral-300 text-center dark:border-neutral-700">
                 <IconHanger className="mb-4 h-12 w-12 text-neutral-400" />
@@ -280,6 +293,11 @@ export function WardrobeContent() {
 
             {loading ? (
               <p className="text-neutral-500">Loading saved looks...</p>
+            ) : needsLogin ? (
+              <div className="rounded-3xl border border-dashed border-neutral-300 p-8 text-center dark:border-neutral-700">
+                <h3 className="text-lg font-semibold text-black dark:text-white">Sign in to see your saved looks</h3>
+                <p className="mt-2 text-sm text-neutral-500">Finished try-on results are kept separately from your garment library, under your account.</p>
+              </div>
             ) : generatedLooks.length === 0 ? (
               <div className="rounded-3xl border border-dashed border-neutral-300 p-8 text-center dark:border-neutral-700">
                 <h3 className="text-lg font-semibold text-black dark:text-white">No saved looks yet</h3>

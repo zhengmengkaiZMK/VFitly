@@ -33,7 +33,7 @@ export const MobileNavbar = ({ navItems }: any) => {
           "bg-neutral-50 dark:bg-neutral-900 shadow-[0px_-2px_0px_0px_var(--neutral-100),0px_2px_0px_0px_var(--neutral-100)] dark:shadow-[0px_-2px_0px_0px_var(--neutral-800),0px_2px_0px_0px_var(--neutral-800)]"
       )}
     >
-      <Logo />
+      <Logo lazy />
       <IoIosMenu
         className="text-black dark:text-white h-6 w-6"
         onClick={() => setOpen(!open)}

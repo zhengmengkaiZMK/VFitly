@@ -438,9 +438,9 @@ export function ProductTryOnContent() {
       <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div>
           <p className="text-sm font-medium uppercase tracking-[0.2em] text-purple-500">Product Link Try-On</p>
-          <h1 className="mt-3 text-3xl font-bold text-black dark:text-white">Batch try-on from product links</h1>
+          <h1 className="mt-3 text-3xl font-bold text-black dark:text-white">Product link try on: batch try-on from any product URL</h1>
           <p className="mt-2 max-w-3xl text-neutral-600 dark:text-neutral-400">
-            Paste a product URL, extract clothing images for different variants, remove the ones you do not need, then generate one try-on result for each remaining image.
+            Paste a product URL to collect the garment images published on that page, then generate one try-on result per garment. Product link try on keeps the same person photo across the batch, so removing the variants you do not need is the fastest way to compare what is left.
           </p>
         </div>
         <Link href="/dashboard/try-on" className="rounded-full border border-neutral-200 px-5 py-3 text-sm font-medium dark:border-neutral-700">
@@ -456,7 +456,7 @@ export function ProductTryOnContent() {
                 <IconLink className="h-5 w-5" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-black dark:text-white">1. Extract product garment images</h2>
+                <h2 className="text-lg font-semibold text-black dark:text-white">1. Extract garment images from a product link</h2>
                 <p className="text-sm text-neutral-500">Works best with public product pages that expose product images in HTML or structured metadata.</p>
               </div>
             </div>
@@ -550,7 +550,7 @@ export function ProductTryOnContent() {
                       }`}
                     >
                       <div className="relative aspect-[4/5] bg-white dark:bg-neutral-950">
-                        <Image src={garment.imageUrl}  fill unoptimized className="object-contain" sizes="(max-width: 768px) 100vw, 280px" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
+                        <Image src={garment.imageUrl}  fill unoptimized loading="lazy" className="object-contain" sizes="(max-width: 768px) 100vw, 280px" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
                         <div className={`absolute left-3 top-3 rounded-full px-3 py-1.5 text-xs font-semibold shadow-sm backdrop-blur ${checked ? "bg-purple-600 text-white" : "bg-white/90 text-neutral-600 dark:bg-black/70 dark:text-neutral-200"}`}>
                           {checked ? "Selected" : "Click to select"}
                         </div>
@@ -600,7 +600,7 @@ export function ProductTryOnContent() {
                 <IconSparkles className="h-5 w-5" />
               </div>
               <div>
-                <h2 className="font-semibold text-black dark:text-white">3. Generate batch try-on</h2>
+                <h2 className="font-semibold text-black dark:text-white">3. Generate the try-on batch</h2>
                 <p className="text-sm text-neutral-500">One final image will be generated for every remaining garment.</p>
               </div>
             </div>
@@ -625,7 +625,7 @@ export function ProductTryOnContent() {
       <section ref={resultSectionRef} className="mt-6 scroll-mt-24 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
         <div className="mb-4 flex flex-col justify-between gap-3 md:flex-row md:items-center">
           <div>
-            <h2 className="text-xl font-semibold text-black dark:text-white">Generated try-on results</h2>
+            <h2 className="text-xl font-semibold text-black dark:text-white">Product link try-on results</h2>
             <p className="mt-1 text-sm text-neutral-500">Successful and failed images are shown independently, so one failed variant will not block the whole batch.</p>
           </div>
           {results.length > 0 && <span className="rounded-full bg-neutral-100 px-3 py-1 text-sm text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">{results.filter((item) => item.status === "success").length} / {results.length} completed</span>}
@@ -644,7 +644,7 @@ export function ProductTryOnContent() {
               <article key={result.id} className="overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-black">
                 <div className="relative aspect-[4/5] bg-white dark:bg-neutral-950">
                   {result.resultUrl ? (
-                    <Image src={result.resultUrl}  fill unoptimized className="object-contain" sizes="(max-width: 768px) 100vw, 360px" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
+                    <Image src={result.resultUrl}  fill unoptimized loading="lazy" className="object-contain" sizes="(max-width: 768px) 100vw, 360px" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
                   ) : (
                     <div className="flex h-full flex-col items-center justify-center p-6 text-center text-sm text-red-500">
                       <IconX className="mb-3 h-8 w-8" />
