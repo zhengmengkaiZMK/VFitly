@@ -26,8 +26,14 @@ export function BlogEditor({ post, links }: { post?: BlogEditorPost; links: { ti
   }
   const button = "rounded-lg border px-3 py-2 text-sm hover:bg-muted disabled:opacity-50";
   const input = "mt-2 w-full rounded-lg border bg-background p-3";
-  return <form onChange={() => setDirty(true)} action={async (data) => { setBusy(true); setError(""); setDirty(false); const result = await saveBlogPost(data); if (result?.error) { setError(result.error); setBusy(false); setDirty(true); } }} className="space-y-6">
-    <input type="hidden" name="id" value={post?.id || ""} /><input type="hidden" name="updatedAt" value={post?.updatedAt || ""} /><input type="hidden" name="content" value={content} />
+  async function submit(data: FormData, status: "DRAFT" | "PUBLISHED") {
+    data.set("status", status);
+    setBusy(true); setError(""); setDirty(false);
+    const result = await saveBlogPost(data);
+    if (result?.error) { setError(result.error); setBusy(false); setDirty(true); }
+  }
+  return <form onChange={() => setDirty(true)} action={(data) => submit(data, "DRAFT")} className="space-y-6">
+    <input type="hidden" name="id" value={post?.id || ""} /><input type="hidden" name="updatedAt" value={post?.updatedAt || ""} /><input type="hidden" name="content" value={content} /><input type="hidden" name="status" value={post?.status === "PUBLISHED" ? "PUBLISHED" : "DRAFT"} />
     <fieldset disabled={busy} className="space-y-6 disabled:opacity-60">
       <div className="grid gap-5 md:grid-cols-2">{([ ["title", "Title", post?.title], ["slug", "URL slug", post?.slug], ["category", "Category", post?.category], ["tags", "Tags (comma separated)", post?.tags.join(", ")] ] as const).map(([name,label,value]) => <label key={name} className="block text-sm font-medium">{label}<input className={input} name={name} defaultValue={value || ""} required={name === "title" || name === "slug"} readOnly={name === "slug" && !!post} maxLength={name === "title" ? 200 : 180} /></label>)}</div>
       <label className="block text-sm font-medium">Description<textarea name="description" defaultValue={post?.description || ""} className={input} rows={3} maxLength={1000} /></label>
@@ -45,7 +51,7 @@ export function BlogEditor({ post, links }: { post?: BlogEditorPost; links: { ti
       </div>
       <label className="block text-sm">Insert body image<input type="file" accept="image/jpeg,image/png,image/webp" className="mt-2 block" onChange={e => { void upload(e.target.files?.[0], false); e.target.value = ""; }} /></label>
       <p className="text-xs text-muted-foreground">Images use public URLs, including images uploaded to drafts. Existing article URLs cannot be changed.</p>
-      <div className="flex flex-wrap gap-3"><button name="status" value="DRAFT" className={button}>Save draft</button><button name="status" value="PUBLISHED" className="rounded-lg bg-primary px-5 py-2 text-primary-foreground">{post?.status === "PUBLISHED" ? "Update published article" : "Publish article"}</button>{post && <button type="button" className={button} onClick={async () => { if (!window.confirm("Permanently delete this article? Uploaded images will be retained.")) return; setBusy(true); const form = new FormData(); form.set("id", post.id); const result = await deleteBlogPost(form); if (result?.error) { setError(result.error); setBusy(false); } }}>Delete</button>}</div>
+      <div className="flex flex-wrap gap-3"><button name="status" value="DRAFT" className={button}>Save draft</button><button formAction={(data) => submit(data, "PUBLISHED")} className="rounded-lg bg-primary px-5 py-2 text-primary-foreground">{post?.status === "PUBLISHED" ? "Update published article" : "Publish article"}</button>{post && <button type="button" className={button} onClick={async () => { if (!window.confirm("Permanently delete this article? Uploaded images will be retained.")) return; setBusy(true); const form = new FormData(); form.set("id", post.id); const result = await deleteBlogPost(form); if (result?.error) { setError(result.error); setBusy(false); } }}>Delete</button>}</div>
     </fieldset>
     {busy && <p role="status">Saving or uploading…</p>}{error && <p role="alert" className="text-red-600">{error}</p>}
   </form>;
