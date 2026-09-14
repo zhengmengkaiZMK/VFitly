@@ -475,7 +475,7 @@ export function TryOnContent() {
       <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div>
           <p className="text-sm font-medium uppercase tracking-[0.2em] text-blue-500">AI-Powered Outfit Try-On</p>
-          <h1 className="mt-3 text-3xl font-bold text-black dark:text-white">Your AI virtual fitting room</h1>
+          <h1 className="mt-3 text-3xl font-bold text-black dark:text-white">Your Virtual Fitting Room for AI Clothes Try-On</h1>
           <p className="mt-2 max-w-2xl text-neutral-600 dark:text-neutral-400">
             Preview outfits online with VFitly&apos;s virtual fitting room. Upload your photo and a clothing image, choose an aspect ratio, and add optional styling requirements to create your AI try-on preview.
           </p>
@@ -487,6 +487,7 @@ export function TryOnContent() {
 
       <form onSubmit={handleGenerate} className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_420px]">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <h2 className="text-xl font-semibold text-black dark:text-white md:col-span-2">Upload Your Photos</h2>
           <UploadCard
             title="Person Photo"
             description="We auto-load your saved full-body photo when available. Click the preview to upload a different one."
@@ -598,7 +599,7 @@ export function TryOnContent() {
                       }`}
                     >
                       <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-neutral-100 dark:bg-black">
-                        <Image src={item.imageUrl}  fill unoptimized className="object-cover" sizes="220px" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
+                        <Image src={item.imageUrl} loading="lazy" fill unoptimized className="object-cover" sizes="220px" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
                         {selected ? (
                           <span className="absolute right-2 top-2 rounded-full bg-blue-600 p-1 text-white">
                             <IconCheck className="h-4 w-4" />
@@ -683,7 +684,7 @@ export function TryOnContent() {
             {walkVideoMessage && <p className="rounded-2xl bg-purple-50 p-3 text-sm text-purple-700 dark:bg-purple-950/30 dark:text-purple-300">{walkVideoMessage}</p>}
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_260px]">
               <div className="relative min-h-[420px] overflow-hidden rounded-3xl bg-neutral-50 dark:bg-black">
-                <Image src={latestResult.resultImageUrl}  fill className="object-contain" sizes="(max-width: 1024px) 100vw, 70vw" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
+                <Image src={latestResult.resultImageUrl} loading="lazy" fill className="object-contain" sizes="(max-width: 1024px) 100vw, 70vw" alt="VFitly，AI virtual try-on，generate try-on image and try-on video" />
               </div>
               <div className="space-y-4 text-sm text-neutral-600 dark:text-neutral-400">
                 <p>Status: <span className="font-medium text-green-600">{latestResult.status}</span></p>
