@@ -157,10 +157,10 @@ function UploadCard({
   );
 }
 
-export function TryOnContent({ bridal = false }: { bridal?: boolean }) {
+export function TryOnContent({ embedded = false }: { embedded?: boolean }) {
   const { requireLogin, requireUpgrade, showError } = useFeedback();
   const router = useRouter();
-  const loginUrl = buildLoginRedirectUrl(bridal ? "/#bridal-preview" : "/dashboard/try-on");
+  const loginUrl = buildLoginRedirectUrl(embedded ? "/#virtual-try-on" : "/dashboard/try-on");
   const [jobs, setJobs] = useState<TryOnJob[]>([]);
   const [wardrobeItems, setWardrobeItems] = useState<WardrobeItem[]>([]);
   const [selectedWardrobeIds, setSelectedWardrobeIds] = useState<string[]>([]);
@@ -475,15 +475,15 @@ export function TryOnContent({ bridal = false }: { bridal?: boolean }) {
       <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div>
           <p className="text-sm font-medium uppercase tracking-[0.2em] text-blue-500">AI-Powered Outfit Try-On</p>
-          {bridal ? (
-            <h2 id="bridal-preview-title" className="mt-3 text-3xl font-bold text-black dark:text-white">Start Your Bridal Preview</h2>
+          {embedded ? (
+            <h2 id="virtual-try-on-title" className="mt-3 text-3xl font-bold text-black dark:text-white">Start Your Virtual Try On</h2>
           ) : (
-            <h1 className="mt-3 text-3xl font-bold text-black dark:text-white">Your Virtual Fitting Room for AI Clothes Try-On</h1>
+            <h1 className="mt-3 text-3xl font-bold text-black dark:text-white">AI clothes changer: put any outfit on your photo</h1>
           )}
           <p className="mt-2 max-w-2xl text-neutral-600 dark:text-neutral-400">
-            {bridal
-              ? "Upload your photo and one gown image to explore a bridal look. Generation is subject to your available allowance or credits. If you leave this page to sign in, you may need to select your photos again."
-              : "Preview outfits online with VFitly's virtual fitting room. Upload your photo and a clothing image, choose an aspect ratio, and add optional styling requirements to create your AI try-on preview."}
+            {embedded
+              ? "Upload a photo of yourself and the garment you want to try. Generation is subject to your available allowance or credits, and if you leave this page to sign in you may need to select your photos again."
+              : "Change the clothes in your photo using a garment image or a piece from your wardrobe. Choose an aspect ratio, add optional styling notes, and generate a new outfit. Generation is subject to your available allowance or credits."}
           </p>
         </div>
         <Link href="/dashboard/wardrobe" className="rounded-full border border-neutral-200 px-5 py-3 text-sm font-medium dark:border-neutral-700">
@@ -518,7 +518,7 @@ export function TryOnContent({ bridal = false }: { bridal?: boolean }) {
               <IconSparkles className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="font-semibold text-black dark:text-white">Virtual fitting room settings</h2>
+              <h2 className="font-semibold text-black dark:text-white">Try-On Settings</h2>
               <p className="text-sm text-neutral-500">Use one person image plus one clothing image.</p>
             </div>
           </div>
@@ -555,7 +555,7 @@ export function TryOnContent({ bridal = false }: { bridal?: boolean }) {
             <FeedbackError message={error} />
 
             <button disabled={!canGenerate} className="w-full rounded-full bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">
-              {generating ? "Generating..." : bridal ? "Generate Bridal Preview" : "Generate Try-On Image"}
+              {generating ? "Generating..." : embedded ? "Generate Virtual Try On" : "Generate Try-On Image"}
             </button>
 
             {!person || !garment ? (
@@ -675,7 +675,7 @@ export function TryOnContent({ bridal = false }: { bridal?: boolean }) {
       </section>
 
       <section ref={resultSectionRef} className="mt-6 scroll-mt-24 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-        <h2 className="mb-4 text-xl font-semibold text-black dark:text-white">Your virtual fitting room preview</h2>
+        <h2 className="mb-4 text-xl font-semibold text-black dark:text-white">Your Try-On Preview</h2>
         <p className="mb-4 text-sm text-neutral-500 dark:text-neutral-400">Explore your AI outfit preview, download the image, or save your favorite look to your wardrobe. Previews are for style inspiration and do not guarantee sizing or physical fit.</p>
         {generating || outfitGenerating ? (
           <LoadingIndicator

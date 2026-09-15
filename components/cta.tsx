@@ -5,7 +5,7 @@ import Balancer from "react-wrap-balancer";
 import Link from "next/link";
 import { Button } from "./button";
 
-import { bridalFaqs as faqs } from "@/lib/bridal-content";
+import { virtualTryOnFaqs as faqs } from "@/lib/virtual-try-on-content";
 
 export const CTA = () => {
   return (
@@ -50,17 +50,17 @@ export const CTA = () => {
 
             <div className="relative px-6 pb-14 pt-20 sm:px-10 sm:pb-20 lg:px-[4.5rem]">
               <h2 className="text-center text-balance mx-auto text-3xl md:text-5xl font-semibold tracking-[-0.015em] text-white">
-                Start Exploring Your Bridal Look
+                Ready to Try On Your Next Outfit?
               </h2>
               <p className="mt-4 max-w-[30rem] text-center mx-auto text-base/6 text-neutral-200">
                 <Balancer>
-                  Begin with a clear photo and one gown you want to explore. Compare your preview with the original dress image, then keep your favorite ideas for your next bridal appointment.
+                  Upload a clear photo and the clothes you are deciding between. Compare the previews side by side, keep the ones you like, and arrive at checkout with a clearer answer.
                 </Balancer>
               </p>
 
               <div className="relative z-10 mx-auto flex justify-center mt-6">
-                <Link href="#bridal-preview">
-                  <Button>Start your bridal preview</Button>
+                <Link href="#virtual-try-on">
+                  <Button>Start your virtual try on</Button>
                 </Link>
               </div>
             </div>

@@ -14,14 +14,14 @@ export const Hero = () => {
         transition={{ ease: "easeOut", duration: 0.5 }}
         className="mx-auto mb-6 rounded-full border border-neutral-200 bg-white/70 px-4 py-2 text-sm text-neutral-600 shadow-sm backdrop-blur dark:border-neutral-800 dark:bg-neutral-900/70 dark:text-neutral-300"
       >
-        AI Virtual Fitting Room — Wedding Dresses & Everyday Style
+        AI Virtual Try On — Clothes, Dresses, Shoes & Everyday Wear
       </motion.div>
 
       <h1
         className="relative z-10 mx-auto mt-6 max-w-6xl text-center text-3xl font-semibold tracking-tight md:text-5xl lg:text-7xl"
       >
         <span className="block text-balance">
-          Try on wedding dresses at home with AI
+          Virtual try on clothes with AI
         </span>
       </h1>
 
@@ -32,7 +32,7 @@ export const Hero = () => {
         className="relative z-10 mx-auto mt-6 max-w-3xl text-center text-base text-muted dark:text-muted-dark md:text-xl"
       >
         <span className="block text-balance">
-          Explore wedding dress styles with AI virtual try on. Upload your photo and a dress image to create a bridal preview, then save your favorites before a boutique appointment. This is a visual preview, not a size or fit guarantee, and we do not ship sample dresses.
+          See how a top, dress, jacket or pair of shoes looks on your own photo before you buy it. Upload one clear picture of yourself and a garment image, generate a preview, and compare the styles you are deciding between. This is a visual preview, not a size or fit guarantee.
         </span>
       </motion.p>
 
@@ -42,8 +42,8 @@ export const Hero = () => {
         transition={{ ease: "easeOut", duration: 0.5, delay: 0.3 }}
         className="relative z-10 mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
       >
-        <Link href="#bridal-preview">
-          <Button>Start your bridal preview</Button>
+        <Link href="#virtual-try-on">
+          <Button>Start your virtual try on</Button>
         </Link>
         <Link
           href="/dashboard/try-on"
@@ -74,7 +74,7 @@ export const Hero = () => {
       </motion.div>
 
       <h2 className="relative z-10 mx-auto mt-14 px-4 text-center text-2xl font-semibold tracking-tight text-black dark:text-white md:text-3xl">
-        Plan Your Bridal Look with VFitly
+        What You Can Do with VFitly
       </h2>
       <motion.div
         initial={{ y: 48, opacity: 0 }}
@@ -83,9 +83,9 @@ export const Hero = () => {
         className="relative z-10 mx-auto mt-6 grid w-full max-w-5xl grid-cols-1 gap-4 px-4 md:grid-cols-3"
       >
         {[
-          ["Save Bridal Inspiration", "Keep your favorite gowns together for your boutique visit."],
-          ["Compare Dress Styles", "Explore necklines and silhouettes on your own photo."],
-          ["Preview Your Bridal Look", "Create a short video to visualize your favorite gown."],
+          ["Try On Any Garment", "Apply a top, dress, jacket or pair of shoes to your own photo and compare the result."],
+          ["Save Clothes to Reuse", "Keep garment images in a wardrobe so you can bring them back into later try-ons."],
+          ["See the Look in Motion", "Turn a try-on image into a short video to watch how the outfit reads as it moves."],
         ].map(([title, description]) => (
           <div key={title} className="rounded-3xl border border-neutral-200 bg-white/65 p-6 shadow-sm backdrop-blur dark:border-neutral-800 dark:bg-neutral-900/60">
             <h3 className="font-semibold text-black dark:text-white">{title}</h3>

@@ -18,13 +18,13 @@ export const Testimonials = () => {
       <Heading as="h2">
         {isZh
           ? "为爱美女性打造的 AI 试衣体验"
-          : "Compare Wedding Dress Styles Before an Appointment"}
+          : "Why Shoppers Use Virtual Try On"}
       </Heading>
       <p className="text-sm md:text-base my-4 text-muted font-normal dark:text-muted-dark text-center max-w-lg mx-auto">
         <span className="block text-balance">
           {isZh
             ? "在下单前预览衣服穿在自己身上的真实效果，轻松比较搭配、版型和风格，买衣服更安心。"
-            : "Explore wedding dress silhouettes and compare your favorite styles before a bridal appointment. These visual previews cannot guarantee fit or replace an in-person fitting."}
+            : "Preview how clothes look on you before checkout, compare styles with confidence, and make every purchase feel easier. These previews cannot guarantee fit or replace an in-person fitting."}
         </span>
       </p>
       <TestimonialGrid />

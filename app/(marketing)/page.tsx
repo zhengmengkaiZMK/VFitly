@@ -9,18 +9,27 @@ import {
   HomeCTA 
 } from "@/components/home-sections";
 
-import { BridalGuide } from "@/components/bridal-guide";
-import { bridalFaqs } from "@/lib/bridal-content";
+import { VirtualTryOnGuide } from "@/components/virtual-try-on-guide";
+import { virtualTryOnFaqs } from "@/lib/virtual-try-on-content";
 import { TryOnContent } from "@/components/try-on/try-on-content";
 
-const homeTitle = "Try On Wedding Dresses at Home with AI | VFitly";
-const homeDescription = "Try on wedding dresses at home with VFitly AI virtual try on. Upload your photo and a dress image to compare bridal looks and create a personal style shortlist.";
+const homeTitle = "Virtual Try On Clothes: AI Outfit Preview | VFitly";
+const homeDescription = "Virtual try on clothes from your own photo with VFitly. Upload a picture of yourself and preview a product image, a shopping link or a wardrobe item.";
 
 export const metadata: Metadata = {
   title: { absolute: homeTitle },
   description: homeDescription,
   keywords: [
-    "AI virtual try-on","try on wedding dresses at home", "AI wedding dress try on", "virtual wedding dress try on", "bridal dress preview", "AI virtual fitting room", "VFitly"],
+    "virtual try on",
+    "virtual try on clothes",
+    "AI virtual try on",
+    "try on clothes online",
+    "virtual outfit preview",
+    "AI clothes changer",
+    "virtual fitting room",
+    "outfit generator",
+    "VFitly",
+  ],
   alternates: {
     canonical: "/",
   },
@@ -49,7 +58,7 @@ const homeJsonLd = [
     applicationCategory: "LifestyleApplication",
     operatingSystem: "Web",
     description:
-      "VFitly helps you try on wedding dresses at home with AI-generated previews from your photo and a dress image, plus a virtual wardrobe for saving bridal looks.",
+      "VFitly is a virtual try on tool for clothes. Upload a photo of yourself and a garment image, or pull clothing from a product link, and generate AI outfit previews and try-on videos.",
     offers: {
       "@type": "Offer",
       price: "0",
@@ -59,7 +68,7 @@ const homeJsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: bridalFaqs.map(({ question, answer }) => ({
+    mainEntity: virtualTryOnFaqs.map(({ question, answer }) => ({
       "@type": "Question",
       name: question,
       acceptedAnswer: {
@@ -80,10 +89,10 @@ export default function Home() {
         </div>
         <Container className="flex flex-col items-center">
           <HomeHero />
-          <section id="bridal-preview" aria-labelledby="bridal-preview-title" className="relative z-10 w-full scroll-mt-24">
-            <TryOnContent bridal />
+          <section id="virtual-try-on" aria-labelledby="virtual-try-on-title" className="relative z-10 w-full scroll-mt-24">
+            <TryOnContent embedded />
           </section>
-          <BridalGuide />
+          <VirtualTryOnGuide />
           <HomeGridFeatures />
           <HomeTestimonials />
         </Container>
