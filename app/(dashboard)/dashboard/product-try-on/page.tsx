@@ -6,15 +6,17 @@ import { FaqList } from "@/components/faq-list";
 import { productLinkTryOnFaqs } from "@/lib/product-link-try-on-content";
 import { DEFAULT_OG_IMAGE, SITE_NAME, absoluteUrl } from "@/lib/seo";
 
-const pageTitle = "Product Link Try On and AI Clothes Changer | VFitly";
+// 主关键词为 product link try on。AI clothes changer 由 /dashboard/try-on 负责，
+// 本页只在对比章节里提及一次并内链过去，避免两页争同一个词。
+const pageTitle = "Product Link Try On: Try Any Product URL | VFitly";
 const pageDescription =
-  "Try on clothes from product links with VFitly. Paste a product URL, extract garment images, and use the AI clothes changer to preview each item on your photo.";
+  "Try on clothes from product links with VFitly. Paste a product URL, extract the garment images, and preview each item on your photo to build a shortlist.";
 
 export const metadata: Metadata = {
-  title: "Product Link Try On and AI Clothes Changer",
+  title: "Product Link Try On: Try Any Product URL",
   description: pageDescription,
   keywords: [
-    "product link try on", "product link try-on", "try on from product links", "extract product URL try on", "AI clothes changer", "clothes changer", "AI virtual try-on", "Amazon try on", "eBay try on", "Temu try on", "Shopify product try on", "SHEIN try on", "product try on", "virtual product try on"],
+    "product link try on", "product link try-on", "try on from product links", "extract product URL try on", "AI virtual try-on", "Amazon try on", "eBay try on", "Temu try on", "Shopify product try on", "SHEIN try on", "product try on", "virtual product try on"],
   alternates: {
     canonical: "/dashboard/product-try-on",
   },

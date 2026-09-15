@@ -35,10 +35,10 @@ export function ProductLinkTryOnGuide() {
       </section>
 
       <section>
-        <h2>Product link try on versus an AI clothes changer</h2>
-        <p>People use the two phrases interchangeably, but they describe slightly different starting points. An AI clothes changer is usually understood as swapping the clothing in a single image you already have. Product link try on begins further back, at the shopping page: it collects the garment images for you, then runs the try-on across the whole set.</p>
-        <p>That difference matters when you are choosing between items. If you already saved one clean garment photo and simply want to see it on yourself, a single-image workflow is quicker. If you are working from a store page with several colours, sizes displayed on different models, or a shortlist to narrow down, extracting the images first saves a lot of repetitive file handling.</p>
-        <p>Both routes end in the same generated result, and both share the same limits described below.</p>
+        <h2>Product link try on versus a single-image try-on</h2>
+        <p>Both routes use the same try-on engine, but they start in different places. A single-image workflow begins with a garment picture you already have on your device. Product link try on begins further back, at the shopping page: it collects the garment images for you, then runs the try-on across the whole set.</p>
+        <p>That difference matters when you are choosing between items. If you already saved one clean garment photo and simply want to see it on yourself, the single-image workflow is quicker. If you are working from a store page with several colours, or a shortlist to narrow down, extracting the images first saves a lot of repetitive file handling.</p>
+        <p>People sometimes describe that single-image route as an <Link href="/dashboard/try-on">AI clothes changer</Link>, because it replaces what someone is wearing in one photo. If that is the task in front of you, start there instead. Both routes end in the same kind of generated result and share the same limits described below.</p>
       </section>
 
       <section>
