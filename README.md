@@ -249,6 +249,8 @@ No license has been published for this repository, so all rights are reserved by
 
 # 中文说明
 
+[English](#vfitly) · **中文**
+
 VFitly 是一款 AI 虚拟试衣 Web 应用。上传一张本人照片和服装图片，或直接粘贴商品链接提取服装图，即可生成 AI 换装预览、试穿图和短视频。内置的虚拟衣橱让你把一件衣服存一次，之后反复用于新的试穿。
 
 **线上地址：** https://www.vfitly.com
