@@ -1,6 +1,15 @@
 import fs from "fs"
 import path from "path"
 
+/**
+ * 需要临时移出索引的博客 slug，例如 slug 写错、正在等改名的文章。
+ * 当前为空：原先的 `none` 已在数据库改名为 ai-virtual-try-on-products-compared。
+ *
+ * 用法：把 slug 加进这个数组，该文章会保留可访问但输出 noindex，
+ * 站点地图也会跳过它。改好 slug 后记得从这里移除。
+ */
+export const quarantinedBlogSlugs: string[] = [];
+
 export interface BlogPost {
   slug: string
   title: string

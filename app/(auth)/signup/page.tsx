@@ -11,6 +11,12 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/signup",
   },
+  // 纯注册表单，没有可供检索的内容。保持可抓取(follow)但不再进入索引。
+  // 如需恢复收录，删掉下面这一段即可。
+  robots: {
+    index: false,
+    follow: true,
+  },
   openGraph: {
     images: [DEFAULT_OG_IMAGE],
   },

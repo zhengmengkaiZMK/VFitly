@@ -9,6 +9,10 @@ export const metadata = {
   keywords: ["AI virtual try-on"],
   title: "Try-On Detail | AI SaaS",
   description: "Inspect a VFitly AI virtual try-on result, including the generated image, source photos and garments, and generation details. Download or revisit your outfit preview.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default async function HistoryDetailPage({

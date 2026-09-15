@@ -9,6 +9,10 @@ export const metadata = {
   keywords: ["AI virtual try-on"],
   title: "Feedback | Admin",
   description: "Review VFitly customer feedback about AI virtual try-on, generated images and videos, uploads, account access, and billing to investigate support requests.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 async function markFeedbackReviewed(formData: FormData) {

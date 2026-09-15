@@ -12,6 +12,12 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/login",
   },
+  // 纯登录表单，没有可供检索的内容。保持可抓取(follow)但不再进入索引。
+  // 如需恢复收录（例如为了品牌词 "VFitly login" 的导航搜索），删掉下面这一段即可。
+  robots: {
+    index: false,
+    follow: true,
+  },
   openGraph: {
     images: [DEFAULT_OG_IMAGE],
   },

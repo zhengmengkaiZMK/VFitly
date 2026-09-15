@@ -9,6 +9,7 @@ import { compileMDX } from "next-mdx-remote/rsc"
 import { mdxComponents } from "@/mdx-components"
 
 import { getPublishedBlogPosts } from "@/lib/blog-posts";
+import { quarantinedBlogSlugs } from "@/lib/blog-utils";
 import { BlogMarkdown } from "@/components/blog-markdown";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -37,8 +38,15 @@ export async function generateMetadata(props: {
     title: post.title,
     description: `${post.description} Explore AI virtual try-on ideas, generate try-on images and try-on videos, and plan your wardrobe with VFitly.`,
     keywords: ["AI virtual try-on", "generate try-on image", "generate try-on video", post.category, ...(post.tags || [])],
+    alternates: {
+      canonical: `/blog/${post.slug}`,
+    },
+    robots: quarantinedBlogSlugs.includes(post.slug)
+      ? { index: false, follow: true }
+      : undefined,
     openGraph: {
       title: post.title,
+      url: absoluteUrl(`/blog/${post.slug}`),
       description: `${post.description} Explore AI virtual try-on ideas, generate try-on images and try-on videos, and plan your wardrobe with VFitly.`,
       type: "article",
       publishedTime: post.date,

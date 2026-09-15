@@ -31,9 +31,9 @@ export const metadata: Metadata = {
     "virtual try on",
     "AI outfit generator",
   ],
-  alternates: {
-    canonical: SITE_URL,
-  },
+  // 不在此处声明 canonical：根布局的 metadata 会被所有未自行声明的子路由继承，
+  // 曾导致博客正文等页面误把首页当作规范页，被 Google 归入「备用网页」而不收录。
+  // 各页面需在自身 metadata 中声明 alternates.canonical。
   icons: {
     icon: "/icon.png",
     shortcut: "/icon.png",

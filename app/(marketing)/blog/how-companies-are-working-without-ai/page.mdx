@@ -12,6 +12,10 @@ export const blog = {
 export const metadata = {
   title: blog.title,
   description: blog.description,
+  robots: {
+    index: false,
+    follow: true,
+  },
   openGraph: {
     images: [blog.image],
   },
