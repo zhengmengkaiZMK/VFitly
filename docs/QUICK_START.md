@@ -69,7 +69,7 @@ NEXTAUTH_SECRET="生成的随机字符串"
 NEXTAUTH_URL="http://localhost:3000"
 
 # 4. 其他配置（暂时使用默认值即可）
-SERPER_API_KEY="66c8fcd3f7280a42e045cce7193382a6fd64125a"
+SERPER_API_KEY="your-serper-api-key"
 ```
 
 **生成 NEXTAUTH_SECRET**：

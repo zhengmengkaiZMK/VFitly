@@ -141,7 +141,7 @@ AI-SaaS/
 API密钥已配置在 `.env.local` 文件中：
 
 ```env
-SERPER_API_KEY=66c8fcd3f7280a42e045cce7193382a6fd64125a
+SERPER_API_KEY=your-serper-api-key
 SERPER_API_URL=https://google.serper.dev/search
 SERPER_TIMEOUT=10000
 ```

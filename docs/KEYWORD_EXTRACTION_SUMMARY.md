@@ -115,7 +115,7 @@ const searchResult = await SerperService.searchReddit({
 #### **文件**: `.env.local`
 ```bash
 # Google Gemini - 用于智能提取关键词
-GEMINI_API_KEY="AIzaSyAWDDSUBFBfFvSeeT2V0x2-7mfj25iHinQ"
+GEMINI_API_KEY="your-gemini-api-key"
 GEMINI_MODEL="gemini-2.5-flash"
 ```
 

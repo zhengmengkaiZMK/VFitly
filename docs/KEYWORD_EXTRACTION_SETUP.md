@@ -36,7 +36,7 @@ ADP AI 分析
 
 ```bash
 # Google Gemini API
-GEMINI_API_KEY="AIzaSyAWDDSUBFBfFvSeeT2V0x2-7mfj25iHinQ"
+GEMINI_API_KEY="your-gemini-api-key"
 GEMINI_MODEL="gemini-1.5-flash"
 ```
 

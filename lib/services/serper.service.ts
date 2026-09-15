@@ -4,7 +4,9 @@
  */
 
 const SERPER_API_URL = process.env.SERPER_API_URL || 'https://google.serper.dev/search';
-const SERPER_API_KEY = process.env.SERPER_API_KEY || '66c8fcd3f7280a42e045cce7193382a6fd64125a';
+// 不要在这里写兜底明文密钥：源码会进入版本历史，一旦提交即可被任何人读取。
+// 未配置时由 requestSerper 抛出明确错误，而不是静默使用一个公开的密钥。
+const SERPER_API_KEY = process.env.SERPER_API_KEY || '';
 const SERPER_TIMEOUT = parseInt(process.env.SERPER_TIMEOUT || '10000');
 
 export interface SerperSearchParams {

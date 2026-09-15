@@ -202,7 +202,7 @@ npx prisma generate
 
 尝试使用 `psql` 直接连接测试:
 ```bash
-psql "postgresql://postgres:kl38537012@db.jhqucejokzuzfxjzzaed.supabase.co:5432/postgres"
+psql "postgresql://postgres:YOUR_PASSWORD@db.<project-ref>.supabase.co:5432/postgres"
 ```
 
 如果 psql 也连接失败，说明是 Supabase 项目本身的问题。

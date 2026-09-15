@@ -25,7 +25,7 @@
 
 **环境变量** (`.env.local`):
 ```env
-TENCENT_ADP_APP_KEY=ckrHfpyUNDDuEyYhWGKdyeMtHLMtAjsOrroLbxkGGsuOayOjdBsstTIcRruSiFvLvFckDnjgZcqvwgDVXYwvYORABzxhTMhwWwJGuIpEJTXwApDHRkPjPAkbdKufrYUb
+TENCENT_ADP_APP_KEY=your-tencent-adp-app-key
 TENCENT_ADP_API_URL=https://wss.lke.cloud.tencent.com/v1/qbot/chat/sse
 ```
 
