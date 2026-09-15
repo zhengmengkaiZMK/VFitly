@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LoadingIndicator } from "@/components/loading-indicator";
+import { ModalLayer } from "@/components/modal-layer";
 import { IconCheck, IconDownload, IconHanger, IconPhoto, IconSparkles, IconUpload, IconVideo, IconX } from "@tabler/icons-react";
 import { buildLoginRedirectUrl } from "@/lib/auth/login-redirect";
 import { downloadMediaFile } from "@/lib/download-file";
@@ -747,33 +748,35 @@ export function TryOnContent({ embedded = false }: { embedded?: boolean }) {
       </section>
 
       {showOutfitUpgradeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-950 p-6 shadow-2xl shadow-black/40">
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-200">
-              <IconSparkles className="h-6 w-6" />
-            </div>
-            <h3 className="text-xl font-semibold text-white">Upgrade your plan</h3>
-            <p className="mt-3 text-sm leading-6 text-slate-300">
-              Your current plan does not have enough quota or credits for this action. Upgrade to Plus or Ultra to unlock more try-on generations, wardrobe outfit creation, and 360° try-on videos.
-            </p>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <button
-                type="button"
-                onClick={() => router.push("/pricing")}
-                className="inline-flex flex-1 items-center justify-center rounded-2xl bg-cyan-300 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"
-              >
-                View plans
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowOutfitUpgradeModal(false)}
-                className="inline-flex flex-1 items-center justify-center rounded-2xl border border-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-              >
-                Maybe later
-              </button>
+        <ModalLayer>
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
+            <div className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-950 p-6 shadow-2xl shadow-black/40">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-200">
+                <IconSparkles className="h-6 w-6" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">Upgrade your plan</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-300">
+                Your current plan does not have enough quota or credits for this action. Upgrade to Plus or Ultra to unlock more try-on generations, wardrobe outfit creation, and 360° try-on videos.
+              </p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={() => router.push("/pricing")}
+                  className="inline-flex flex-1 items-center justify-center rounded-2xl bg-cyan-300 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"
+                >
+                  View plans
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowOutfitUpgradeModal(false)}
+                  className="inline-flex flex-1 items-center justify-center rounded-2xl border border-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                >
+                  Maybe later
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </ModalLayer>
       )}
     </div>
   );

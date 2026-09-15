@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LoadingIndicator } from "@/components/loading-indicator";
+import { ModalLayer } from "@/components/modal-layer";
 import { buildLoginRedirectUrl } from "@/lib/auth/login-redirect";
 import { downloadMediaFile } from "@/lib/download-file";
 import {
@@ -715,62 +716,66 @@ export function ProductTryOnContent() {
       </section>
 
       {showUpgradeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-950 p-6 shadow-2xl shadow-black/40">
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-400/10 text-purple-200">
-              <IconSparkles className="h-6 w-6" />
-            </div>
-            <h3 className="text-xl font-semibold text-white">Upgrade to unlock more try-ons</h3>
-            <p className="mt-3 text-sm leading-6 text-slate-300">
-              Your current plan has reached the free wardrobe limit or this feature requires Plus / Ultra. Upgrade your plan to save more garments and generate product link try-on images.
-            </p>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <button
-                type="button"
-                onClick={() => router.push("/pricing")}
-                className="inline-flex flex-1 items-center justify-center rounded-2xl bg-purple-300 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-purple-200"
-              >
-                View plans
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowUpgradeModal(false)}
-                className="inline-flex flex-1 items-center justify-center rounded-2xl border border-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-              >
-                Maybe later
-              </button>
+        <ModalLayer>
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
+            <div className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-950 p-6 shadow-2xl shadow-black/40">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-400/10 text-purple-200">
+                <IconSparkles className="h-6 w-6" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">Upgrade to unlock more try-ons</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-300">
+                Your current plan has reached the free wardrobe limit or this feature requires Plus / Ultra. Upgrade your plan to save more garments and generate product link try-on images.
+              </p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={() => router.push("/pricing")}
+                  className="inline-flex flex-1 items-center justify-center rounded-2xl bg-purple-300 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-purple-200"
+                >
+                  View plans
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowUpgradeModal(false)}
+                  className="inline-flex flex-1 items-center justify-center rounded-2xl border border-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                >
+                  Maybe later
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </ModalLayer>
       )}
 
       {showLoginModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-950 p-6 shadow-2xl shadow-black/40">
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-400/10 text-purple-200">
-              <IconSparkles className="h-6 w-6" />
-            </div>
-            <h3 className="text-xl font-semibold text-white">Sign in to keep creating</h3>
-            <p className="mt-3 text-sm leading-6 text-slate-300">
-              Guest mode includes 2 free Product Try On uses per day. Sign in to continue and save your generated looks.
-            </p>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href={loginUrl}
-                className="inline-flex flex-1 items-center justify-center rounded-2xl bg-purple-300 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-purple-200"
-              >
-                Sign in
-              </Link>
-              <button
-                type="button"
-                onClick={() => setShowLoginModal(false)}
-                className="inline-flex flex-1 items-center justify-center rounded-2xl border border-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-              >
-                Maybe later
-              </button>
+        <ModalLayer>
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
+            <div className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-950 p-6 shadow-2xl shadow-black/40">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-400/10 text-purple-200">
+                <IconSparkles className="h-6 w-6" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">Sign in to keep creating</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-300">
+                Guest mode includes 2 free Product Try On uses per day. Sign in to continue and save your generated looks.
+              </p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href={loginUrl}
+                  className="inline-flex flex-1 items-center justify-center rounded-2xl bg-purple-300 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-purple-200"
+                >
+                  Sign in
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setShowLoginModal(false)}
+                  className="inline-flex flex-1 items-center justify-center rounded-2xl border border-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                >
+                  Maybe later
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </ModalLayer>
       )}
     </div>
   );
