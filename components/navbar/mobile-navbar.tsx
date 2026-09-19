@@ -8,6 +8,7 @@ import { Logo } from "../Logo";
 import { useMotionValueEvent, useScroll } from "framer-motion";
 import { ModeSwitcher } from "../mode-switcher";
 import { LanguageSwitcher } from "../language-switcher";
+import { GitHubLink } from "../github-link";
 import { UserNav } from "../user-nav";
 
 export const MobileNavbar = ({ navItems }: any) => {
@@ -44,6 +45,7 @@ export const MobileNavbar = ({ navItems }: any) => {
             <Logo />
             <div className="flex items-center space-x-2">
               <LanguageSwitcher />
+              <GitHubLink className="h-8 w-8 [&>svg]:h-5 [&>svg]:w-5" />
               <ModeSwitcher />
               <IoIosClose
                 className="h-8 w-8 text-black dark:text-white"
