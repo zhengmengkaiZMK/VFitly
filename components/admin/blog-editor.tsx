@@ -7,10 +7,14 @@ import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import { Markdown } from "tiptap-markdown";
 import { BlogMarkdown } from "@/components/blog-markdown";
+import { blogSlugFromTitle } from "@/lib/blog-slug";
 import { saveBlogPost, deleteBlogPost } from "@/app/actions/blog";
 
 export type BlogEditorPost = { id: string; title: string; slug: string; description: string; category: string; tags: string[]; image: string; content: string; status: string; updatedAt: string };
 export function BlogEditor({ post, links }: { post?: BlogEditorPost; links: { title: string; url: string }[] }) {
+  const [title, setTitle] = useState(post?.title || "");
+  const [slug, setSlug] = useState(post?.slug || "");
+  const [slugEdited, setSlugEdited] = useState(Boolean(post));
   const [content, setContent] = useState(post?.content || "");
   const [image, setImage] = useState(post?.image || "");
   const [preview, setPreview] = useState(false);
@@ -33,10 +37,16 @@ export function BlogEditor({ post, links }: { post?: BlogEditorPost; links: { ti
     if (result?.error) { setError(result.error); setBusy(false); setDirty(true); }
   }
   return <form onChange={() => setDirty(true)} action={(data) => submit(data, "DRAFT")} className="space-y-6">
-    <input type="hidden" name="id" value={post?.id || ""} /><input type="hidden" name="updatedAt" value={post?.updatedAt || ""} /><input type="hidden" name="content" value={content} /><input type="hidden" name="status" value="DRAFT" />
+    <input type="hidden" name="id" value={post?.id || ""} /><input type="hidden" name="updatedAt" value={post?.updatedAt || ""} /><input type="hidden" name="content" value={content} /><input type="hidden" name="status" value="DRAFT" /><input type="hidden" name="slugAuto" value={slugEdited ? "0" : "1"} />
     <fieldset disabled={busy} className="space-y-6 disabled:opacity-60">
       <p className="text-sm text-muted-foreground">* Required: title, URL slug and article body. All other fields are optional. Blank category uses Uncategorized; blank cover uses a placeholder.</p>
-      <div className="grid gap-5 md:grid-cols-2">{([ ["title", "Title *", post?.title], ["slug", "URL slug *", post?.slug], ["category", "Category (optional)", post?.category], ["tags", "Tags (optional, comma separated)", post?.tags.join(", ")] ] as const).map(([name,label,value]) => <label key={name} className="block text-sm font-medium">{label}<input className={input} name={name} defaultValue={value || ""} required={name === "title" || name === "slug"} readOnly={name === "slug" && !!post} maxLength={name === "title" ? 200 : name === "slug" ? 2048 : name === "category" ? 100 : 1239} /></label>)}</div>
+      <div className="grid gap-5 md:grid-cols-2">
+        <label className="block text-sm font-medium">Title *<input className={input} name="title" value={title} onChange={event => { const value = event.target.value; setTitle(value); if (!slugEdited) setSlug(value.trim() ? blogSlugFromTitle(value) : ""); }} required maxLength={200} /></label>
+        <label className="block text-sm font-medium">URL slug *<input className={input} name="slug" value={slug} onChange={event => { setSlugEdited(true); setSlug(event.target.value); }} required maxLength={2048} /></label>
+        <label className="block text-sm font-medium">Category (optional)<input className={input} name="category" defaultValue={post?.category || ""} maxLength={100} /></label>
+        <label className="block text-sm font-medium">Tags (optional, comma separated)<input className={input} name="tags" defaultValue={post?.tags.join(", ") || ""} maxLength={1239} /></label>
+      </div>
+      <p className="text-xs text-muted-foreground">Article link: <span className="font-medium">/blog/{slug || "…"}</span> — generated from the title, and safe to edit. Uppercase, spaces, Chinese and full URLs are converted automatically.</p>
       <label className="block text-sm font-medium">Description<textarea name="description" defaultValue={post?.description || ""} className={input} rows={3} maxLength={1000} /></label>
       <label className="block text-sm font-medium">Cover image URL<input name="image" value={image} onChange={e => setImage(e.target.value)} className={input} placeholder="/uploads/... or https://..." /></label>
       <label className="block text-sm">Upload cover (JPG, PNG, WebP; max 5 MB)<input type="file" accept="image/jpeg,image/png,image/webp" className="mt-2 block" onChange={e => { void upload(e.target.files?.[0], true); e.target.value = ""; }} /></label>
@@ -52,7 +62,7 @@ export function BlogEditor({ post, links }: { post?: BlogEditorPost; links: { ti
         {preview ? <article className="prose dark:prose-invert max-w-none p-6"><BlogMarkdown content={content} /></article> : <EditorContent editor={editor} />}
       </div>
       <label className="block text-sm">Insert body image<input type="file" accept="image/jpeg,image/png,image/webp" className="mt-2 block" onChange={e => { void upload(e.target.files?.[0], false); e.target.value = ""; }} /></label>
-      <p className="text-xs text-muted-foreground">Images use public URLs, including images uploaded to drafts. Existing article URLs cannot be changed.</p>
+      <p className="text-xs text-muted-foreground">Images use public URLs, including images uploaded to drafts. Editing the URL slug changes the article link, so older links to that address stop working.</p>
       <div className="flex flex-wrap gap-3"><button type="submit" className={button}>Save draft</button><button type="submit" formAction={(data) => submit(data, "PUBLISHED")} className="rounded-lg bg-primary px-5 py-2 text-primary-foreground">{post?.status === "PUBLISHED" ? "Update published article" : "Publish article"}</button>{post && <button type="button" className={button} onClick={async () => { if (!window.confirm("Permanently delete this article? Uploaded images will be retained.")) return; setBusy(true); const form = new FormData(); form.set("id", post.id); const result = await deleteBlogPost(form); if (result?.error) { setError(result.error); setBusy(false); } }}>Delete</button>}</div>
     </fieldset>
     {busy && <p role="status">Saving or uploading…</p>}{error && <p role="alert" className="text-red-600">{error}</p>}
