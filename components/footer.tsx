@@ -61,22 +61,6 @@ export const Footer = () => {
                 src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1239982&theme=light&t=1788409534364" alt="VFitly，AI virtual try-on，generate try-on image and try-on video"
               />
             </a>
-            <a
-              href="https://drchecker.net/item/vfitly.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-5 flex"
-              aria-label="Check the VFitly domain rating on DR Checker"
-            >
-              <Image
-                unoptimized
-                width={280}
-                height={64}
-                src="https://drchecker.net/api/badge?domain=vfitly.com"
-                alt="DR Checker - Domain Rating"
-                className="h-[64px] w-auto max-w-full sm:h-[120px]"
-              />
-            </a>
           </div>
           <div className="grid grid-cols-2 gap-10 items-start mt-10 md:mt-0 lg:grid-cols-3">
             <div className="flex justify-center space-y-4 flex-col mt-4">
