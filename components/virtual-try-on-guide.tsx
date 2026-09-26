@@ -16,7 +16,7 @@ const steps = [
   },
   {
     title: "Add the Clothes You Want to Try",
-    body: "Upload a single garment image, or pick something you already saved in your wardrobe. A product photo, a flat-lay or a picture of the item on its own all work. Avoid collages and images where a bag, a piece of furniture or another person hides the part you care about. If the item is still on a shopping page, the product link tool can pull the garment images for you, including every colourway the retailer shows.",
+    body: "Upload a single garment image, or pick something you already saved in your wardrobe. A product photo, a flat-lay or a picture of the item on its own all work. Avoid collages and images where a bag, a piece of furniture or another person hides the part you care about. If the item is still on a shopping page, the product link tool can pull the garment images for you, including every colorway the retailer shows.",
   },
   {
     title: "Review and Compare the Result",
@@ -27,7 +27,7 @@ const steps = [
 const tryOnPoints = [
   "Everyday pieces are the place to start: tops, shirts, knitwear, jeans, trousers, skirts and jackets. Change one item at a time and keep your person photo the same, so you can tell which garment made the difference.",
   "Occasion and seasonal wear often needs more thought, and that is where a preview helps most: dresses, formalwear, coats, shoes and accessories you would otherwise have to imagine from a single product shot.",
-  "Variants of the same item are easy to line up when a retailer shows one piece in several colours or cuts. Generate each one against the same photo and the comparison becomes a real choice rather than a guess.",
+  "Variants of the same item are easy to line up when a retailer shows one piece in several colors or cuts. Generate each one against the same photo and the comparison becomes a real choice rather than a guess.",
 ];
 
 export function VirtualTryOnGuide() {
@@ -97,7 +97,7 @@ export function VirtualTryOnGuide() {
           <div className="rounded-3xl border border-blue-100 bg-blue-50/60 p-6 shadow-sm backdrop-blur dark:border-blue-950/60 dark:bg-blue-950/15">
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600 dark:text-blue-300">What VFitly does</span>
             <p className={`mt-3 ${body}`}>
-              VFitly provides the image-based option. It does not send clothing and it cannot confirm how a garment will fit. Use it early in your search to narrow down colours, cuts and styling directions, so you arrive at a shop or a checkout with a clearer idea of what you actually want.
+              VFitly provides the image-based option. It does not send clothing and it cannot confirm how a garment will fit. Use it early in your search to narrow down colors, cuts and styling directions, so you arrive at a shop or a checkout with a clearer idea of what you actually want.
             </p>
           </div>
           <div className={`flex flex-col justify-center ${card}`}>
@@ -123,7 +123,7 @@ export function VirtualTryOnGuide() {
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700 dark:text-emerald-300">It can show</span>
             </div>
             <p className={`mt-4 ${body}`}>
-              A generated preview is good at broad visual questions. It shows an overall silhouette, how two colours sit next to each other, whether a longer hem changes the balance of an outfit, and whether a combination is worth investigating further. It gives you something concrete to look at instead of guessing.
+              A generated preview is good at broad visual questions. It shows an overall silhouette, how two colors sit next to each other, whether a longer hem changes the balance of an outfit, and whether a combination is worth investigating further. It gives you something concrete to look at instead of guessing.
             </p>
           </div>
           <div className="rounded-3xl border border-amber-100 bg-amber-50/60 p-6 shadow-sm backdrop-blur dark:border-amber-950/60 dark:bg-amber-950/15">
@@ -154,7 +154,7 @@ export function VirtualTryOnGuide() {
         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className={card}>
             <p className={body}>
-              A wardrobe makes repeat try ons much faster. Save the garments you wear most, add a category, a colour and a few tags, then reuse the same item in later previews without uploading it again. Your <Link href="/dashboard/wardrobe" className={linkClass}>saved wardrobe</Link> also keeps the pieces you are considering side by side.
+              A wardrobe makes repeat try-ons much faster. Save the garments you wear most, add a category, a color and a few tags, then reuse the same item in later previews without uploading it again. Your <Link href="/dashboard/wardrobe" className={linkClass}>saved wardrobe</Link> also keeps the pieces you are considering side by side.
             </p>
           </div>
           <div className={card}>

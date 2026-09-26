@@ -43,7 +43,7 @@ const wardrobeJsonLd = [
     applicationCategory: "LifestyleApplication",
     operatingSystem: "Web",
     description:
-      "A virtual wardrobe for garment images: store clothing photos with categories, colours and tags, then reuse them for AI virtual try-on and outfit previews.",
+      "A virtual wardrobe for garment images: store clothing photos with categories, colors and tags, then reuse them for AI virtual try-on and outfit previews.",
   },
   {
     "@context": "https://schema.org",

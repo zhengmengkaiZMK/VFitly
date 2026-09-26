@@ -26,7 +26,6 @@ export const metadata: Metadata = {
     "clothes changer",
     "clothes changer ai",
     "clothes changer ai free",
-    "try on glasses",
     "wardrobe",
     "virtual try on",
     "AI outfit generator",
@@ -45,7 +44,14 @@ export const metadata: Metadata = {
       "Use VFitly AI virtual try-on to preview clothes from your photos, generate outfit images and try-on videos, and organize garments in a virtual wardrobe.",
     url: SITE_URL,
     siteName: SITE_NAME,
-    images: [DEFAULT_OG_IMAGE],
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        width: 3272,
+        height: 1898,
+        alt: "VFitly AI virtual try-on: preview clothes from your own photo",
+      },
+    ],
     type: "website",
   },
   twitter: {
@@ -53,7 +59,12 @@ export const metadata: Metadata = {
     title: "VFitly | AI Clothes Changer and Virtual Try-On Wardrobe",
     description:
       "Use VFitly AI virtual try-on to preview clothes from your photos, generate outfit images and try-on videos, and organize garments in a virtual wardrobe.",
-    images: [DEFAULT_OG_IMAGE],
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        alt: "VFitly AI virtual try-on: preview clothes from your own photo",
+      },
+    ],
   },
 };
 
@@ -74,19 +85,6 @@ export default function RootLayout({
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
                 gtag('config', 'G-SXB8ZF6TPC');
-              `,
-            }}
-          />
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-                var _hmt = window._hmt = window._hmt || [];
-                (function() {
-                  var hm = document.createElement("script");
-                  hm.src = "https://hm.baidu.com/hm.js?f7e5b116350f432cc30a4d0daf35d4ca";
-                  var s = document.getElementsByTagName("script")[0];
-                  s.parentNode.insertBefore(hm, s);
-                })();
               `,
             }}
           />

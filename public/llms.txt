@@ -1,11 +1,11 @@
 # VFitly
 
-> VFitly is an AI virtual try-on platform for clothes changer AI workflows, product-link try-on, glasses previews, hairstyle previews, and wardrobe asset management.
+> VFitly is an AI virtual try-on platform for clothes changer AI workflows, product-link try-on, outfit previews, and wardrobe asset management.
 
 ## Core pages
 
-- Home: https://www.vfitly.com/ — AI try on, clothes changer, clothes changer AI free previews, try on glasses, and wardrobe overview.
-- AI Try-On: https://www.vfitly.com/dashboard/try-on — Try on glasses, try on clothes, try it on AI, virtual try on, and try on hairstyles.
+- Home: https://www.vfitly.com/ — AI try on, clothes changer, clothes changer AI free previews, and wardrobe overview.
+- AI Try-On: https://www.vfitly.com/dashboard/try-on — Try on clothes, try it on AI, virtual try on, and AI outfit previews.
 - Product Try-On: https://www.vfitly.com/dashboard/product-try-on — Extract product URL assets and preview shopping items with an AI clothes changer.
 - Wardrobe: https://www.vfitly.com/dashboard/wardrobe — Clothes wardrobe storage and virtual fitting room asset management.
 - Pricing: https://www.vfitly.com/pricing — VFitly plans for AI try-on and wardrobe workflows.
@@ -15,7 +15,7 @@
 
 ## Main capabilities
 
-- AI try-on for clothes, outfits, glasses, and hairstyles.
+- AI try-on for clothes and outfits from uploaded person and garment images.
 - Clothes changer AI previews from uploaded person and garment images.
 - Product-link extraction for faster shopping try-on workflows.
 - Wardrobe storage for reusable clothing and accessory assets.

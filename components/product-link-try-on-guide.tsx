@@ -6,7 +6,7 @@ export function ProductLinkTryOnGuide() {
       <section>
         <h2>How product link try on works</h2>
         <p>Product link try on starts a virtual try-on from a shopping page rather than a file on your device. You paste the address of a product listing, the tool reads the garment photography published on that page, and each image becomes an independent try-on against one photo of a person.</p>
-        <p>The advantage is scale. A single product page often shows the same piece in five colours, or photographs it from several angles. Instead of downloading, renaming and uploading those images one by one, you extract them all at once and compare them against a single photo, so the differences you see come from the clothing rather than from a change of pose or lighting.</p>
+        <p>The advantage is scale. A single product page often shows the same piece in five colors, or photographs it from several angles. Instead of downloading, renaming and uploading those images one by one, you extract them all at once and compare them against a single photo, so the differences you see come from the clothing rather than from a change of pose or lighting.</p>
         <h3>1. Extract the garment images</h3>
         <p>Paste the URL of a public product page and start the extraction. The reader works best when a storefront exposes its product photography in the page HTML or in structured product metadata, which most modern shops do. A page that hides everything behind a login, blocks automated requests or loads each image only after heavy scripting will return fewer results, sometimes none.</p>
         <h3>2. Review what was found</h3>
@@ -30,20 +30,20 @@ export function ProductLinkTryOnGuide() {
 
       <section>
         <h2>Comparing variants in one batch</h2>
-        <p>The real advantage of batch generation is consistency. Because every result shares one person photo, colourways and cuts can be compared directly instead of being judged from separate product shots taken under different lighting. Ask concrete questions as you review: does this neckline suit my proportions, is this shade warmer than the colours I already wear, does this length work with the shoes and layers I own.</p>
+        <p>The real advantage of batch generation is consistency. Because every result shares one person photo, colorways and cuts can be compared directly instead of being judged from separate product shots taken under different lighting. Ask concrete questions as you review: does this neckline suit my proportions, is this shade warmer than the colors I already wear, does this length work with the shoes and layers I own.</p>
         <p>Keep the batch to a size you can actually assess. Ten results that you review carefully are more useful than forty that you scroll past. Narrow the list first with the images you have, then generate only the variants that survived that filter. If you would rather work with one image at a time, the <Link href="/dashboard/try-on">single image try-on page</Link> is the simpler route.</p>
       </section>
 
       <section>
         <h2>Product link try on versus a single-image try-on</h2>
         <p>Both routes use the same try-on engine, but they start in different places. A single-image workflow begins with a garment picture you already have on your device. Product link try on begins further back, at the shopping page: it collects the garment images for you, then runs the try-on across the whole set.</p>
-        <p>That difference matters when you are choosing between items. If you already saved one clean garment photo and simply want to see it on yourself, the single-image workflow is quicker. If you are working from a store page with several colours, or a shortlist to narrow down, extracting the images first saves a lot of repetitive file handling.</p>
+        <p>That difference matters when you are choosing between items. If you already saved one clean garment photo and simply want to see it on yourself, the single-image workflow is quicker. If you are working from a store page with several colors, or a shortlist to narrow down, extracting the images first saves a lot of repetitive file handling.</p>
         <p>People sometimes describe that single-image route as an <Link href="/dashboard/try-on">AI clothes changer</Link>, because it replaces what someone is wearing in one photo. If that is the task in front of you, start there instead. Both routes end in the same kind of generated result and share the same limits described below.</p>
       </section>
 
       <section>
         <h2>What a product link try-on can and cannot show</h2>
-        <p>A generated preview is good at broad visual questions. It can show an overall silhouette, how two colours sit next to each other, whether a longer skirt changes the balance of an outfit, and whether a combination is worth investigating further. It gives you something concrete to look at instead of guessing from a product photo shot on someone else.</p>
+        <p>A generated preview is good at broad visual questions. It can show an overall silhouette, how two colors sit next to each other, whether a longer skirt changes the balance of an outfit, and whether a combination is worth investigating further. It gives you something concrete to look at instead of guessing from a product photo shot on someone else.</p>
         <p>It cannot answer fit questions. Nothing in a generated image tells you whether a waistband will feel tight after a meal, how much a fabric stretches, whether a bodice gives enough support, or how a garment behaves when you sit down or raise your arms. Lace, beading, transparent layers, fine prints and logos may be reinterpreted rather than reproduced, because those details are exactly where image generation tends to improvise.</p>
         <p>So use the results to narrow your choices, then confirm the details that decide a purchase: measurements, fabric composition, care instructions and return conditions. If comfort or support is the deciding factor, a physical fitting still tells you more than any image, generated or otherwise.</p>
       </section>
@@ -51,7 +51,7 @@ export function ProductLinkTryOnGuide() {
       <section>
         <h2>Keeping extracted garments and results organised</h2>
         <p>Extracted garments can be saved to your <Link href="/dashboard/wardrobe">wardrobe</Link>, which is useful when you want to reuse the same piece in later sessions without extracting the same link again. Finished try-on images can be downloaded, and generated results stay on this page so you can return to them after comparing alternatives.</p>
-        <p>A small amount of note-taking pays off. Alongside each saved result, keep the product link and one line about why it survived the cut, such as &quot;preferred this sleeve length&quot; or &quot;colour works with the coat I already own&quot;. A ranked list of twenty means nothing two weeks later; five annotated favourites give you something you can act on. Before running a large batch, check <Link href="/pricing">plans and generation credits</Link>, and read the <Link href="/privacy">privacy policy</Link> if you want to know how uploaded photos are handled.</p>
+        <p>A small amount of note-taking pays off. Alongside each saved result, keep the product link and one line about why it survived the cut, such as &quot;preferred this sleeve length&quot; or &quot;color works with the coat I already own&quot;. A ranked list of twenty means nothing two weeks later; five annotated favourites give you something you can act on. Before running a large batch, check <Link href="/pricing">plans and generation credits</Link>, and read the <Link href="/privacy">privacy policy</Link> if you want to know how uploaded photos are handled.</p>
       </section>
     </article>
   );

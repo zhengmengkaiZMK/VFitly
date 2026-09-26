@@ -154,7 +154,7 @@ export function WardrobeContent() {
           <p className="text-sm font-medium uppercase tracking-[0.2em] text-blue-500">Wardrobe Library</p>
           <h1 className="mt-3 text-3xl font-bold text-black dark:text-white">Virtual wardrobe: organize clothes for AI try-on</h1>
           <p className="mt-2 max-w-2xl text-neutral-600 dark:text-neutral-400">
-            A virtual wardrobe keeps your clothing images in one place so you can reuse them instead of uploading the same file again. Add a garment once, describe it with a category, colour and tags, then apply it to any try-on or outfit preview.
+            A virtual wardrobe keeps your clothing images in one place so you can reuse them instead of uploading the same file again. Add a garment once, describe it with a category, color and tags, then apply it to any try-on or outfit preview.
           </p>
         </div>
         <a href="/dashboard/try-on" className="rounded-full bg-black px-5 py-3 text-sm font-medium text-white dark:bg-white dark:text-black">

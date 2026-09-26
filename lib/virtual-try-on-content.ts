@@ -17,12 +17,12 @@ export const virtualTryOnFaqs = [
   {
     question: "Can I try on clothes from a shopping link?",
     answer:
-      "Yes. Paste a product URL into the product link tool and VFitly extracts the garment images published on that page, including the different colourways a retailer shows. Review the extracted images, delete the ones you do not need, then generate a separate preview for each garment that is left.",
+      "Yes. Paste a product URL into the product link tool and VFitly extracts the garment images published on that page, including the different colorways a retailer shows. Review the extracted images, delete the ones you do not need, then generate a separate preview for each garment that is left.",
   },
   {
     question: "Will my preview show the exact fit and fabric?",
     answer:
-      "No. A generated preview is a visual approximation. It can show an overall silhouette and how two colours read together, but it cannot confirm measurements, fabric weight, stretch, support or comfort. Printed patterns, lace, beading and logos may be reinterpreted, so always check the original product information before buying.",
+      "No. A generated preview is a visual approximation. It can show an overall silhouette and how two colors read together, but it cannot confirm measurements, fabric weight, stretch, support or comfort. Printed patterns, lace, beading and logos may be reinterpreted, so always check the original product information before buying.",
   },
   {
     question: "How many previews can I generate?",

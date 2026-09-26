@@ -36,7 +36,7 @@ export const GridFeatures = () => {
     },
     {
       title: "User accounts",
-      description: "Keep every wardrobe and generated result isolated by logged-in user inside the SaaS dashboard.",
+      description: "Keep every wardrobe and generated result private and isolated to your own account.",
       icon: <IconShieldLock />,
     },
     {

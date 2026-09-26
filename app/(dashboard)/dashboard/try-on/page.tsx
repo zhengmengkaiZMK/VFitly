@@ -59,7 +59,7 @@ export default function DashboardTryOnPage() {
           An AI clothes changer replaces what someone is wearing in a photo with a different garment while keeping the person, their pose and the background recognisable. VFitly keeps that process on this page: you bring a photo and a piece of clothing, and the tool generates a new image of the same person in the new outfit.
         </p>
         <p>
-          That is different from browsing a catalogue. Product photos show a garment on a model you have never met, under studio lighting you will never stand in. Changing the clothes in your own photo gives you a reference you can actually read: does this colour work with my skin tone, does this length suit the way I dress, does this silhouette look like the idea I had in mind.
+          That is different from browsing a catalogue. Product photos show a garment on a model you have never met, under studio lighting you will never stand in. Changing the clothes in your own photo gives you a reference you can actually read: does this color work with my skin tone, does this length suit the way I dress, does this silhouette look like the idea I had in mind.
         </p>
         <h3>Upload a Person Photo</h3>
         <p>
@@ -84,7 +84,7 @@ export default function DashboardTryOnPage() {
         </p>
         <h2>Change Clothes Using Your Saved Wardrobe</h2>
         <p>
-          A <Link href="/dashboard/wardrobe">saved wardrobe</Link> turns the AI clothes changer into a repeatable tool rather than a one-off experiment. Instead of uploading the same files every session, pick from the pieces you already stored. Start with an anchor item — a jacket, a pair of trousers, a dress — then build around its colour and shape. In the outfit tool above you can select two to four items from different categories, with one item per category.
+          A <Link href="/dashboard/wardrobe">saved wardrobe</Link> turns the AI clothes changer into a repeatable tool rather than a one-off experiment. Instead of uploading the same files every session, pick from the pieces you already stored. Start with an anchor item — a jacket, a pair of trousers, a dress — then build around its color and shape. In the outfit tool above you can select two to four items from different categories, with one item per category.
         </p>
         <p>
           Keep the comparisons small. Ten thoughtful previews teach you more than fifty you scroll past. Save a result you like to Generated Looks so it stays alongside the garment images in your wardrobe, and revisit it later without running the generation again.
@@ -94,7 +94,7 @@ export default function DashboardTryOnPage() {
           Consistency is what makes a comparison readable. When you review two garments, use the same person photo, keep the pose and lighting unchanged, and view the previews side by side. If you change both the person and the clothing at once, you lose the ability to tell which of them caused the difference.
         </p>
         <p>
-          Ask concrete questions: Does this jacket create the silhouette I want? Do these colours work together? Would a shorter top balance the outfit? Those questions suit a generated preview far better than asking whether a specific size will fit perfectly.
+          Ask concrete questions: Does this jacket create the silhouette I want? Do these colors work together? Would a shorter top balance the outfit? Those questions suit a generated preview far better than asking whether a specific size will fit perfectly.
         </p>
         <p>
           Pay attention to fine patterns, lettering, logos and layered edges. An AI clothes changer can reinterpret those details rather than preserve them exactly. Before you buy, go back to the original product images and written specifications to confirm pockets, closures, fabric composition and decorative elements. Download the previews worth keeping, so you are comparing from images rather than from memory.

@@ -22,7 +22,6 @@ export const organizationJsonLd = {
   name: SITE_NAME,
   url: SITE_URL,
   logo: absoluteUrl("/icon.png"),
-  sameAs: [SITE_URL],
 };
 
 export const websiteJsonLd = {
@@ -31,10 +30,5 @@ export const websiteJsonLd = {
   name: SITE_NAME,
   url: SITE_URL,
   description:
-    "VFitly is an AI virtual try-on and clothes changer platform for trying on clothes, glasses, hairstyles, and managing wardrobe assets.",
-  potentialAction: {
-    "@type": "SearchAction",
-    target: `${SITE_URL}/blog?query={search_term_string}`,
-    "query-input": "required name=search_term_string",
-  },
+    "VFitly is an AI virtual try-on platform for trying on clothes from your own photo and managing garment and wardrobe assets.",
 };

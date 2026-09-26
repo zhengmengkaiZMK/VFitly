@@ -2,7 +2,7 @@ export const virtualWardrobeFaqs = [
   {
     question: "What is a virtual wardrobe?",
     answer:
-      "A virtual wardrobe is a collection of clothing images you can reuse, rather than physical clothes you store. You add a garment once, describe it with a category, colour and optional tags, and then select it whenever you want to preview an outfit. VFitly keeps each item as an image plus its metadata, and stores finished results separately so source garments and generated looks never get mixed together.",
+      "A virtual wardrobe is a collection of clothing images you can reuse, rather than physical clothes you store. You add a garment once, describe it with a category, color and optional tags, and then select it whenever you want to preview an outfit. VFitly keeps each item as an image plus its metadata, and stores finished results separately so source garments and generated looks never get mixed together.",
   },
   {
     question: "Do I need to be signed in to use the virtual wardrobe?",
@@ -17,7 +17,7 @@ export const virtualWardrobeFaqs = [
   {
     question: "How should I categorise and tag garments?",
     answer:
-      "Give every item a category — Top, Bottom, Dress, Outerwear, Shoes, Accessory or Other — because outfit building groups garments by category and expects one item per category. Add the colour you would actually use to describe the piece, and use tags for the things you search for: an occasion, a season, a fabric or a fit note.",
+      "Give every item a category — Top, Bottom, Dress, Outerwear, Shoes, Accessory or Other — because outfit building groups garments by category and expects one item per category. Add the color you would actually use to describe the piece, and use tags for the things you search for: an occasion, a season, a fabric or a fit note.",
   },
   {
     question: "Can I reuse one garment in several try-ons?",
