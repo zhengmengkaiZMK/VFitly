@@ -26,6 +26,10 @@ export const Footer = () => {
       name: isZh ? "联系我们" : "Contact",
       href: isZh ? "/zh/contact" : "/contact",
     },
+    {
+      name: isZh ? "关于我们" : "About Us",
+      href: isZh ? "/zh/about" : "/about",
+    },
   ];
   const legal = [
     {
@@ -45,7 +49,9 @@ export const Footer = () => {
             <div className="mr-4  md:flex mb-4">
               <Logo />
             </div>
-            <div>{isZh ? "版权所有" : "Copyright"} &copy; 2025 VFitly</div>
+            <div>
+              {isZh ? "版权所有" : "Copyright"} &copy; {new Date().getFullYear()} VFitly
+            </div>
             <div className="mt-2">{isZh ? "保留所有权利" : "All rights reserved"}</div>
             <a
               href="https://www.producthunt.com/products/vfitly?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-vfitly"
@@ -55,15 +61,28 @@ export const Footer = () => {
               aria-label="View VFitly on Product Hunt"
             >
               <Image
-                
                 width={250}
                 height={54}
-                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1239982&theme=light&t=1788409534364" alt="VFitly，AI virtual try-on，generate try-on image and try-on video"
+                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1239982&theme=light&t=1788409534364"
+                alt="VFitly, AI virtual try-on, generate try-on image and try-on video"
+              />
+            </a>
+            <a
+              href="https://www.pavelaunch.com/p/ab3da6a2-2900-4f42-9fa8-63ec3f15f828"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex"
+              aria-label="View VFitly on PaveLaunch"
+            >
+              <Image
+                width={250}
+                height={54}
+                src="https://www.pavelaunch.com/api/embed?type=launching-soon&theme=light"
+                alt="On PaveLaunch"
               />
             </a>
           </div>
           <div className="grid grid-cols-2 gap-10 items-start mt-10 md:mt-0 lg:grid-cols-3">
-            <div className="flex justify-center space-y-4 flex-col mt-4">
               {links.map((link) => (
                 <Link
                   key={link.name}

@@ -21,6 +21,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "api.producthunt.com",
       },
+      {
+        protocol: "https",
+        hostname: "www.pavelaunch.com",
+      },
     ],
   },
   pageExtensions: ["ts", "tsx", "mdx"],
