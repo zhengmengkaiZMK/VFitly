@@ -4,6 +4,7 @@
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-10-13",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "keep_vars": true,
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
@@ -19,7 +20,16 @@
     "NEXT_PUBLIC_APP_URL": "https://www.vfitly.com",
     "STORAGE_PROVIDER": "r2",
     "R2_BUCKET_NAME": "vfitly-assets",
-    "R2_PUBLIC_BASE_URL": "https://assets.vfitly.com"
+    "R2_PUBLIC_BASE_URL": "https://assets.vfitly.com",
+    "OPENAI_API_BASE_URL": "https://www.lingtrue.com/v1",
+    "OPENAI_IMAGE_MODEL": "gpt-image-2",
+    "OPENAI_IMAGE_QUALITY": "high",
+    "WALK_VIDEO_BASE_URL": "https://new.12ai.org",
+    "WALK_VIDEO_MODEL": "grok-imagine-1.5",
+    "SERPER_API_URL": "https://google.serper.dev/search",
+    "SERPER_TIMEOUT": "10000",
+    "GEMINI_MODEL": "gemini-2.5-flash",
+    "BREVO_FROM_EMAIL": "zhengmengkai@gmail.com"
   },
   "r2_buckets": [
     {
