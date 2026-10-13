@@ -1,4 +1,3 @@
-import { readFile } from "fs/promises";
 import path from "path";
 import { getWalkVideoConfig, walkVideoPrompt } from "./walk-video-config";
 
@@ -24,19 +23,26 @@ const MINIMAX_H3_WAVESPEED_VIDEO_ENDPOINT = "/wavespeed-ai/minimax-h3/image-to-v
 const MINIMAX_H3_WAVESPEED_STATUS_ENDPOINT = "/predictions";
 const MINIMAX_H3_AGENTSFLARE_VIDEO_ENDPOINT = "/minimax/v2/video_generation";
 const MINIMAX_H3_AGENTSFLARE_STATUS_ENDPOINT = "/minimax/v2/query/video_generation";
-const TASK_POLL_INTERVAL_MS = 5000;
-const TASK_MAX_ATTEMPTS = 36;
 const WALK_VIDEO_DURATION_SECONDS = 5;
 const WALK_VIDEO_ASPECT_RATIO = "9:16";
 
-export async function generateWalkVideoFromImage(imagePath: string, imageUrl: string): Promise<GeneratedWalkVideo> {
+export type WalkVideoTask = {
+  taskId: string;
+  provider: WalkVideoProvider;
+};
+
+export type WalkVideoPollResult =
+  | { status: "processing"; task: WalkVideoTask; raw: VideoApiResponse }
+  | { status: "completed"; video: GeneratedWalkVideo };
+
+export async function startWalkVideoFromImage(
+  imageUrl: string,
+  fallbackImage?: { buffer: Buffer; mimeType: string },
+): Promise<{ status: "completed"; video: GeneratedWalkVideo } | { status: "processing"; task: WalkVideoTask }> {
   const config = getWalkVideoConfig();
   const provider = resolveWalkVideoProvider(config.model, config.baseUrl);
-  const publicImageUrl = buildPublicImageUrl(imageUrl);
-  const imageBuffer = await readFile(imagePath);
-  const mimeType = mimeTypeFromPath(imagePath);
-  const fallbackImageDataUrl = `data:${mimeType};base64,${imageBuffer.toString("base64")}`;
-  const resolvedImageUrl = publicImageUrl || fallbackImageDataUrl;
+  const resolvedImageUrl = resolveImageUrl(imageUrl, fallbackImage);
+  if (!resolvedImageUrl) throw new Error("A public image URL or image bytes are required to generate a video.");
 
   const response = await fetch(buildTaskSubmitUrl(config.baseUrl, provider), {
     method: "POST",
@@ -46,94 +52,70 @@ export async function generateWalkVideoFromImage(imagePath: string, imageUrl: st
     },
     body: JSON.stringify(buildTaskSubmitPayload(provider, config.model, resolvedImageUrl)),
   });
-
   const text = await response.text();
   const data = parseJson(text);
-
-  if (!response.ok) {
-    throw new Error(extractErrorMessage(data) || text || `${response.status} ${response.statusText}`);
-  }
+  if (!response.ok) throw new Error(extractErrorMessage(data) || text || `${response.status} ${response.statusText}`);
 
   const immediateVideoUrl = extractVideoUrl(data);
   if (immediateVideoUrl) {
-    return { url: immediateVideoUrl, extension: extensionFromUrl(immediateVideoUrl), mimeType: mimeTypeFromUrl(immediateVideoUrl), raw: data };
+    return {
+      status: "completed",
+      video: { url: immediateVideoUrl, extension: extensionFromUrl(immediateVideoUrl), mimeType: mimeTypeFromUrl(immediateVideoUrl), raw: data },
+    };
   }
 
   const taskId = extractTaskId(data);
-  if (!taskId) {
-    throw new Error("The video provider response did not include a task id or video URL.");
-  }
-
-  return pollWalkVideoTask(config.baseUrl, config.apiKey, taskId, provider);
+  if (!taskId) throw new Error("The video provider response did not include a task id or video URL.");
+  return { status: "processing", task: { taskId, provider }, };
 }
 
+export async function pollWalkVideoTaskOnce(task: WalkVideoTask): Promise<WalkVideoPollResult> {
+  const config = getWalkVideoConfig();
+  const response = await fetch(buildTaskStatusUrl(config.baseUrl, task.taskId, task.provider), {
+    headers: { Authorization: `Bearer ${config.apiKey}` },
+  });
+  const text = await response.text();
+  const data = parseJson(text);
+  if (!response.ok) throw new Error(extractErrorMessage(data) || text || `${response.status} ${response.statusText}`);
+
+  const status = extractTaskStatus(data);
+  if (status === "fail" || status === "failed" || status === "error" || status === "cancelled") {
+    throw new Error(extractErrorMessage(data) || "Walk video generation failed in provider task.");
+  }
+  if (status !== "success" && status !== "completed" && status !== "succeeded" && status !== "done") {
+    return { status: "processing", task, raw: data };
+  }
+
+  return { status: "completed", video: await completedVideoFromPayload(config.baseUrl, config.apiKey, task.taskId, task.provider, data) };
+}
+
+function resolveImageUrl(imageUrl: string, fallbackImage?: { buffer: Buffer; mimeType: string }) {
+  const publicImageUrl = buildPublicImageUrl(imageUrl);
+  return publicImageUrl || (fallbackImage ? `data:${fallbackImage.mimeType};base64,${fallbackImage.buffer.toString("base64")}` : "");
+}
+
+async function completedVideoFromPayload(baseUrl: string, apiKey: string, taskId: string, provider: WalkVideoProvider, data: VideoApiResponse): Promise<GeneratedWalkVideo> {
+  const videoUrl = extractVideoUrl(data) || (await resolveVideoFileUrl(baseUrl, apiKey, data, provider));
+  if (videoUrl) return { url: videoUrl, extension: extensionFromUrl(videoUrl), mimeType: mimeTypeFromUrl(videoUrl), raw: data };
+  const base64Video = extractBase64Video(data);
+  if (base64Video) return { buffer: Buffer.from(base64Video, "base64"), extension: "mp4", mimeType: "video/mp4", raw: data };
+  if (provider === "apikey-fun-grok") {
+    const contentResponse = await fetch(`${buildTaskStatusUrl(baseUrl, taskId, provider)}/content`, { headers: { Authorization: `Bearer ${apiKey}` } });
+    if (!contentResponse.ok) throw new Error(`Generated video could not be downloaded (${contentResponse.status}). Task ID: ${taskId}`);
+    const contentType = contentResponse.headers.get("content-type")?.split(";")[0].trim() || "video/mp4";
+    if (!contentType.startsWith("video/") && contentType !== "application/octet-stream") throw new Error("The video content endpoint did not return a video file.");
+    const buffer = Buffer.from(await contentResponse.arrayBuffer());
+    if (!buffer.length) throw new Error("The video content endpoint returned an empty file.");
+    return { buffer, extension: extensionFromMimeType(contentType) || "mp4", mimeType: contentType === "application/octet-stream" ? "video/mp4" : contentType, raw: data };
+  }
+  throw new Error("The video task succeeded, but no video URL was returned.");
+}
 export async function downloadVideoAsset(url: string) {
   const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error("Generated video was created, but the video file could not be downloaded.");
-  }
+  if (!response.ok) throw new Error("Generated video was created, but the video file could not be downloaded.");
   const contentType = response.headers.get("content-type") || mimeTypeFromUrl(url);
   const buffer = Buffer.from(await response.arrayBuffer());
-  return {
-    buffer,
-    extension: extensionFromMimeType(contentType) || extensionFromUrl(url),
-    mimeType: contentType,
-  };
-}
-
-async function pollWalkVideoTask(baseUrl: string, apiKey: string, taskId: string, provider: WalkVideoProvider): Promise<GeneratedWalkVideo> {
-  let lastPayload: VideoApiResponse = {};
-
-  for (let attempt = 0; attempt < TASK_MAX_ATTEMPTS; attempt += 1) {
-    await sleep(TASK_POLL_INTERVAL_MS);
-
-    const response = await fetch(buildTaskStatusUrl(baseUrl, taskId, provider), {
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-      },
-    });
-    const text = await response.text();
-    const data = parseJson(text);
-    lastPayload = data;
-
-    if (!response.ok) {
-      throw new Error(extractErrorMessage(data) || text || `${response.status} ${response.statusText}`);
-    }
-
-    const status = extractTaskStatus(data);
-    if (status === "success" || status === "completed" || status === "succeeded" || status === "done") {
-      const videoUrl = extractVideoUrl(data) || (await resolveVideoFileUrl(baseUrl, apiKey, data, provider));
-      if (videoUrl) {
-        return { url: videoUrl, extension: extensionFromUrl(videoUrl), mimeType: mimeTypeFromUrl(videoUrl), raw: data };
-      }
-      const base64Video = extractBase64Video(data);
-      if (base64Video) {
-        return { buffer: Buffer.from(base64Video, "base64"), extension: "mp4", mimeType: "video/mp4", raw: data };
-      }
-      if (provider === "apikey-fun-grok") {
-        const contentResponse = await fetch(`${buildTaskStatusUrl(baseUrl, taskId, provider)}/content`, {
-          headers: { Authorization: `Bearer ${apiKey}` },
-        });
-        if (!contentResponse.ok) {
-          throw new Error(`Generated video could not be downloaded (${contentResponse.status}). Task ID: ${taskId}`);
-        }
-        const contentType = contentResponse.headers.get("content-type")?.split(";")[0].trim() || "video/mp4";
-        if (!contentType.startsWith("video/") && contentType !== "application/octet-stream") {
-          throw new Error("The video content endpoint did not return a video file.");
-        }
-        const buffer = Buffer.from(await contentResponse.arrayBuffer());
-        if (!buffer.length) throw new Error("The video content endpoint returned an empty file.");
-        return { buffer, extension: extensionFromMimeType(contentType) || "mp4", mimeType: contentType === "application/octet-stream" ? "video/mp4" : contentType, raw: data };
-      }
-      throw new Error("The video task succeeded, but no video URL was returned.");
-    }
-
-    if (status === "fail" || status === "failed" || status === "error" || status === "cancelled") {
-      throw new Error(extractErrorMessage(data) || "Walk video generation failed in provider task.");
-    }
-  }
-
-  throw new Error(`Walk video generation timed out. Task ID: ${taskId}. Last status: ${extractTaskStatus(lastPayload) || "unknown"}`);
+  return { buffer, extension: extensionFromMimeType(contentType) || extensionFromUrl(url), mimeType: contentType };
 }
 
 async function resolveVideoFileUrl(baseUrl: string, apiKey: string, data: VideoApiResponse, provider: WalkVideoProvider) {
@@ -495,13 +477,6 @@ function extractErrorMessage(data: VideoApiResponse) {
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function mimeTypeFromPath(filePath: string) {
-  const ext = path.extname(filePath).toLowerCase();
-  if (ext === ".jpg" || ext === ".jpeg") return "image/jpeg";
-  if (ext === ".webp") return "image/webp";
-  return "image/png";
 }
 
 function extensionFromUrl(url: string) {

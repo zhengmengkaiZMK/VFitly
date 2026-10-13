@@ -3,6 +3,7 @@ import remarkGfm from "remark-gfm";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  serverExternalPackages: ["@prisma/client", ".prisma/client", "pg"],
   images: {
     remotePatterns: [
       {

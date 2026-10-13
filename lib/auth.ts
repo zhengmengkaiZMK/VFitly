@@ -8,7 +8,7 @@ import {
   getExistingGuestIdFromCookie,
   promoteGuestResourcesToUser,
 } from "@/lib/auth/guest-resources";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 async function migrateGuestResources(userId: string) {
   const guestId = await getExistingGuestIdFromCookie();

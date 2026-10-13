@@ -7,8 +7,9 @@
 import { NextRequest } from 'next/server';
 import { ADPService } from '@/lib/services/adp.service';
 
-// 使用Edge Runtime支持流式响应
-export const runtime = 'edge';
+// OpenNext Cloudflare bundles this route with the default Worker runtime.
+// The stream uses Web Streams APIs and does not require the Next edge runtime.
+export const runtime = 'nodejs';
 
 export async function POST(req: NextRequest) {
   try {

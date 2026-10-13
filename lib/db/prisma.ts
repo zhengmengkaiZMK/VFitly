@@ -4,6 +4,8 @@
  */
 
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 
 // 扩展全局类型
 declare global {
@@ -11,10 +13,20 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 
-// 创建Prisma客户端实例
+// pg 驱动适配器绕过 Prisma 的原生查询引擎，使同一客户端能在 Node.js 和 Workers 中运行。
+// 延迟建立连接，避免构建期访问数据库。Cloudflare 环境中不能跨请求复用 TCP 连接；
+// maxUses: 1 在每次使用后移除连接，保留原有 prisma 调用入口与 DATABASE_URL。
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  max: 1,
+  maxUses: 1,
+  idleTimeoutMillis: 1000,
+});
+
 export const prisma = global.prisma || new PrismaClient({
-  log: process.env.NODE_ENV === 'development' 
-    ? ['query', 'error', 'warn'] 
+  adapter: new PrismaPg(pool),
+  log: process.env.NODE_ENV === 'development'
+    ? ['query', 'error', 'warn']
     : ['error'],
 });
 

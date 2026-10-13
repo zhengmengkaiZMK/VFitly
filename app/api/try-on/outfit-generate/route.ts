@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth/current-user";
 import { prisma } from "@/lib/db/prisma";
-import { localPathFromAssetUrl } from "@/lib/storage/assets";
+import { imageFromAssetUrl } from "@/lib/storage/assets";
 import { generateTryOnImage } from "@/lib/wardrobe/openai-image";
 import { saveGeneratedImage, saveUpload } from "@/lib/wardrobe/storage";
+import { imageInput, type ImageInput } from "@/lib/storage/image-processing";
 import { defaultTryOnPrompt } from "@/lib/wardrobe/constants";
 import { TRY_ON_MULTI_COST, ensureSufficientCredits, isPaidPlan, spendCredits } from "@/lib/billing/credits";
 
@@ -42,13 +43,13 @@ export async function POST(request: NextRequest) {
     }
 
     let personUrl = personImageUrl || user.defaultModelImageUrl || "";
-    let personPath = personUrl ? await localPathFromAssetUrl(personUrl) : "";
+    let personImageInput: ImageInput | null = personUrl ? await imageFromAssetUrl(personUrl) : null;
     let personAssetKey = user.defaultModelAssetKey;
 
     if (personImage instanceof File) {
       const person = await saveUpload(personImage, `try-on/${user.id}/persons`);
       personUrl = person.url;
-      personPath = person.path;
+      personImageInput = imageInput(Buffer.from(await personImage.arrayBuffer()));
       personAssetKey = person.key;
 
       if (!user.defaultModelImageUrl) {
@@ -64,7 +65,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    if (!personUrl || !personPath) {
+    if (!personUrl || !personImageInput) {
       return NextResponse.json(
         { error: "Please upload a full-body photo before generating outfit images.", requiresDefaultModelPhoto: true },
         { status: 428 },
@@ -87,7 +88,7 @@ export async function POST(request: NextRequest) {
 
     await ensureSufficientCredits(user.id, user.membershipType, TRY_ON_MULTI_COST);
 
-    const garmentPaths = await Promise.all(items.map((item) => localPathFromAssetUrl(item.imageUrl)));
+    const garmentImages = await Promise.all(items.map(async (item) => imageFromAssetUrl(item.imageUrl)));
     const job = await prisma.tryOnJob.create({
       data: {
         userId: user.id,
@@ -116,9 +117,9 @@ export async function POST(request: NextRequest) {
     });
 
     const generated = await generateTryOnImage({
-      personImagePath: personPath,
-      garmentImagePath: garmentPaths[0],
-      garmentImagePaths: garmentPaths,
+      personImage: personImageInput!,
+      garmentImage: garmentImages[0],
+      garmentImages,
       prompt: `${prompt}\n\nCombine these ${items.length} wardrobe items into one coherent outfit. Preserve the person's identity and make all selected garments appear naturally together.`,
       size,
     });

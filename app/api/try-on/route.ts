@@ -6,7 +6,8 @@ import { countGuestTryOnUsageToday } from "@/lib/auth/guest-resources";
 import { generateTryOnImage } from "@/lib/wardrobe/openai-image";
 import { saveGeneratedImage, saveUpload } from "@/lib/wardrobe/storage";
 import { defaultTryOnPrompt } from "@/lib/wardrobe/constants";
-import { localPathFromAssetUrl, deleteLocalAssetFile } from "@/lib/storage/assets";
+import { imageFromAssetUrl } from "@/lib/storage/assets";
+import { imageInput, type ImageInput } from "@/lib/storage/image-processing";
 import {
   FREE_DAILY_TRY_ON_LIMIT,
   TRY_ON_MULTI_COST,
@@ -66,7 +67,6 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   let jobId: string | null = null;
-  const localAssetPaths = new Set<string>();
 
   try {
     const { user, guest } = await requireUserOrGuest();
@@ -101,8 +101,7 @@ export async function POST(request: NextRequest) {
     }
 
     let personUrl = user?.defaultModelImageUrl || "";
-    let personPath = personUrl ? await localPathFromAssetUrl(personUrl) : "";
-    if (personPath) localAssetPaths.add(personPath);
+    let personImageInput: ImageInput | null = personUrl ? await imageFromAssetUrl(personUrl) : null;
     let personAssetKey = user?.defaultModelAssetKey || null;
 
     const personPrefix = user ? `try-on/${user.id}/persons` : guest ? `${guestAssetPrefix(guest.guestId)}/persons` : "try-on/anonymous/persons";
@@ -112,8 +111,7 @@ export async function POST(request: NextRequest) {
     if (personImage instanceof File) {
       const person = await saveUpload(personImage, personPrefix);
       personUrl = person.url;
-      personPath = person.path;
-      localAssetPaths.add(personPath);
+      personImageInput = imageInput(Buffer.from(await personImage.arrayBuffer()));
       personAssetKey = person.key;
 
       if (user) {
@@ -128,7 +126,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    if (!personUrl || !personPath) {
+    if (!personUrl || !personImageInput) {
       return NextResponse.json(
         {
           error: "Please upload a full-body photo before generating try-on images.",
@@ -138,7 +136,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const garments: Array<{ id: string | null; url: string; path: string; assetKey?: string | null }> = [];
+    const garments: Array<{ id: string | null; url: string; image: ImageInput; assetKey?: string | null }> = [];
 
     if (selectedIds.length > 0) {
       if (!user) {
@@ -150,15 +148,12 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "One or more selected wardrobe items do not exist." }, { status: 404 });
       }
       const garmentItems = await Promise.all(items.map(async (item) => {
-        const assetPath = await localPathFromAssetUrl(item.imageUrl);
-        localAssetPaths.add(assetPath);
-        return { id: item.id, url: item.imageUrl, path: assetPath, assetKey: item.imageAssetKey || item.storageKey };
+        return { id: item.id, url: item.imageUrl, image: await imageFromAssetUrl(item.imageUrl), assetKey: item.imageAssetKey || item.storageKey };
       }));
       garments.push(...garmentItems);
     } else if (garmentUpload instanceof File) {
       const garment = await saveUpload(garmentUpload, garmentPrefix);
-      localAssetPaths.add(garment.path);
-      garments.push({ id: null, url: garment.url, path: garment.path, assetKey: garment.key });
+      garments.push({ id: null, url: garment.url, image: imageInput(Buffer.from(await garmentUpload.arrayBuffer())), assetKey: garment.key });
     } else {
       return NextResponse.json({ error: "Please select or upload at least one clothing image." }, { status: 400 });
     }
@@ -198,14 +193,13 @@ export async function POST(request: NextRequest) {
     });
 
     const generatedImage = await generateTryOnImage({
-      personImagePath: personPath,
-      garmentImagePath: garments[0].path,
-      garmentImagePaths: garments.map((item) => item.path),
+      personImage: personImageInput!,
+      garmentImage: garments[0].image,
+      garmentImages: garments.map((item) => item.image),
       prompt: garments.length > 1 ? `${prompt}\n\nCombine all selected wardrobe pieces into one coherent outfit. Selected item image URLs: ${garments.map((item) => item.url).join(", ")}` : prompt,
       size,
     });
     const result = await saveGeneratedImage(generatedImage.buffer, resultPrefix, generatedImage.extension);
-    localAssetPaths.add(result.path);
 
     const updatedJob = await prisma.tryOnJob.update({
       where: { id: dbJob.id },
@@ -251,8 +245,6 @@ export async function POST(request: NextRequest) {
         : 400;
 
     return NextResponse.json({ error: message, id: randomUUID() }, { status });
-  } finally {
-    await Promise.allSettled(Array.from(localAssetPaths).map((filePath) => deleteLocalAssetFile(filePath)));
   }
 }
 

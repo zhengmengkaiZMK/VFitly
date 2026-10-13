@@ -43,10 +43,10 @@ export const Footer = () => {
   ];
   return (
     <div className="relative">
-      <div className="border-t border-neutral-100  dark:border-neutral-800 px-8 pt-20 pb-32 relative bg-white dark:bg-black">
-        <div className="max-w-7xl mx-auto text-sm text-neutral-500 dark:text-neutral-400 flex sm:flex-row flex-col justify-between items-start ">
+      <div className="border-t border-neutral-100 dark:border-neutral-800 px-8 pt-20 pb-32 relative bg-white dark:bg-black">
+        <div className="max-w-7xl mx-auto text-sm text-neutral-500 dark:text-neutral-400 flex sm:flex-row flex-col justify-between items-start">
           <div>
-            <div className="mr-4  md:flex mb-4">
+            <div className="mr-4 md:flex mb-4">
               <Logo />
             </div>
             <div>
@@ -83,6 +83,7 @@ export const Footer = () => {
             </a>
           </div>
           <div className="grid grid-cols-2 gap-10 items-start mt-10 md:mt-0 lg:grid-cols-3">
+            <div className="flex justify-center space-y-4 flex-col">
               {links.map((link) => (
                 <Link
                   key={link.name}
@@ -93,7 +94,7 @@ export const Footer = () => {
                 </Link>
               ))}
             </div>
-            <div className="flex justify-center space-y-4 flex-col mt-4">
+            <div className="flex justify-center space-y-4 flex-col">
               {legal.map((link) => (
                 <Link
                   key={link.name}
@@ -104,7 +105,7 @@ export const Footer = () => {
                 </Link>
               ))}
             </div>
-            <div className="flex justify-center space-y-4 flex-col mt-4">
+            <div className="flex justify-center space-y-4 flex-col">
               <a
                 href="https://mossai.org"
                 title="MossAI Tools"

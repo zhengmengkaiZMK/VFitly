@@ -422,12 +422,29 @@ export function TryOnContent({ embedded = false }: { embedded?: boolean }) {
     setError("");
 
     try {
-      const response = await fetch("/api/try-on/walk-video", {
+      let response = await fetch("/api/try-on/walk-video", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ jobId: job.id }),
       });
-      const data = await response.json().catch(() => ({}));
+      let data = await response.json().catch(() => ({}));
+
+      for (let attempt = 0; response.status === 202 && attempt < 60; attempt += 1) {
+        setWalkVideoMessage("Your runway video is processing. This page will update automatically.");
+        const retryAfter = Number(response.headers.get("Retry-After") || 5);
+        await new Promise((resolve) => window.setTimeout(resolve, Math.max(1, retryAfter) * 1000));
+        response = await fetch("/api/try-on/walk-video", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ jobId: job.id }),
+        });
+        data = await response.json().catch(() => ({}));
+      }
+
+      if (response.status === 202) {
+        setError("The video is still processing. Please refresh this record in a moment.");
+        return;
+      }
 
       if (!response.ok) {
         if (response.status === 401) {

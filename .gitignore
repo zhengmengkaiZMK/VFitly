@@ -13,6 +13,11 @@
 /.next/
 /out/
 
+# Cloudflare OpenNext
+/.open-next/
+/.wrangler/
+.dev.vars*
+
 # production
 /build
 
@@ -49,3 +54,7 @@ node_modules/.prisma/
 # user uploaded assets
 /public/uploads/
 /uploads/
+
+# agent workspace
+/.workbuddy/
+/.codebuddy/

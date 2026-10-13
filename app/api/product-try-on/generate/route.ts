@@ -9,7 +9,8 @@ import {
 import { requireUserOrGuest, guestAssetPrefix, guestExpiresAt } from "@/lib/auth/guest-session";
 import { countGuestProductTryOnUsageToday } from "@/lib/auth/guest-resources";
 import { prisma } from "@/lib/db/prisma";
-import { localPathFromAssetUrl } from "@/lib/storage/assets";
+import { imageFromAssetUrl, readAsset } from "@/lib/storage/assets";
+import { imageInput, type ImageInput } from "@/lib/storage/image-processing";
 import {
   FREE_DAILY_TRY_ON_LIMIT,
   TRY_ON_SINGLE_COST,
@@ -78,13 +79,13 @@ export async function POST(request: NextRequest) {
     const assetPrefix = user ? `product-try-on/${user.id}` : `${guestAssetPrefix(guest!.guestId)}/product-try-on`;
 
     let personUrl = user?.defaultModelImageUrl || "";
-    let personPath = personUrl ? await localPathFromAssetUrl(personUrl) || "" : "";
+    let personImageInput: ImageInput | null = personUrl ? await imageFromAssetUrl(personUrl) : null;
     let personAssetKey = user?.defaultModelAssetKey || null;
 
     if (personImage instanceof File) {
       const person = await saveProductTryOnUpload(personImage, `${assetPrefix}/persons`);
       personUrl = person.url;
-      personPath = person.path;
+      personImageInput = imageInput(Buffer.from(await personImage.arrayBuffer()));
       personAssetKey = person.key;
 
       if (user && !user.defaultModelImageUrl) {
@@ -99,7 +100,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    if (!personUrl || !personPath) {
+    if (!personUrl || !personImageInput) {
       return NextResponse.json(
         {
           error: "Please upload a full-body photo before generating try-on images.",
@@ -151,8 +152,8 @@ export async function POST(request: NextRequest) {
         });
 
         const generated = await generateProductTryOnImage({
-          personImagePath: personPath,
-          garmentImagePath: savedGarment.path,
+          personImage: personImageInput!,
+          garmentImage: imageInput(await readAsset(savedGarment.key)),
         });
         const savedResult = await saveProductTryOnGeneratedImage(generated.buffer, `${assetPrefix}/results`, generated.extension);
         const updatedJob = await prisma.tryOnJob.update({

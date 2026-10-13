@@ -2,6 +2,7 @@ import { mkdir, readFile, unlink, writeFile } from "fs/promises";
 import os from "os";
 import path from "path";
 import { randomUUID } from "crypto";
+import { imageInput, type ImageInput } from "./image-processing";
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 const DEFAULT_UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
@@ -19,6 +20,19 @@ export type StoredAsset = {
 type StorageProvider = "local" | "r2";
 
 let r2Client: S3Client | null = null;
+
+type R2BucketBinding = {
+  put(key: string, value: Uint8Array, options?: { httpMetadata?: { contentType?: string; cacheControl?: string } }): Promise<unknown>;
+  get(key: string): Promise<{ arrayBuffer(): Promise<ArrayBuffer> } | null>;
+  delete(key: string): Promise<void>;
+};
+
+function getR2Binding(): R2BucketBinding | undefined {
+  const context = (globalThis as typeof globalThis & {
+    [key: symbol]: { env?: { ASSETS_BUCKET?: R2BucketBinding } } | undefined;
+  })[Symbol.for("__cloudflare-context__")];
+  return context?.env?.ASSETS_BUCKET;
+}
 
 export function getStorageProvider(): StorageProvider {
   return process.env.STORAGE_PROVIDER === "r2" ? "r2" : "local";
@@ -54,11 +68,11 @@ export async function saveFileAsset(file: File, prefix: string): Promise<StoredA
 export async function saveBufferAsset(buffer: Buffer, prefix: string, extension = "png", mimeType = "image/png"): Promise<StoredAsset> {
   const safePrefix = normalizeKey(prefix);
   const key = `${safePrefix}/${Date.now()}-${randomUUID()}.${extension.replace(/^\./, "")}`;
-  const filePath = getAssetPath(key);
+  const provider = getStorageProvider();
+  const filePath = provider === "local" ? getAssetPath(key) : "";
 
-  if (getStorageProvider() === "r2") {
+  if (provider === "r2") {
     await putR2Object(key, buffer, mimeType);
-    await writeTempAsset(filePath, buffer);
   } else {
     await writeTempAsset(filePath, buffer);
   }
@@ -98,6 +112,7 @@ export async function deleteAsset(key: string | null | undefined) {
 export function keyFromAssetUrl(url: string | null | undefined) {
   if (!url) return null;
   const base = getPublicBaseUrl();
+  if (isHttpUrl(url) && isHttpUrl(base) && new URL(url).origin !== new URL(base).origin) return null;
   const pathPart = url.startsWith("http") ? new URL(url).pathname : url;
   const basePath = base.startsWith("http") ? new URL(base).pathname : base;
 
@@ -131,6 +146,19 @@ export async function deleteLocalAssetFile(filePath: string | null | undefined) 
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
   }
+}
+
+export async function imageFromAssetUrl(url: string): Promise<ImageInput> {
+  const key = keyFromAssetUrl(url);
+  if (key) return imageInput(await readAsset(key));
+
+  if (isHttpUrl(url)) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Failed to download remote asset (${response.status}).`);
+    return imageInput(Buffer.from(await response.arrayBuffer()), response.headers.get("content-type") || undefined);
+  }
+
+  return imageInput(await readFile(pathFromAssetUrl(url)));
 }
 
 export async function localPathFromAssetUrl(url: string) {
@@ -208,6 +236,14 @@ function getR2PublicBaseUrl() {
 }
 
 async function putR2Object(key: string, buffer: Buffer, mimeType: string) {
+  const binding = getR2Binding();
+  if (binding) {
+    await binding.put(key, new Uint8Array(buffer), {
+      httpMetadata: { contentType: mimeType, cacheControl: "public, max-age=31536000, immutable" },
+    });
+    return;
+  }
+
   await getR2Client().send(new PutObjectCommand({
     Bucket: getR2BucketName(),
     Key: key,
@@ -218,6 +254,13 @@ async function putR2Object(key: string, buffer: Buffer, mimeType: string) {
 }
 
 async function getR2ObjectBuffer(key: string) {
+  const binding = getR2Binding();
+  if (binding) {
+    const object = await binding.get(normalizeKey(key));
+    if (!object) throw new Error("Asset not found.");
+    return Buffer.from(await object.arrayBuffer());
+  }
+
   const response = await getR2Client().send(new GetObjectCommand({
     Bucket: getR2BucketName(),
     Key: normalizeKey(key),
@@ -229,6 +272,12 @@ async function getR2ObjectBuffer(key: string) {
 }
 
 async function deleteR2Object(key: string) {
+  const binding = getR2Binding();
+  if (binding) {
+    await binding.delete(normalizeKey(key));
+    return;
+  }
+
   await getR2Client().send(new DeleteObjectCommand({
     Bucket: getR2BucketName(),
     Key: normalizeKey(key),

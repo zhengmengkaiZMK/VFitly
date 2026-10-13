@@ -5,7 +5,7 @@
 
 import { config } from "dotenv";
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import * as path from "path";
 
 config({ path: path.resolve(process.cwd(), ".env.local") });

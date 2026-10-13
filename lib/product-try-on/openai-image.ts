@@ -1,6 +1,4 @@
-import { readFile } from "fs/promises";
-import path from "path";
-import sharp from "sharp";
+import { convertImage, imageFile, type ImageInput } from "@/lib/storage/image-processing";
 
 export type ProductTryOnImage = {
   buffer: Buffer;
@@ -18,8 +16,8 @@ export const productTryOnPrompt = [
 ].join("\n");
 
 export async function generateProductTryOnImage(options: {
-  personImagePath: string;
-  garmentImagePath: string;
+  personImage: ImageInput;
+  garmentImage: ImageInput;
   size?: string;
   extraPrompt?: string;
 }): Promise<ProductTryOnImage> {
@@ -27,7 +25,7 @@ export async function generateProductTryOnImage(options: {
 
   if (!apiKey) {
     if (process.env.NODE_ENV !== "production") {
-      return createLocalProductTryOnPreview(options.personImagePath, options.garmentImagePath, options.size);
+      return createLocalProductTryOnPreview(options.personImage, options.garmentImage, options.size);
     }
 
     throw new Error("OPENAI_API_KEY is not configured. Product try-on generation cannot run.");
@@ -43,8 +41,8 @@ export async function generateProductTryOnImage(options: {
   form.set("size", options.size || process.env.OPENAI_IMAGE_SIZE || "1024x1536");
   form.set("quality", process.env.OPENAI_IMAGE_QUALITY || "high");
   form.set("output_format", "png");
-  form.append("image[]", await fileFromPath(options.personImagePath, "person.png"));
-  form.append("image[]", await fileFromPath(options.garmentImagePath, "product-garment.png"));
+  form.append("image[]", imageFile(await convertImage(options.personImage, "image/png"), "person"));
+  form.append("image[]", imageFile(await convertImage(options.garmentImage, "image/png"), "product-garment"));
 
   const response = await fetch(`${baseUrl}/images/edits`, {
     method: "POST",
@@ -73,12 +71,6 @@ export async function generateProductTryOnImage(options: {
   throw new Error("The AI product try-on API did not return an image.");
 }
 
-async function fileFromPath(filePath: string, fileName: string) {
-  const buffer = await readFile(filePath);
-  const pngBuffer = await sharp(buffer).png().toBuffer();
-  return new File([new Uint8Array(pngBuffer)], fileName, { type: "image/png" });
-}
-
 function parseJsonResponse(text: string) {
   try {
     return JSON.parse(text || "{}");
@@ -87,10 +79,10 @@ function parseJsonResponse(text: string) {
   }
 }
 
-async function createLocalProductTryOnPreview(personImagePath: string, garmentImagePath: string, size = "1024x1536"): Promise<ProductTryOnImage> {
+async function createLocalProductTryOnPreview(personImage: ImageInput, garmentImage: ImageInput, size = "1024x1536"): Promise<ProductTryOnImage> {
   const [width, height] = parseImageSize(size);
-  const person = await imageDataUri(personImagePath);
-  const garment = await imageDataUri(garmentImagePath);
+  const person = imageDataUri(personImage);
+  const garment = imageDataUri(garmentImage);
   const now = new Date().toLocaleString("en-US", { hour12: false });
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
   <defs>
@@ -112,11 +104,8 @@ async function createLocalProductTryOnPreview(personImagePath: string, garmentIm
   return { buffer: Buffer.from(svg), extension: ".svg" };
 }
 
-async function imageDataUri(filePath: string) {
-  const buffer = await readFile(filePath);
-  const ext = path.extname(filePath).toLowerCase();
-  const type = ext === ".jpg" || ext === ".jpeg" ? "image/jpeg" : ext === ".webp" ? "image/webp" : ext === ".gif" ? "image/gif" : "image/png";
-  return `data:${type};base64,${buffer.toString("base64")}`;
+async function imageDataUri(input: ImageInput) {
+  return `data:${input.mimeType};base64,${input.buffer.toString("base64")}`;
 }
 
 function parseImageSize(size: string) {

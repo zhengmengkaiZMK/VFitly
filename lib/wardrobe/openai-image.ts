@@ -1,6 +1,4 @@
-import { readFile } from "fs/promises";
-import path from "path";
-import sharp from "sharp";
+import { convertImage, imageFile, type ImageInput } from "@/lib/storage/image-processing";
 
 export type GeneratedTryOnImage = {
   buffer: Buffer;
@@ -8,9 +6,9 @@ export type GeneratedTryOnImage = {
 };
 
 export async function generateTryOnImage(options: {
-  personImagePath: string;
-  garmentImagePath: string;
-  garmentImagePaths?: string[];
+  personImage: ImageInput;
+  garmentImage: ImageInput;
+  garmentImages?: ImageInput[];
   prompt?: string;
   size?: string;
 }): Promise<GeneratedTryOnImage> {
@@ -18,7 +16,7 @@ export async function generateTryOnImage(options: {
 
   if (!apiKey) {
     if (process.env.NODE_ENV !== "production") {
-      return createLocalTryOnPreview(options.personImagePath, options.garmentImagePath, options.size);
+      return createLocalTryOnPreview(options.personImage, options.garmentImage, options.size);
     }
 
     throw new Error("OPENAI_API_KEY is not configured. Uploaded images were saved, but AI try-on generation cannot run.");
@@ -41,10 +39,10 @@ export async function generateTryOnImage(options: {
   form.set("size", options.size || process.env.OPENAI_IMAGE_SIZE || "1024x1024");
   form.set("quality", process.env.OPENAI_IMAGE_QUALITY || "high");
   form.set("output_format", "png");
-  form.append("image[]", await fileFromPath(options.personImagePath, "image-1.png"));
-  const garmentPaths = options.garmentImagePaths?.length ? options.garmentImagePaths : [options.garmentImagePath];
-  for (const [index, garmentPath] of garmentPaths.entries()) {
-    form.append("image[]", await fileFromPath(garmentPath, `garment-${index + 1}.png`));
+  form.append("image[]", imageFile(await convertImage(options.personImage, "image/png"), "image-1"));
+  const garmentImages = options.garmentImages?.length ? options.garmentImages : [options.garmentImage];
+  for (const [index, garmentImage] of garmentImages.entries()) {
+    form.append("image[]", imageFile(await convertImage(garmentImage, "image/png"), `garment-${index + 1}`));
   }
 
   const response = await fetch(`${baseUrl}/images/edits`, {
@@ -80,14 +78,6 @@ export async function generateTryOnImage(options: {
   throw new Error("The AI try-on API did not return an image.");
 }
 
-async function fileFromPath(filePath: string, fileName?: string) {
-  const buffer = await readFile(filePath);
-  const pngBuffer = await sharp(buffer).png().toBuffer();
-  const uploadName = fileName || path.basename(filePath).replace(/\.[^.]+$/, ".png");
-
-  return new File([new Uint8Array(pngBuffer)], uploadName, { type: "image/png" });
-}
-
 function parseJsonResponse(text: string) {
   try {
     return JSON.parse(text || "{}");
@@ -96,10 +86,10 @@ function parseJsonResponse(text: string) {
   }
 }
 
-async function createLocalTryOnPreview(personImagePath: string, garmentImagePath: string, size = "1024x1536"): Promise<GeneratedTryOnImage> {
+async function createLocalTryOnPreview(personImage: ImageInput, garmentImage: ImageInput, size = "1024x1536"): Promise<GeneratedTryOnImage> {
   const [width, height] = parseImageSize(size);
-  const person = await imageDataUri(personImagePath);
-  const garment = await imageDataUri(garmentImagePath);
+  const person = imageDataUri(personImage);
+  const garment = imageDataUri(garmentImage);
   const now = new Date().toLocaleString("en-US", { hour12: false });
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
   <defs>
@@ -127,11 +117,8 @@ async function createLocalTryOnPreview(personImagePath: string, garmentImagePath
   return { buffer: Buffer.from(svg), extension: ".svg" };
 }
 
-async function imageDataUri(filePath: string) {
-  const buffer = await readFile(filePath);
-  const ext = path.extname(filePath).toLowerCase();
-  const type = ext === ".jpg" || ext === ".jpeg" ? "image/jpeg" : ext === ".webp" ? "image/webp" : ext === ".gif" ? "image/gif" : "image/png";
-  return `data:${type};base64,${buffer.toString("base64")}`;
+async function imageDataUri(input: ImageInput) {
+  return `data:${input.mimeType};base64,${input.buffer.toString("base64")}`;
 }
 
 function parseImageSize(size: string) {
