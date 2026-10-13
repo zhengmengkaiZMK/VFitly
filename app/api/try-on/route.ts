@@ -12,7 +12,6 @@ import {
   FREE_DAILY_TRY_ON_LIMIT,
   TRY_ON_MULTI_COST,
   TRY_ON_SINGLE_COST,
-  countUsageToday,
   ensureSufficientCredits,
   isPaidPlan,
   spendCredits,
@@ -87,10 +86,10 @@ export async function POST(request: NextRequest) {
     const creditsCost = selectedIds.length > 1 ? TRY_ON_MULTI_COST : TRY_ON_SINGLE_COST;
 
     if (user && !paidPlan) {
-      const usedToday = await countUsageToday(user.id, "try-on");
-      if (usedToday >= FREE_DAILY_TRY_ON_LIMIT) {
-        return NextResponse.json({ error: "Free plan includes 2 try-on generations per day. Please upgrade to continue." }, { status: 403 });
-      }
+      return NextResponse.json(
+        { error: "Generating try-on images requires an active Plus or Ultra plan. Please upgrade to continue." },
+        { status: 403 },
+      );
     }
 
     if (!user && guest) {

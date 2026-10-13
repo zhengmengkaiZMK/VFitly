@@ -4,7 +4,7 @@ import { requireUserOrGuest, guestAssetPrefix } from "@/lib/auth/guest-session";
 import { countGuestWalkVideoUsageToday } from "@/lib/auth/guest-resources";
 import { saveBufferAsset } from "@/lib/storage/assets";
 import { downloadVideoAsset, pollWalkVideoTaskOnce, startWalkVideoFromImage, type GeneratedWalkVideo, type WalkVideoTask } from "@/lib/video/walk-video";
-import { countUsageThisMonth, countUsageTotal, isPaidPlan, monthlyWalkVideoLimitForPlan } from "@/lib/billing/credits";
+import { countUsageThisMonth, isPaidPlan, monthlyWalkVideoLimitForPlan } from "@/lib/billing/credits";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -29,16 +29,21 @@ export async function POST(request: NextRequest) {
     }
 
     if (user) {
+      if (!isPaidPlan(user.membershipType)) {
+        return NextResponse.json(
+          { error: "Generating 360° try-on videos requires an active Plus or Ultra plan. Please upgrade to continue." },
+          { status: 403 },
+        );
+      }
+
       const videoLimit = monthlyWalkVideoLimitForPlan(user.membershipType);
-      const usedVideos = isPaidPlan(user.membershipType)
-        ? await countUsageThisMonth(user.id, "walk-video")
-        : await countUsageTotal(user.id, "walk-video");
+      const usedVideos = await countUsageThisMonth(user.id, "walk-video");
 
       if (usedVideos >= videoLimit) {
-        const error = isPaidPlan(user.membershipType)
-          ? `Your plan includes ${videoLimit} 360° try-on videos per month. Please upgrade to continue.`
-          : "Free accounts include 1 free 360° try-on video per account. Please upgrade to continue.";
-        return NextResponse.json({ error }, { status: 403 });
+        return NextResponse.json(
+          { error: `Your plan includes ${videoLimit} 360° try-on videos per month. Please upgrade to continue.` },
+          { status: 403 },
+        );
       }
     } else if (guest) {
       const usedVideos = await countGuestWalkVideoUsageToday(guest.guestId);

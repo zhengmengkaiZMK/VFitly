@@ -3,7 +3,6 @@ import { requireUser } from "@/lib/auth/current-user";
 import { prisma } from "@/lib/db/prisma";
 import {
   FREE_DAILY_PRODUCT_PREVIEW_LIMIT,
-  FREE_DAILY_TRY_ON_LIMIT,
   FREE_WARDROBE_LIMIT,
   countUsageToday,
   countUsageThisMonth,
@@ -31,8 +30,8 @@ export async function GET() {
       paidPlan,
       tryOn: {
         usedToday: tryOnUsedToday,
-        dailyLimit: paidPlan ? null : FREE_DAILY_TRY_ON_LIMIT,
-        remainingToday: paidPlan ? null : Math.max(FREE_DAILY_TRY_ON_LIMIT - tryOnUsedToday, 0),
+        dailyLimit: paidPlan ? null : 0,
+        remainingToday: paidPlan ? null : 0,
       },
       productPreview: {
         usedToday: productPreviewUsedToday,
@@ -46,8 +45,8 @@ export async function GET() {
       },
       walkVideo: {
         usedThisMonth: walkVideoUsedThisMonth,
-        monthlyLimit: monthlyWalkVideoLimitForPlan(user.membershipType),
-        remainingThisMonth: Math.max(monthlyWalkVideoLimitForPlan(user.membershipType) - walkVideoUsedThisMonth, 0),
+        monthlyLimit: paidPlan ? monthlyWalkVideoLimitForPlan(user.membershipType) : 0,
+        remainingThisMonth: paidPlan ? Math.max(monthlyWalkVideoLimitForPlan(user.membershipType) - walkVideoUsedThisMonth, 0) : 0,
       },
       credits: {
         balance: account.balance,
