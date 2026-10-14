@@ -9,7 +9,10 @@ export function getStripeClient() {
   }
 
   if (!stripeClient) {
+    // OpenNext/workerd 下 stripe SDK 会误判为 Node 环境走 node:http，导致请求挂起且 timeout 失效。
+    // 强制使用 Workers 原生 fetch 客户端，timeout/retry 才能生效。
     stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      httpClient: Stripe.createFetchHttpClient(),
       timeout: 15000,
       maxNetworkRetries: 1,
     });
