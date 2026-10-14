@@ -13,21 +13,30 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 
-// pg 驱动适配器绕过 Prisma 的原生查询引擎，使同一客户端能在 Node.js 和 Workers 中运行。
-// 延迟建立连接，避免构建期访问数据库。Cloudflare 环境中不能跨请求复用 TCP 连接；
-// maxUses: 1 在每次使用后移除连接，保留原有 prisma 调用入口与 DATABASE_URL。
+/**
+ * Cloudflare Workers / workerd 的连接池配置说明：
+ *
+ * - 不能使用 max: 1：某个请求被 runtime 取消后，pg-pool 内部等待队列可能永久卡住，
+ *   后续 /api/auth/session 会 500，客户端因此一直显示未登录。
+ * - maxUses: 1：每条连接只服务一个查询，避免跨请求复用被冻结的 TCP 连接。
+ * - idleTimeoutMillis: 0：连接不会进入跨请求 idle 池；maxUses: 1 仍会在使用后移除连接。
+ * - max: 10：允许页面初始化时多个 DB 请求并行建立独立连接，不在应用层排队 Promise。
+ *
+ * PrismaPg 要求传入真实的 pg.Pool 实例，因此这里不使用自定义 Pool 包装器；
+ * 自定义跨请求 Promise 队列会触发 workerd 的
+ * `no_handle_cross_request_promise_resolution` 限制。
+ */
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  max: 1,
+  max: 10,
   maxUses: 1,
-  idleTimeoutMillis: 1000,
+  idleTimeoutMillis: 0,
+  connectionTimeoutMillis: 8000,
 });
 
 export const prisma = global.prisma || new PrismaClient({
   adapter: new PrismaPg(pool),
-  log: process.env.NODE_ENV === 'development'
-    ? ['query', 'error', 'warn']
-    : ['error'],
+  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
 });
 
 // 在开发环境中，将实例保存到全局变量

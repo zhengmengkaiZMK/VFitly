@@ -132,15 +132,19 @@ export const authOptions: NextAuthOptions = {
         token.membershipType = user.membershipType || "FREE";
         token.role = user.role || "USER";
       }
-      
-      // 当触发更新时或每次会话时,从数据库获取最新的membershipType
-      if (trigger === "update" || !user) {
+
+      // 仅在客户端显式调用 session.update() 时回库刷新会员信息。
+      // /api/auth/session 会在页面初始化时并发触发多次；在 Cloudflare Workers 中，
+      // 让这个认证基础请求依赖共享 pg 连接池会导致 session 500/挂起，进而让 UI
+      // 一直显示未登录。登录时已把 membershipType/role 写入 JWT，普通会话读取直接
+      // 使用 token 快照即可；需要刷新会员状态时由业务流程显式调用 update()。
+      if (trigger === "update") {
         try {
           const dbUser = await prisma.user.findUnique({
             where: { id: token.id as string },
             select: { membershipType: true, membershipExpiresAt: true, role: true },
           });
-          
+
           if (dbUser) {
             token.membershipType = dbUser.membershipType;
             token.membershipExpiresAt = dbUser.membershipExpiresAt?.toISOString();
@@ -149,8 +153,9 @@ export const authOptions: NextAuthOptions = {
         } catch (error) {
           console.error("[Auth] Failed to refresh membershipType:", error);
         }
+        token.lastRefreshAt = Date.now();
       }
-      
+
       return token;
     },
     async session({ session, token }) {
