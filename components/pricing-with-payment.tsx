@@ -155,10 +155,10 @@ export function PricingWithPayment() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="relative w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-6 shadow-2xl dark:border-neutral-800 dark:bg-neutral-900"
+              className="relative max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-neutral-200 bg-white p-6 shadow-2xl [padding-bottom:calc(1.5rem+env(safe-area-inset-bottom))] dark:border-neutral-800 dark:bg-neutral-900"
               onClick={(e) => e.stopPropagation()}
             >
-              <button onClick={() => setSelectedPlanId(null)} className="absolute right-4 top-4 text-neutral-400 transition hover:text-neutral-600 dark:hover:text-neutral-200">
+              <button onClick={() => setSelectedPlanId(null)} aria-label={isZh ? "关闭支付窗口" : "Close payment dialog"} className="absolute right-4 top-4 text-neutral-400 transition hover:text-neutral-600 dark:hover:text-neutral-200">
                 <X className="h-5 w-5" />
               </button>
 

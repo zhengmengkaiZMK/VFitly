@@ -13,7 +13,7 @@ interface StripeCheckoutButtonProps {
 }
 
 export function StripeCheckoutButton({ planId, onError }: StripeCheckoutButtonProps) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { requireLogin } = useFeedback();
   const pathname = usePathname();
   const isZh = pathname.startsWith("/zh");
@@ -21,6 +21,7 @@ export function StripeCheckoutButton({ planId, onError }: StripeCheckoutButtonPr
   const [error, setError] = useState("");
 
   async function startCheckout() {
+    if (status === "loading" || loading) return;
     if (!session) {
       requireLogin(undefined, buildLoginRedirectUrl(pathname));
       return;
@@ -56,7 +57,7 @@ export function StripeCheckoutButton({ planId, onError }: StripeCheckoutButtonPr
       <button
         type="button"
         onClick={startCheckout}
-        disabled={loading}
+        disabled={loading || status === "loading"}
         className="relative z-10 block w-full items-center justify-center rounded-full border border-transparent bg-neutral-900 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-[0px_-1px_0px_0px_#FFFFFF40_inset,_0px_1px_0px_0px_#FFFFFF40_inset] transition duration-200 hover:bg-black/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-white/90 md:text-sm"
       >
         {loading ? (
@@ -64,6 +65,8 @@ export function StripeCheckoutButton({ planId, onError }: StripeCheckoutButtonPr
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             {isZh ? "正在跳转..." : "Redirecting..."}
           </span>
+        ) : status === "loading" ? (
+          isZh ? "正在检查登录状态..." : "Checking sign-in..."
         ) : session ? (
           isZh ? "使用 Stripe 安全支付" : "Pay securely with Stripe"
         ) : (

@@ -5,8 +5,8 @@ type PlanType = "FREE" | "PREMIUM" | "PLUS" | "ULTRA";
 
 export const TRY_ON_SINGLE_COST = 5;
 export const TRY_ON_MULTI_COST = 8;
-export const FREE_DAILY_TRY_ON_LIMIT = 2;
-export const FREE_DAILY_PRODUCT_PREVIEW_LIMIT = 2;
+export const FREE_DAILY_TRY_ON_LIMIT = 0;
+export const FREE_DAILY_PRODUCT_PREVIEW_LIMIT = 0;
 export const FREE_WARDROBE_LIMIT = 3;
 export const FREE_WALK_VIDEO_LIMIT = 1;
 export const PLUS_MONTHLY_WALK_VIDEO_LIMIT = 20;
@@ -122,7 +122,6 @@ export async function grantMonthlyCredits({
   const account = await prisma.creditAccount.upsert({
     where: { userId },
     update: {
-      balance: amount,
       monthlyAllowance: amount,
       currentCycle: cycle,
       resetAt: new Date(),
@@ -180,10 +179,15 @@ export async function spendCredits(
     throw new Error("Insufficient credits. Please upgrade your plan or wait for next monthly reset.");
   }
 
-  const updated = await prisma.creditAccount.update({
-    where: { userId },
+  const updatedCount = await prisma.creditAccount.updateMany({
+    where: { userId, balance: { gte: amount } },
     data: { balance: { decrement: amount } },
   });
+  if (updatedCount.count !== 1) {
+    throw new Error("Insufficient credits. Please upgrade your plan or wait for next monthly reset.");
+  }
+
+  const updated = await prisma.creditAccount.findUniqueOrThrow({ where: { userId } });
 
   await prisma.creditLedger.create({
     data: {

@@ -65,9 +65,11 @@ export const Hero = () => {
             <video
               className="h-auto max-h-[70vh] w-full object-contain"
               src="/product-demo.mp4"
+              poster="/banner.png"
               controls
               playsInline
-              preload="metadata"
+              preload="none"
+              aria-label="VFitly AI virtual try-on product demo"
             />
           </div>
         </div>

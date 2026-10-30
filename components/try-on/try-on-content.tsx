@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LoadingIndicator } from "@/components/loading-indicator";
 import { ModalLayer } from "@/components/modal-layer";
+import { StripeCheckoutButton } from "@/components/payment/stripe-checkout-button";
 import { IconCheck, IconDownload, IconHanger, IconPhoto, IconSparkles, IconUpload, IconVideo, IconX } from "@tabler/icons-react";
 import { buildLoginRedirectUrl } from "@/lib/auth/login-redirect";
 import { downloadMediaFile } from "@/lib/download-file";
@@ -192,8 +193,12 @@ export function TryOnContent({ embedded = false }: { embedded?: boolean }) {
   }, [generating, outfitGenerating]);
 
   useEffect(() => {
+    if (embedded) {
+      setLoading(false);
+      return;
+    }
     Promise.all([loadJobs(), loadWardrobeItems()]).finally(() => setLoading(false));
-  }, []);
+  }, [embedded]);
 
   async function loadJobs() {
     const response = await fetch("/api/try-on");
@@ -235,6 +240,20 @@ export function TryOnContent({ embedded = false }: { embedded?: boolean }) {
   async function handleGenerate(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!person || !garment || generating) return;
+
+    // 免费账号不再提供每日生成额度，点击生成直接引导到套餐页。
+    const membershipType = await fetch("/api/me", { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => data?.user?.membershipType as string | undefined)
+      .catch(() => undefined);
+    if (!membershipType) {
+      requireLogin(undefined, loginUrl);
+      return;
+    }
+    if (!["PLUS", "PREMIUM", "ULTRA"].includes(membershipType)) {
+      setShowOutfitUpgradeModal(true);
+      return;
+    }
 
     setGenerating(true);
     setError("");
@@ -771,18 +790,14 @@ export function TryOnContent({ embedded = false }: { embedded?: boolean }) {
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-200">
                 <IconSparkles className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-semibold text-white">Upgrade your plan</h3>
+              <h3 className="text-xl font-semibold text-white">Upgrade to Plus</h3>
               <p className="mt-3 text-sm leading-6 text-slate-300">
-                Your current plan does not have enough quota or credits for this action. Upgrade to Plus or Ultra to unlock more try-on generations, wardrobe outfit creation, and 360° try-on videos.
+                AI generation is available after upgrading. Plus is $39/month and includes 600 credits for try-on images and videos.
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <button
-                  type="button"
-                  onClick={() => router.push("/pricing")}
-                  className="inline-flex flex-1 items-center justify-center rounded-2xl bg-cyan-300 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"
-                >
-                  View plans
-                </button>
+                <div className="flex-1">
+                  <StripeCheckoutButton planId="PLUS_MONTHLY" />
+                </div>
                 <button
                   type="button"
                   onClick={() => setShowOutfitUpgradeModal(false)}
