@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { prisma } from "@/lib/db/prisma";
-import { requireUserOrGuest, guestAssetPrefix } from "@/lib/auth/guest-session";
-import { countGuestTryOnUsageToday } from "@/lib/auth/guest-resources";
+import { requireUserOrGuest } from "@/lib/auth/guest-session";
 import { generateTryOnImage } from "@/lib/wardrobe/openai-image";
 import { saveGeneratedImage, saveUpload } from "@/lib/wardrobe/storage";
 import { defaultTryOnPrompt } from "@/lib/wardrobe/constants";
 import { imageFromAssetUrl } from "@/lib/storage/assets";
 import { imageInput, type ImageInput } from "@/lib/storage/image-processing";
 import {
-  FREE_DAILY_TRY_ON_LIMIT,
   TRY_ON_MULTI_COST,
   TRY_ON_SINGLE_COST,
   ensureSufficientCredits,
@@ -68,7 +66,10 @@ export async function POST(request: NextRequest) {
   let jobId: string | null = null;
 
   try {
-    const { user, guest } = await requireUserOrGuest();
+    const { user } = await requireUserOrGuest();
+    if (!user) {
+      return NextResponse.json({ error: "Please sign in to generate try-on images.", requiresLogin: true }, { status: 401 });
+    }
     const formData = await request.formData();
     const personImage = formData.get("personImage");
     const prompt = String(formData.get("prompt") || defaultTryOnPrompt);
@@ -78,34 +79,23 @@ export async function POST(request: NextRequest) {
     const garmentUpload = formData.get("garmentImage");
     const selectedIds = wardrobeItemIds.length > 0 ? wardrobeItemIds : wardrobeItemId ? [wardrobeItemId] : [];
 
-    if (!user && selectedIds.length > 0) {
-      return NextResponse.json({ error: "Guest mode only supports uploaded clothing images." }, { status: 400 });
-    }
-
-    const paidPlan = user ? isPaidPlan(user.membershipType) : false;
+    const paidPlan = isPaidPlan(user.membershipType);
     const creditsCost = selectedIds.length > 1 ? TRY_ON_MULTI_COST : TRY_ON_SINGLE_COST;
 
-    if (user && !paidPlan) {
+    if (!paidPlan) {
       return NextResponse.json(
         { error: "Generating try-on images requires an active Plus or Ultra plan. Please upgrade to continue." },
         { status: 403 },
       );
     }
 
-    if (!user && guest) {
-      const usedToday = await countGuestTryOnUsageToday(guest.guestId);
-      if (usedToday >= FREE_DAILY_TRY_ON_LIMIT) {
-        return NextResponse.json({ error: "Guest mode includes 2 free try-on generations per day. Please sign in or upgrade to continue." }, { status: 403 });
-      }
-    }
-
-    let personUrl = user?.defaultModelImageUrl || "";
+    let personUrl = user.defaultModelImageUrl || "";
     let personImageInput: ImageInput | null = personUrl ? await imageFromAssetUrl(personUrl) : null;
-    let personAssetKey = user?.defaultModelAssetKey || null;
+    let personAssetKey = user.defaultModelAssetKey || null;
 
-    const personPrefix = user ? `try-on/${user.id}/persons` : guest ? `${guestAssetPrefix(guest.guestId)}/persons` : "try-on/anonymous/persons";
-    const garmentPrefix = user ? `try-on/${user.id}/garments` : guest ? `${guestAssetPrefix(guest.guestId)}/garments` : "try-on/anonymous/garments";
-    const resultPrefix = user ? `try-on/${user.id}/results` : guest ? `${guestAssetPrefix(guest.guestId)}/results` : "try-on/anonymous/results";
+    const personPrefix = `try-on/${user.id}/persons`;
+    const garmentPrefix = `try-on/${user.id}/garments`;
+    const resultPrefix = `try-on/${user.id}/results`;
 
     if (personImage instanceof File) {
       const person = await saveUpload(personImage, personPrefix);
@@ -113,8 +103,7 @@ export async function POST(request: NextRequest) {
       personImageInput = imageInput(Buffer.from(await personImage.arrayBuffer()));
       personAssetKey = person.key;
 
-      if (user) {
-        await prisma.user.update({
+      await prisma.user.update({
           where: { id: user.id },
           data: {
             defaultModelImageUrl: person.url,
@@ -122,7 +111,6 @@ export async function POST(request: NextRequest) {
             onboardingCompleted: true,
           },
         });
-      }
     }
 
     if (!personUrl || !personImageInput) {
@@ -138,10 +126,6 @@ export async function POST(request: NextRequest) {
     const garments: Array<{ id: string | null; url: string; image: ImageInput; assetKey?: string | null }> = [];
 
     if (selectedIds.length > 0) {
-      if (!user) {
-        return NextResponse.json({ error: "Guest mode only supports uploaded clothing images." }, { status: 400 });
-      }
-
       const items = await prisma.wardrobeItem.findMany({ where: { id: { in: selectedIds }, userId: user.id, isDeleted: false } });
       if (items.length !== selectedIds.length) {
         return NextResponse.json({ error: "One or more selected wardrobe items do not exist." }, { status: 404 });
@@ -157,14 +141,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Please select or upload at least one clothing image." }, { status: 400 });
     }
 
-    if (user && paidPlan) {
-      await ensureSufficientCredits(user.id, user.membershipType, creditsCost);
-    }
+    await ensureSufficientCredits(user.id, user.membershipType, creditsCost);
 
     const dbJob = await prisma.tryOnJob.create({
       data: {
-        userId: user?.id ?? null,
-        guestId: guest?.guestId ?? null,
+        userId: user.id,
+        guestId: null,
         wardrobeItemId: garments[0]?.id,
         provider: "openai",
         model: process.env.OPENAI_IMAGE_MODEL || "gpt-image-2",
@@ -176,12 +158,12 @@ export async function POST(request: NextRequest) {
         garmentAssetKey: garments[0]?.assetKey,
         wardrobeItemIds: garments.map((item) => item.id).filter(Boolean),
         prompt,
-        creditsCost: user && paidPlan ? creditsCost : 0,
-        costCredits: user && paidPlan ? creditsCost : 0,
-        metadata: { garmentCount: garments.length, source: selectedIds.length ? "wardrobe" : "upload", mode: user ? "member" : "guest" },
+        creditsCost,
+        costCredits: creditsCost,
+        metadata: { garmentCount: garments.length, source: selectedIds.length ? "wardrobe" : "upload", mode: "member" },
         status: "PENDING",
-        isTemporary: !user,
-        expiresAt: !user && guest ? guest.expiresAt : null,
+        isTemporary: false,
+        expiresAt: null,
       },
     });
     jobId = dbJob.id;
@@ -211,23 +193,19 @@ export async function POST(request: NextRequest) {
       include: { wardrobeItem: true },
     });
 
-    if (user && paidPlan) {
-      await spendCredits(user.id, user.membershipType, creditsCost, "AI try-on generation", {
-        jobId: dbJob.id,
-        garmentCount: garments.length,
-      });
-    }
+    await spendCredits(user.id, user.membershipType, creditsCost, "AI try-on generation", {
+      jobId: dbJob.id,
+      garmentCount: garments.length,
+    });
 
-    if (user) {
-      await prisma.usageRecord.create({
-        data: {
-          userId: user.id,
-          type: "try-on",
-          cost: paidPlan ? creditsCost : 0,
-          metadata: { jobId: dbJob.id, garmentCount: garments.length, freeDailyUsage: !paidPlan },
-        },
-      });
-    }
+    await prisma.usageRecord.create({
+      data: {
+        userId: user.id,
+        type: "try-on",
+        cost: creditsCost,
+        metadata: { jobId: dbJob.id, garmentCount: garments.length, freeDailyUsage: false },
+      },
+    });
 
     return NextResponse.json({ job: updatedJob });
   } catch (error) {

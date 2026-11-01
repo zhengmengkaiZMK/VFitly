@@ -331,6 +331,19 @@ export function TryOnContent({ embedded = false }: { embedded?: boolean }) {
   async function handleGenerateOutfit() {
     if (!person || selectedWardrobeItems.length < 2 || outfitGenerating) return;
 
+    const membershipType = await fetch("/api/me", { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => data?.user?.membershipType as string | undefined)
+      .catch(() => undefined);
+    if (!membershipType) {
+      requireLogin(undefined, loginUrl);
+      return;
+    }
+    if (!["PLUS", "PREMIUM", "ULTRA"].includes(membershipType)) {
+      setShowOutfitUpgradeModal(true);
+      return;
+    }
+
     const categories = selectedWardrobeItems.map((item) => item.category);
     if (new Set(categories).size !== categories.length) {
       setError("Please select only one item from each wardrobe category.");
