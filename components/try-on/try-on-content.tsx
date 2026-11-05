@@ -805,7 +805,7 @@ export function TryOnContent({ embedded = false }: { embedded?: boolean }) {
               </div>
               <h3 className="text-xl font-semibold text-white">Upgrade to Plus</h3>
               <p className="mt-3 text-sm leading-6 text-slate-300">
-                AI generation is available after upgrading. Plus is $19.9/month and includes 600 credits for try-on images and videos.
+                AI generation is available after upgrading. Plus is $9.9/month and includes 600 credits for try-on images and videos.
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <div className="flex-1">
