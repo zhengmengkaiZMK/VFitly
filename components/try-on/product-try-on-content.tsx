@@ -764,7 +764,7 @@ export function ProductTryOnContent() {
                     planId="PLUS_MONTHLY"
                     wrapperClassName=""
                     showCaption={false}
-                    buttonClassName="inline-flex w-full items-center justify-center whitespace-nowrap rounded-2xl bg-purple-300 px-4 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-purple-400/20 transition hover:bg-purple-200"
+                    buttonClassName="inline-flex w-full items-center justify-center whitespace-nowrap rounded-2xl bg-purple-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-600/25 transition hover:bg-purple-700"
                   />
                 </div>
                 <button

@@ -813,7 +813,7 @@ export function TryOnContent({ embedded = false }: { embedded?: boolean }) {
                     planId="PLUS_MONTHLY"
                     wrapperClassName=""
                     showCaption={false}
-                    buttonClassName="inline-flex w-full items-center justify-center whitespace-nowrap rounded-2xl bg-cyan-300 px-4 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-400/20 transition hover:bg-cyan-200"
+                    buttonClassName="inline-flex w-full items-center justify-center whitespace-nowrap rounded-2xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition hover:bg-blue-700"
                   />
                 </div>
                 <button
