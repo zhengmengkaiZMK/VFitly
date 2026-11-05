@@ -809,7 +809,12 @@ export function TryOnContent({ embedded = false }: { embedded?: boolean }) {
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <div className="flex-1">
-                  <StripeCheckoutButton planId="PLUS_MONTHLY" />
+                  <StripeCheckoutButton
+                    planId="PLUS_MONTHLY"
+                    wrapperClassName=""
+                    showCaption={false}
+                    buttonClassName="inline-flex w-full items-center justify-center rounded-2xl border border-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                  />
                 </div>
                 <button
                   type="button"
