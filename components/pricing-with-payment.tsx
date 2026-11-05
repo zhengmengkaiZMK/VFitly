@@ -19,12 +19,13 @@ export function PricingWithPayment() {
   const { status } = useSession();
   const isZh = pathname.startsWith("/zh");
 
-  const [billingCycle, setBillingCycle] = useState<"MONTHLY" | "YEARLY">("MONTHLY");
+  const [billingCycle, setBillingCycle] = useState<"MONTHLY" | "YEARLY" | "ONE_TIME">("ONE_TIME");
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
 
   const visiblePlans = [
-    freePlan,
-    ...paidPlans.filter((plan) => plan.billingCycle === billingCycle),
+    ...(billingCycle === "ONE_TIME"
+      ? paidPlans.filter((plan) => plan.billingCycle === "ONE_TIME")
+      : [freePlan, ...paidPlans.filter((plan) => plan.billingCycle === billingCycle)]),
   ];
   const selectedPlan = selectedPlanId ? getAllPlans().find((plan) => plan.id === selectedPlanId) : null;
 
@@ -33,6 +34,7 @@ export function PricingWithPayment() {
       <div className="relative">
         <div className="mx-auto mb-12 flex w-fit items-center overflow-hidden rounded-md bg-neutral-100 dark:bg-neutral-800">
           {[
+            { label: isZh ? "一次性" : "Pay Once", value: "ONE_TIME" as const },
             { label: isZh ? "月付" : "Monthly", value: "MONTHLY" as const },
             { label: isZh ? "年付" : "Yearly", value: "YEARLY" as const },
           ].map((tab) => (
@@ -60,7 +62,13 @@ export function PricingWithPayment() {
           {visiblePlans.map((plan) => {
             const featured = plan.tier === "PLUS";
             const isFree = plan.membershipType === "FREE";
+            const isOneTime = plan.billingCycle === "ONE_TIME";
             const originalYearly = plan.billingCycle === "YEARLY" && !isFree ? Math.round((plan.amount / 0.8) * 10) / 10 : null;
+            const priceLabel = isFree
+              ? isZh ? "免费" : "Free"
+              : isOneTime
+                ? `$${plan.amount}`
+                : plan.billingCycle === "MONTHLY" ? `$${plan.amount}/mo` : `$${plan.amount}/yr`;
 
             return (
               <div
@@ -90,7 +98,7 @@ export function PricingWithPayment() {
                       key={plan.id}
                       className={cn("inline-block text-4xl font-bold tracking-tight", featured ? "text-white" : "text-neutral-900 dark:text-neutral-200")}
                     >
-                      {isFree ? (isZh ? "免费" : "Free") : plan.billingCycle === "MONTHLY" ? `$${plan.amount}/mo` : `$${plan.amount}/yr`}
+                      {priceLabel}
                     </motion.span>
                     {originalYearly ? (
                       <span className={cn("ml-2 text-sm line-through", featured ? "text-neutral-400" : "text-neutral-500")}>${originalYearly}/yr</span>
@@ -103,8 +111,12 @@ export function PricingWithPayment() {
                         ? "适合首次体验 AI 试衣和商品链接解析。"
                         : "Start exploring AI try-on and product-link preview."
                       : isZh
-                        ? `${plan.monthlyCredits} 积分/月，${plan.billingCycle === "YEARLY" ? "年付按月发放积分。" : "每月重置。"}`
-                        : `${plan.monthlyCredits} credits/month. ${plan.billingCycle === "YEARLY" ? "Credits are granted monthly." : "Credits reset monthly."}`}
+                        ? isOneTime
+                          ? `一次性获得 ${plan.monthlyCredits} 积分，无订阅不续费。`
+                          : `${plan.monthlyCredits} 积分/月，${plan.billingCycle === "YEARLY" ? "年付按月发放积分。" : "每月重置。"}`
+                        : isOneTime
+                          ? `${plan.monthlyCredits} credits, one-time. No subscription.`
+                          : `${plan.monthlyCredits} credits/month. ${plan.billingCycle === "YEARLY" ? "Credits are granted monthly." : "Credits reset monthly."}`}
                   </p>
 
                   <ul role="list" className={cn(featured ? "text-neutral-300" : "text-neutral-600 dark:text-neutral-300", "mt-8 space-y-3 text-sm leading-6 sm:mt-10")}>

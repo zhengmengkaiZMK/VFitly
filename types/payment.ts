@@ -2,7 +2,7 @@
  * 支付相关类型定义
  */
 
-export type BillingCycle = "MONTHLY" | "YEARLY";
+export type BillingCycle = "MONTHLY" | "YEARLY" | "ONE_TIME";
 export type PlanTier = "FREE" | "PLUS" | "ULTRA";
 export type PaidMembershipType = "PLUS" | "ULTRA";
 export type MembershipType = "FREE" | "PREMIUM" | PaidMembershipType;

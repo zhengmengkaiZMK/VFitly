@@ -149,6 +149,47 @@ export async function grantMonthlyCredits({
   return account;
 }
 
+export async function grantCreditPackCredits({
+  userId,
+  amount,
+  planId,
+}: {
+  userId: string;
+  amount: number;
+  planId: string;
+}) {
+  const cycle = currentMonthlyCycle();
+  const account = await prisma.creditAccount.upsert({
+    where: { userId },
+    update: {
+      balance: { increment: amount },
+      monthlyAllowance: amount,
+      currentCycle: cycle,
+      resetAt: new Date(),
+    },
+    create: {
+      userId,
+      balance: amount,
+      monthlyAllowance: amount,
+      currentCycle: cycle,
+    },
+  });
+
+  await prisma.creditLedger.create({
+    data: {
+      userId,
+      accountId: account.id,
+      type: "CREDIT_PACK_GRANT",
+      amount,
+      balanceAfter: account.balance,
+      reason: "One-time credit pack granted",
+      metadata: { planId, cycle },
+    },
+  });
+
+  return account;
+}
+
 export async function ensureSufficientCredits(
   userId: string,
   plan: string | null | undefined,

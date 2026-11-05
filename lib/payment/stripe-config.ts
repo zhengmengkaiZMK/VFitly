@@ -31,6 +31,8 @@ export function getStripePriceId(planId: string) {
     PLUS_YEARLY: process.env.STRIPE_PRICE_PLUS_YEARLY,
     ULTRA_MONTHLY: process.env.STRIPE_PRICE_ULTRA_MONTHLY,
     ULTRA_YEARLY: process.env.STRIPE_PRICE_ULTRA_YEARLY,
+    PLUS_PACK: process.env.STRIPE_PRICE_PLUS_PACK,
+    ULTRA_PACK: process.env.STRIPE_PRICE_ULTRA_PACK,
   };
 
   return envMap[planId];

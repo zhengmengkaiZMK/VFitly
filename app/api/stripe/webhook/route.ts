@@ -2,7 +2,7 @@ import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
 import { MembershipType, PaymentStatus } from "@prisma/client";
 import { getPlanById } from "@/constants/pricing-plans";
-import { grantMonthlyCredits } from "@/lib/billing/credits";
+import { grantCreditPackCredits, grantMonthlyCredits } from "@/lib/billing/credits";
 import { prisma } from "@/lib/db/prisma";
 import { getStripeClient } from "@/lib/payment/stripe-config";
 
@@ -121,7 +121,11 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   });
 
   if (!existing || existing.status !== "COMPLETED") {
-    await grantMonthlyCredits({ userId, amount: plan.monthlyCredits, planId: plan.id });
+    if (plan.billingCycle === "ONE_TIME") {
+      await grantCreditPackCredits({ userId, amount: plan.monthlyCredits, planId: plan.id });
+    } else {
+      await grantMonthlyCredits({ userId, amount: plan.monthlyCredits, planId: plan.id });
+    }
   }
 }
 
