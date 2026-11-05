@@ -23,9 +23,12 @@ export function PricingWithPayment() {
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
 
   const visiblePlans = [
-    ...(billingCycle === "ONE_TIME"
-      ? paidPlans.filter((plan) => plan.billingCycle === "ONE_TIME")
-      : [freePlan, ...paidPlans.filter((plan) => plan.billingCycle === billingCycle)]),
+    freePlan,
+    ...paidPlans.filter((plan) =>
+      billingCycle === "ONE_TIME"
+        ? plan.billingCycle === "ONE_TIME"
+        : plan.billingCycle === billingCycle,
+    ),
   ];
   const selectedPlan = selectedPlanId ? getAllPlans().find((plan) => plan.id === selectedPlanId) : null;
 
@@ -146,7 +149,11 @@ export function PricingWithPayment() {
                     "relative z-10 mt-8 block w-full items-center justify-center rounded-full px-3.5 py-2.5 text-center text-sm font-semibold shadow-[0px_-1px_0px_0px_#FFFFFF40_inset,_0px_1px_0px_0px_#FFFFFF40_inset] transition duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:mt-10 md:text-sm",
                   )}
                 >
-                  {isFree ? (isZh ? "开始使用" : "Get Started") : isZh ? "立即订阅" : "Subscribe Now"}
+                  {isFree
+                    ? (isZh ? "开始使用" : "Get Started")
+                    : isOneTime
+                      ? (isZh ? "立即购买" : "Buy Now")
+                      : (isZh ? "立即订阅" : "Subscribe Now")}
                 </button>
               </div>
             );
@@ -185,7 +192,11 @@ export function PricingWithPayment() {
                   <span className="font-semibold text-black dark:text-white">{isZh ? selectedPlan.nameZh : selectedPlan.name}</span>
                 </div>
                 <div className="mb-2 flex items-center justify-between">
-                  <span className="text-sm text-neutral-600 dark:text-neutral-400">{isZh ? "月度积分" : "Monthly credits"}</span>
+                  <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                    {isZh
+                      ? selectedPlan.billingCycle === "ONE_TIME" ? "积分" : "月度积分"
+                      : selectedPlan.billingCycle === "ONE_TIME" ? "Credits" : "Monthly credits"}
+                  </span>
                   <span className="font-semibold text-black dark:text-white">{selectedPlan.monthlyCredits}</span>
                 </div>
                 <div className="flex items-center justify-between border-t border-neutral-200 pt-2 dark:border-neutral-700">
