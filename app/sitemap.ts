@@ -19,10 +19,29 @@ const staticRoutes = [
   "/about",
   "/privacy",
   "/terms",
+  // SEO 落地页：公开、静态渲染、无登录墙
+  "/ai-clothes-changer",
+  "/ai-outfit-generator",
+  "/try-on-clothes-online",
+  "/try-on-wedding-dresses",
+  "/try-on-dresses-online",
+  "/try-on-shirts-online",
+  "/try-on-shoes-online",
+  "/virtual-fitting-room",
+  "/try-on-clothes-from-link",
+  "/virtual-wardrobe",
+  "/outfit-ideas-from-photo",
   "/dashboard/try-on",
   "/dashboard/product-try-on",
   "/dashboard/wardrobe",
 ];
+
+// 落地页在站点地图中的优先级高于普通静态页（核心三页更高）。
+const landingPriorities: Record<string, number> = {
+  "/ai-clothes-changer": 0.9,
+  "/ai-outfit-generator": 0.9,
+  "/try-on-clothes-online": 0.9,
+};
 
 function routeUrl(route: string) {
   return `${SITE_URL}${route}`;
@@ -53,7 +72,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: routeUrl(route),
     lastModified: now,
     changeFrequency: route === "" ? "daily" : "weekly",
-    priority: route === "" ? 1 : route.startsWith("/dashboard") ? 0.8 : 0.7,
+    priority: route === "" ? 1 : landingPriorities[route] ?? (route.startsWith("/dashboard") ? 0.8 : 0.7),
   })) satisfies MetadataRoute.Sitemap;
 
   // 博客条目来自数据库。数据库短暂不可用时，不能让整个站点地图变成 500 ——

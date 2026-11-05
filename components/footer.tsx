@@ -41,6 +41,29 @@ export const Footer = () => {
       href: isZh ? "/zh/terms" : "/terms",
     },
   ];
+  // SEO 落地页内链列：让每个落地页都获得全站内链支持。
+  const tryOnLinks = [
+    {
+      name: "AI Clothes Changer",
+      href: "/ai-clothes-changer",
+    },
+    {
+      name: "AI Outfit Generator",
+      href: "/ai-outfit-generator",
+    },
+    {
+      name: "Try On Clothes Online",
+      href: "/try-on-clothes-online",
+    },
+    {
+      name: "Virtual Fitting Room",
+      href: "/virtual-fitting-room",
+    },
+    {
+      name: "Virtual Wardrobe",
+      href: "/virtual-wardrobe",
+    },
+  ];
   return (
     <div className="relative">
       <div className="border-t border-neutral-100 dark:border-neutral-800 px-8 pt-20 pb-32 relative bg-white dark:bg-black">
@@ -82,9 +105,23 @@ export const Footer = () => {
               />
             </a>
           </div>
-          <div className="grid grid-cols-2 gap-10 items-start mt-10 md:mt-0 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-10 items-start mt-10 md:mt-0 lg:grid-cols-4">
             <div className="flex justify-center space-y-4 flex-col">
               {links.map((link) => (
+                <Link
+                  key={link.name}
+                  className="transition-colors hover:text-black text-muted dark:text-muted-dark dark:hover:text-neutral-400 text-xs sm:text-sm"
+                  href={link.href}
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </div>
+            <div className="flex justify-center space-y-4 flex-col">
+              <div className="text-xs font-semibold uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
+                {isZh ? "虚拟试穿" : "Virtual Try On"}
+              </div>
+              {tryOnLinks.map((link) => (
                 <Link
                   key={link.name}
                   className="transition-colors hover:text-black text-muted dark:text-muted-dark dark:hover:text-neutral-400 text-xs sm:text-sm"

@@ -21,7 +21,7 @@ export const Hero = () => {
         className="relative z-10 mx-auto mt-6 max-w-6xl text-center text-3xl font-semibold tracking-tight md:text-5xl lg:text-7xl"
       >
         <span className="block text-balance">
-          Virtual try on clothes with AI
+          AI Virtual Try On Clothes Online
         </span>
       </h1>
 
@@ -32,7 +32,7 @@ export const Hero = () => {
         className="relative z-10 mx-auto mt-6 max-w-3xl text-center text-base text-muted dark:text-muted-dark md:text-xl"
       >
         <span className="block text-balance">
-          See how a top, dress, jacket or pair of shoes looks on your own photo before you buy it. Upload one clear picture of yourself and a garment image, generate a preview, and compare the styles you are deciding between. This is a visual preview, not a size or fit guarantee.
+          VFitly is an AI virtual try-on tool: try on clothes online by uploading one clear picture of yourself and a garment image, and preview tops, dresses, jackets or shoes before you buy. It works as an AI clothes changer for your photo, and the result is a visual preview, not a size or fit guarantee.
         </span>
       </motion.p>
 

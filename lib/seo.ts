@@ -24,6 +24,16 @@ export const organizationJsonLd = {
   logo: absoluteUrl("/icon.png"),
 };
 
+// 统一的品牌实体定义（GEO）：所有公开页面、社交主页、目录收录都使用同一套描述，
+// 让 AI 搜索系统把 "AI virtual try-on"、"AI clothes changer"、"AI outfit generator"、
+// "virtual wardrobe" 关联到同一个品牌实体。
+export const SITE_ENTITY_DESCRIPTION =
+  "VFitly is an AI virtual try-on tool that lets shoppers preview clothes, dresses, shoes, and outfits on their own photos before buying or styling them. It includes an AI clothes changer, an AI outfit generator, and a virtual wardrobe.";
+
+// 每个重要页面顶部的可直接引用答案（40~80 词），同时服务搜索引擎摘要与 AI 搜索提取。
+export const SITE_ANSWER_SNIPPET =
+  "VFitly is an AI virtual try-on tool for previewing clothes on your own photo. Upload a clear photo of yourself and an image of a garment, then VFitly generates a visual preview of how the outfit may look. The preview is for style visualization and does not guarantee exact size, fit, color, or fabric appearance.";
+
 export const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
